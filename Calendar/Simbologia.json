@@ -1,0 +1,175 @@
+{
+  "Signos": {
+    "Aries": {
+      "nombre": "Aries",
+      "lema": "YO SOY",
+      "simbolo": "♈",
+      "descripcion": "Signo de fuego, masculino, la chispa, el inicio del viaje, el primer aliento de vida y la expresión de la auto afirmación. Arquetipo de animales testarudos EJ: Carnero, rinoceronte, etc."
+    },
+    "Taurus": {
+      "nombre": "Taurus",
+      "lema": "YO TENGO",
+      "simbolo": "♉",
+      "descripcion": "Signo de tierra, femenino, se reconoce la materia, se siente como parte de la realidad tangible y se valida a través de la misma. Arquetipo de animales que se mantienen en corrales EJ: Animales de pastoreo en general."
+    },
+    "Gemini": {
+      "nombre": "Gemini",
+      "lema": "YO PIENSO",
+      "simbolo": "♊",
+      "descripcion": "Signo de aire, masculino, es consciente que no se esta solo en el mundo y es momento de comunicarse, aprender, compartir, negociar, discutir y se valida a través de la relación con los otros. Arquetipo de animales astutos EJ: Monos, zorros, etc."
+    },
+    "Cancer": {
+      "nombre": "Cancer",
+      "lema": "YO SIENTO",
+      "simbolo": "♋",
+      "descripcion": "Signo de agua, femenino, reconoce que los otros no son todos iguales, siente distinto por los que están más cerca, aparece la familia y donde encuentro resguardo emocional. Reconozco mis raíces. Arquetipo de animales que llevan su hogar junto a ellos EJ: Caracol, Tortuga, etc."
+    },
+    "Leo": {
+      "nombre": "Leo",
+      "lema": "YO QUIERO",
+      "simbolo": "♌",
+      "descripcion": "Signo de fuego, masculino, sus creaciones son proyecciones de su luz, manifiesta su brillo sin importar si calienta, quema o incendia. Yo soy el sol!. Arquetipo del León el rey de la selva."
+    },
+    "Virgo": {
+      "nombre": "Virgo",
+      "lema": "YO SIRVO",
+      "simbolo": "♍",
+      "descripcion": "Signo de tierra, femenino, comienza a desenvolverse en su día a día encontrando el sentido en cada acto, trabajando, sirviendo y analizando lo cotidiano. Arquetipo de animales trabajadores EJ: Hormiga, colibrí, abeja, etc."
+    },
+    "Libra": {
+      "nombre": "Libra",
+      "lema": "YO EQUILIBRO",
+      "simbolo": "♎",
+      "descripcion": "Signo de aire, masculino, valida al otro como así mismo armonizando los opuestos. Si bien, es el signo del amor, armonía y diplomacia, no se debe olvidar que también es el de la justicia que cuando baja su espada no hay vuelta. Se le conoce también por ser el signo de la duda, pero esta viene de su profundo conocimiento de la ley de equivalencia igualitaria, toda acción tiene su costo. Arquetipo de animales bellos, pero frágiles EJ: Mariposa, ciervos, etc."
+    },
+    "Scorpio": {
+      "nombre": "Scorpio",
+      "lema": "YO TRANSFORMO",
+      "simbolo": "♏",
+      "descripcion": "Signo de agua, femenino, se entra al lugar más oscuro del zodiaco, donde ya los sentidos no sirven. En la oscuridad se esta desnudo entregado al instinto. El escorpión tiene su veneno que mata, pero también donde nace el antídoto. Arquetipo de animales que cambian su piel o que tienen veneno EJ: arácnidos, reptiles, etc."
+    },
+    "Sagittarius": {
+      "nombre": "Sagittarius",
+      "lema": "YO VEO",
+      "simbolo": "♐",
+      "descripcion": "Signo de fuego, masculino, después de pasar por la caverna se ve la salida y se da cuenta que existe una realidad mucho más allá que de la vida y la muerte. Comienza a explorar nuevos mundos donde la Fe muestra senderos."
+    },
+    "Capricorn": {
+      "nombre": "Capricorn",
+      "lema": "YO LOGRO",
+      "simbolo": "♑",
+      "descripcion": "Signo de tierra, femenino, se encuentra la propia misión y se sube a la cima solo para ver que hay otra mas alta a la cual se debe llegar. Se deja atrás todo lo que es prescindible. Solo alcanza la cima con lo esencial. Arquetipo de animales que escalan EJ: Cabra de monte."
+    },
+    "Aquarius": {
+      "nombre": "Aquarius",
+      "lema": "YO SÉ",
+      "simbolo": "♒",
+      "descripcion": "Signo de aire, masculino, todo lo aprendido se comparte, la lógica del universo aparece, se entiende, se explica y aplica con normalidad. Todos somos soles, de los miles que hay en el universo. Arquetipo de animales inteligentes y comportamiento humano EJ: Delfines."
+    },
+    "Pisces": {
+      "nombre": "Pisces",
+      "lema": "YO CREO",
+      "simbolo": "♓",
+      "descripcion": "Signo de agua, femenino, termina el viaje, pero el fin no es más que el comienzo a otro plano. Ya no sirve lo que tengo, lo que siento ni lo que pienso. Todo lo que creíamos ser se diluye en el verdadero ser infinito, que es Dios. Ahora, ya creo..."
+    }
+  },
+  "Planetas": {
+    "Sun": {
+      "nombre": "Sol",
+      "simbolo": "☉",
+      "descripcion": "Luminaria que se asocia a la Esencia/Espíritu, vitalidad, propósito y la parte divina del ser. Rige al signo de Leo."
+    },
+    "Moon": {
+      "nombre": "Luna",
+      "simbolo": "☽",
+      "descripcion": "Luminaria que corresponde al alma, la parte emocional de la persona, su sensibilidad y decodificación de la realidad a través de la emoción. Rige al signo de Cáncer."
+    },
+    "Mercury": {
+      "nombre": "Mercurio",
+      "simbolo": "☿",
+      "descripcion": "Planeta que simboliza la comunicación, versatilidad, intelecto, capacidad de comercializar y de aprendizaje. Mente inferior. Rige al signo Géminis."
+    },
+    "Venus": {
+      "nombre": "Venus",
+      "simbolo": "♀",
+      "descripcion": "Planeta que representa la belleza, seguridad material, abundancia y amor sensual al regir a Tauro. Así también, a la armonía, la justicia, el arte y el amor espiritual al regir a Libra."
+    },
+    "Mars": {
+      "nombre": "Marte",
+      "simbolo": "♂",
+      "descripcion": "Planeta de la actividad, auto afirmación, voluntad, fuerza, agresividad y violencia, es el héroe de la mitología. Rige al signo Aries."
+    },
+    "Jupiter": {
+      "nombre": "Júpiter",
+      "simbolo": "♃",
+      "descripcion": "Planeta de la abundancia, fortuna y éxito, se asocia al dios Zeus quien todo lo hacia, veía y podía. Mente Superior. Rige al signo Sagitario."
+    },
+    "Saturn": {
+      "nombre": "Saturno",
+      "simbolo": "♄",
+      "descripcion": "Planeta del orden, de la misión, estructura, muerte y madurez. Se asocia al dios Cronos amo del tiempo, personaje simbolizado por su hoz y reloj de arena. Rige al signo de Capricornio."
+    },
+    "Uranus": {
+      "nombre": "Urano",
+      "simbolo": "♅",
+      "descripcion": "Planeta del caos, independencia, libertad, humanidad, cambio, altruismo, revolución y amor universal. Simboliza la comprensión de la inmensidad del universo y la lógica que hay detrás. Mente Universal. Rige al signo de Acuario."
+    },
+    "Neptune": {
+      "nombre": "Neptuno",
+      "simbolo": "♆",
+      "descripcion": "Planeta de lo infinito, incognoscible, la magia, la soledad y la espiritualidad. Es el océano infinito, donde todo se pierde, solo para encontrar al verdadero ser. Rige al signo de Piscis."
+    },
+    "Pluto": {
+      "nombre": "Plutón",
+      "simbolo": "♇",
+      "descripcion": "Planeta de la transformación profunda, de las crisis de vida, de la resurrección, fuerzas ocultas de la naturaleza, tesoros profundos y de los infiernos. Arquetipo: Ave fénix. Rige al signo de Escorpio."
+    },
+    "Chiron": {
+      "nombre": "Quirón",
+      "simbolo": "⚷",
+      "descripcion": "Planetoide o asteroide asociado al servicio, maestría, eficiencia y heridas abiertas. Mente Analítica. En la mitología griega Quirón fue un centauro que fue el maestro de todos los grandes héroes y superó su dolor a través del servicio al otro. Rige al signo de Virgo."
+    },
+    "North Node": {
+      "nombre": "Nodo Norte",
+      "simbolo": "☊",
+      "descripcion": "Punto astrológico, calculado como la intersección de la órbita de la luna y la órbita de la tierra alrededor del sol. Simboliza el futuro, lo que el alma debe ir a buscar o la misión que escribió antes de nacer."
+    },
+    "South Node": {
+      "nombre": "Nodo Sur",
+      "simbolo": "☋",
+      "descripcion": "Punto astrológico, calculado como la intersección de la órbita de la luna y la órbita de la tierra alrededor del sol. Simboliza el pasado, lo que el alma debe dejar atrás o lo que se trae de otras vidas."
+    },
+    "Pars Fortuna": {
+      "nombre": "Parte de la Fortuna",
+      "simbolo": "⨂",
+      "descripcion": "Punto astrológico, calculado entre el Ascendente, el Sol y la Luna. Simboliza dónde la persona tiene un brillo, suerte, fortuna, facilidad, etc. en su carta. Es un punto que solo se considera con pocos grados de orbe."
+    }
+  },
+  "Aspectos": {
+    "Conjunction": {
+      "nombre": "Conjunción",
+      "simbolo": "☌",
+      "descripcion": "Fusión de energías. Dos o más planetas están en el mismo lugar del zodiaco, uniendo sus fuerzas. Puede ser una poderosa alianza o una sobrecarga de energía. Es un comienzo, una semilla."
+    },
+    "Opposition": {
+      "nombre": "Oposición",
+      "simbolo": "☍",
+      "descripcion": "Tensión y confrontación. Dos planetas se miran frente a frente. Es un aspecto de conciencia, donde se nos pide equilibrar dos polaridades opuestas. Es un espejo que nos muestra lo que necesitamos integrar."
+    },
+    "Trine": {
+      "nombre": "Trígono",
+      "simbolo": "△",
+      "descripcion": "Flujo y armonía. Dos planetas están en signos del mismo elemento (fuego, tierra, aire, agua), creando un flujo de energía fácil y natural. Es un don, un talento innato, pero puede llevar a la pereza si no se usa conscientemente."
+    },
+    "Square": {
+      "nombre": "Cuadratura",
+      "simbolo": "□",
+      "descripcion": "Conflicto y acción. Dos planetas están en tensión, creando una fricción que exige acción y resolución. Es un desafío que nos obliga a crecer y a tomar decisiones. Es el motor del cambio."
+    },
+    "Sextile": {
+      "nombre": "Sextil",
+      "simbolo": "⚹",
+      "descripcion": "Oportunidad y cooperación. Dos planetas están en signos compatibles, creando una oportunidad para que sus energías colaboren. Es una puerta abierta que debemos decidir cruzar. Requiere un esfuerzo consciente para aprovechar su potencial."
+    }
+  }
+}

@@ -1,0 +1,212 @@
+/*
+============================================================
+==           GUÍA DE COLORES Y FONDOS PRINCIPALES         ==
+============================================================
+*/
+:root {
+    --color-fondo-pagina: #e8e4d8;
+    --color-fondo-celda-vacia: rgba(209, 215, 224, 0.5);
+    --color-fondo-cabecera: #e8e4d8;
+    --color-texto-principal: #333;
+    --color-texto-domingo: #d9534f;
+    --color-borde-calendario: #d4b283;
+    --opacidad-marca-agua: 0.08;
+    --color-boton-fondo: #887a68;
+    --color-boton-texto: #ffffff;
+}
+
+body {
+    font-family: 'Linux Libertine', serif;
+    background-color: var(--color-fondo-pagina);
+    color: var(--color-texto-principal);
+    image-rendering: -webkit-optimize-contrast;
+}
+
+/* --- ESTILOS DE LA CABECERA Y BOTONES --- */
+#calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1600px;
+    margin: 0 auto 20px auto;
+    padding: 0 10px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+
+.btn {
+    padding: 8px 16px;
+    font-family: 'Linux Libertine', serif;
+    font-size: 1em;
+    border: 1px solid var(--color-borde-calendario);
+    background-color: var(--color-boton-fondo);
+    color: var(--color-boton-texto);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.btn:hover {
+    background-color: #6d6051;
+}
+
+/* El resto de estilos se mantiene igual... */
+#calendar-container {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    max-width: 1600px;
+    margin: 0 auto;
+    border: 2px solid var(--color-borde-calendario);
+    z-index: 1;
+}
+#calendar-container::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: url('assets/aspects/Home.png');
+    background-position: center; background-repeat: no-repeat;
+    background-size: contain;
+    opacity: var(--opacidad-marca-agua);
+    z-index: -1;
+}
+.calendar-cell {
+    position: relative;
+    border: 1px solid var(--color-borde-calendario);
+    background-color: transparent;
+    min-height: 180px; padding: 8px;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+}
+.day-header {
+    background-color: var(--color-fondo-cabecera);
+    font-weight: bold; text-align: center;
+    padding: 10px; min-height: auto;
+}
+.empty-cell {
+    background-color: var(--color-fondo-celda-vacia);
+}
+.day-title-container {
+    display: flex;
+    align-items: center; justify-content: left;
+    gap: 8px; margin-bottom: 8px;
+}
+.date-number {
+    font-size: 2em; font-weight: bold;
+    color: var(--color-texto-principal);
+}
+.date-number.sunday {
+    color: var(--color-texto-domingo);
+}
+
+.astro-events {
+    display: flex; flex-direction: column;
+    gap: 8px;
+}
+.event-row {
+    display: flex; align-items: center;
+    gap: 5px; height: 32px;
+}
+.event-arrow {
+    font-weight: bold; color: var(--color-texto-principal);
+    margin: 0 4px;
+}
+.day-event-icon {
+    position: absolute; top: 10px; left: 50%;
+    transform: translateX(-50%);
+    width: 50px; height: 50px;
+    object-fit: contain; z-index: 1;
+}
+.warning-icon {
+    position: absolute; top: 0%; right: 10%;
+    width: 35px; height: 35px;
+    pointer-events: none;
+}
+.planets-icon { width: 22px; height: 22px; object-fit: contain; }
+.signs-icon { width: 28px; height: 28px; object-fit: contain; }
+.aspects-icon { width: 40px; height: 40px; object-fit: contain; }
+.sign-icon-small { width: 22px; height: 22px; object-fit: contain; position: relative; top: 1px; }
+
+.calendar-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+}
+
+.sunday-label {
+    color: var(--color-texto-domingo);
+}
+
+.nav-button {
+  background-color: #887458; /* similar al botón PDF */
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, background-color 0.3s;
+}
+
+.nav-button:hover {
+  background-color: #a68b6a;
+  transform: scale(1.05);
+}
+
+.nav-select {
+  background-color: #f7f2e7;
+  color: #333;
+  border: 1px solid #a68b6a;
+  border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+  font-size: 1rem;
+  box-shadow: inset 0 0 2px rgba(0,0,0,0.1);
+}
+
+/*
+============================================================
+==              ESTILOS ESPECIALES PARA IMPRESIÓN           ==
+============================================================
+*/
+@media print {
+    /* Ocultamos los elementos que no queremos en el PDF/papel */
+    body {
+        background-color: #ffffff; /* Fondo blanco para imprimir */
+    }
+    #calendar-header {
+        justify-content: center; /* Centramos el título */
+    }
+    .action-buttons {
+        display: none; /* Ocultamos los botones */
+    }
+    
+    #calendar-container {
+        border: none; /* Quitamos el borde principal */
+    }
+
+    #calendar-container::before {
+        display: none; /* Ocultamos la marca de agua */
+    }
+
+    .calendar-cell {
+        border: 1px solid #ccc; /* Un borde más suave para imprimir */
+        /* La siguiente línea ayuda a evitar que las celdas se corten entre páginas */
+        page-break-inside: avoid; 
+    }
+    
+    /* Forzamos que los colores se impriman (algunos navegadores los quitan) */
+    * {
+       -webkit-print-color-adjust: exact !important;
+       color-adjust: exact !important;                
+    }
+}
+
+#calendar-container > .day-header:nth-child(7) {
+    color: var(--color-texto-domingo);
+}

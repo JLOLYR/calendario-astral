@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: Adobe Illustrator 16.0.3, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+
+<svg
+   version="1.1"
+   id="Capa_1"
+   x="0px"
+   y="0px"
+   width="135px"
+   height="115px"
+   viewBox="0 0 135 115"
+   enable-background="new 0 0 135 115"
+   xml:space="preserve"
+   sodipodi:docname="mercurio.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+   id="defs2" /><sodipodi:namedview
+   id="namedview2"
+   pagecolor="#ffffff"
+   bordercolor="#cccccc"
+   borderopacity="1"
+   inkscape:showpageshadow="0"
+   inkscape:pageopacity="1"
+   inkscape:pagecheckerboard="0"
+   inkscape:deskcolor="#d1d1d1"
+   inkscape:zoom="5"
+   inkscape:cx="10.3"
+   inkscape:cy="15.2"
+   inkscape:window-width="1920"
+   inkscape:window-height="996"
+   inkscape:window-x="1911"
+   inkscape:window-y="-9"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="Capa_1" />
+<g
+   id="Mercurio"
+   style="stroke-width:2;stroke-dasharray:none;stroke:#bcb731;stroke-opacity:1">
+	<circle
+   fill="none"
+   stroke="#BE0411"
+   stroke-miterlimit="10"
+   cx="0"
+   cy="-0.062"
+   r="12.25"
+   id="circle1"
+   style="stroke-width:2;stroke-dasharray:none;stroke:#bcb731;stroke-opacity:1" />
+	<line
+   fill="none"
+   stroke="#BE0411"
+   stroke-miterlimit="10"
+   x1="0"
+   y1="24.562"
+   x2="0"
+   y2="12.188"
+   id="line1"
+   style="stroke-width:2;stroke-dasharray:none;stroke:#bcb731;stroke-opacity:1" />
+	<line
+   fill="none"
+   stroke="#BE0411"
+   stroke-miterlimit="10"
+   x1="-6.301"
+   y1="18.375"
+   x2="6.199"
+   y2="18.375"
+   id="line2"
+   style="stroke-width:2;stroke-dasharray:none;stroke:#bcb731;stroke-opacity:1" />
+	<path
+   fill="none"
+   stroke="#BE0411"
+   stroke-miterlimit="10"
+   d="M12.25-24.562c0,6.765-5.484,12.25-12.25,12.25   s-12.25-5.485-12.25-12.25"
+   id="path2"
+   style="stroke-width:2;stroke-dasharray:none;stroke:#bcb731;stroke-opacity:1" />
+</g>
+</svg>
