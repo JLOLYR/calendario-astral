@@ -307,3 +307,67 @@ body {
         font-size: 1em;
     }
 }
+@media (max-width: 768px) {
+
+    #calendar-header {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .calendar-controls,
+    .action-buttons {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    #calendar-container {
+        grid-template-columns: repeat(2, 1fr); /* 2 columnas en vez de 7 */
+        padding: 0 5px;
+    }
+
+    .calendar-cell {
+        min-height: 140px;
+        padding: 6px;
+        font-size: 0.9em;
+    }
+
+    .day-title-container {
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .modal-content {
+        max-width: 95vw;
+        padding: 20px;
+        font-size: 1em;
+    }
+
+    .btn, .nav-button, .nav-select {
+        font-size: 0.95em;
+        padding: 6px 12px;
+    }
+
+    .day-event-icon,
+    .warning-icon {
+        width: 30px;
+        height: 30px;
+    }
+
+    .planets-icon,
+    .signs-icon,
+    .aspects-icon,
+    .sign-icon-small {
+        width: 20px;
+        height: 20px;
+    }
+
+    h1 {
+        font-size: 1.4em;
+    }
+
+    h2 {
+        font-size: 1.2em;
+    }
+}
