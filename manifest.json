@@ -1,0 +1,22 @@
+{
+  "name": "Calendario Astral",
+  "short_name": "Calendario",
+  "description": "Tu calendario astral diario con eventos, aspectos e interpretaciones.",
+  "start_url": "/calendario-astral/",
+  "display": "standalone",
+  "background_color": "#e8e4d8",
+  "theme_color": "#887a68",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/icons/icon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "assets/icons/icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!res.ok) throw new Error('Archivo no encontrado');
             const data = await res.json();
             
-            let mainHtml = `<h1 style="text-align:center; display: flex; align-items: center; justify-content: center; gap: 10px;"><span>🔮Simbología Astral</span></h1>`;
+            let mainHtml = `<h1 style="text-align:center; display: flex; align-items: center; justify-content: center; gap: 10px;"><span>🔮Simbología🔮</span></h1>`;
             for (const seccion in data) {
                 mainHtml += `<h2 style="margin-top: 20px;">✨${capitalize(seccion)}✨</h2>`;
                 const grupo = data[seccion];
