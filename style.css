@@ -115,6 +115,8 @@ body {
     font-weight: bold; color: var(--color-texto-principal);
     margin: 0 4px;
     font-size: 2.2em;
+    position: relative;
+    top: -3px;
 }
 .day-event-icon {
     position: absolute; top: 10px; left: 50%;
@@ -134,9 +136,9 @@ body {
     pointer-events: none;
 }
 .planets-icon { width: 35px; height: 35px; object-fit: contain; }
-.signs-icon { width: 40px; height: 40px; object-fit: contain; }
+.signs-icon { width: 35px; height: 35px; object-fit: contain; }/* <--- El grande */
 .aspects-icon { width: 15px; height: 15px; object-fit: contain; }
-.sign-icon-small { width: 28px; height: 28px; object-fit: contain; position: relative; top: 1px; }
+.sign-icon-small { width: 30px; height: 30px; object-fit: contain; position: relative; top: 1px; }/* <--- El pequeño */
 
 .calendar-controls {
   display: flex;
