@@ -198,7 +198,7 @@ body {
 
 .close-button {
     position: absolute;
-    top: 10px; right: 30px;
+    top: 20px; right: 30px;
     font-size: 30px;
     cursor: pointer;
     color: #d9534f;
@@ -342,7 +342,7 @@ body {
 
 .close-button {
     position: absolute;
-    top: 10px;
+    top: 20px;
     right: 30px;
     font-size: 20px;
     cursor: pointer;
@@ -353,11 +353,11 @@ body {
 /* === NUEVO ESTILO PARA EL BOTÓN DE VOLVER === */
 .back-button {
     position: absolute;
-    top: 12px;  /* Ajustado para alinear verticalmente con la 'x' */
+    top: 33px;  /* Ajustado para alinear verticalmente con la 'x' */
     left: 25px;
-    font-size: 35px;
-    font-weight: bold;
-    color: #887a68; /* Un color más sutil que el de cerrar */
+    font-size: 37px;
+    font-weight: bolder;
+    color: #101eec; /* Un color más sutil que el de cerrar */
     cursor: pointer;
     z-index: 10;
     line-height: 1;
@@ -486,14 +486,15 @@ body {
     border-top: 1px solid var(--color-borde-calendario); /* Línea divisoria sutil */
 }
 
-#home-btn-modal {
+/* Usamos una clase en lugar de un ID para poder reutilizarlo */
+.modal-home-btn {
     display: flex;
     align-items: center;
     gap: 10px; /* Espacio entre el icono y el texto */
     font-size: 1.1em;
 }
 
-#home-btn-modal img {
+.modal-home-btn img {
     width: 24px;
     height: 24px;
     object-fit: contain;

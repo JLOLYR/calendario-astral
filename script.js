@@ -39,62 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const MAX_YEAR = 2030;
     const dataCache = {};
 
-    // --- (Todas las funciones hasta showSymbolModal se mantienen igual) ---
-
-    async function showSymbolModal() {
-        const modal = document.getElementById('modal-symbol');
-        const modalContent = document.getElementById('modal-symbol-content');
-        
-        try {
-            const res = await fetch('Calendar/Simbologia.json');
-            if (!res.ok) throw new Error('Archivo no encontrado');
-            const data = await res.json();
-            
-            // 1. Construir el HTML principal
-            let mainHtml = `<h1 style="text-align:center; display: flex; align-items: center; justify-content: center; gap: 10px;"><span>🔮Simbología Astral</span></h1>`;
-            for (const seccion in data) {
-                mainHtml += `<h2 style="margin-top: 20px;">✨${capitalize(seccion)}✨</h2>`;
-                const grupo = data[seccion];
-                for (const key in grupo) {
-                    const item = grupo[key];
-                    let iconPath = ICON_PATHS.signs[key] || ICON_PATHS.planets[key] || ICON_PATHS.aspects[key] || '';
-                    mainHtml += `<div style="margin-bottom: 1rem;">${iconPath ? `<img src="${iconPath}" alt="${key}" style="height: 28px; aspect-ratio: 1 / 1; object-fit: contain; vertical-align: middle; margin-right: 6px;">` : ''}<strong>${item.nombre || key}</strong><br><small style="font-weight:bold;">${item.lema || ''}</small><br><span>${item.descripcion}</span></div>`;
-                }
-            }
-            
-            // 2. Construir el HTML del botón "Home"
-            const homeButtonHtml = `
-                <div class="modal-home-button-container">
-                    <button id="home-btn-modal" class="btn">
-                        <img src="assets/planets/Sun.png" alt="Volver al Inicio">
-                        <span>Volver</span>
-                    </button>
-                </div>
-            `;
-            
-            // 3. Combinar ambos y mostrar
-            modalContent.innerHTML = mainHtml + homeButtonHtml;
-            modal.style.display = 'flex';
-
-            // 4. Añadir la lógica de cierre a TODOS los botones
-            const closeBtn = modal.querySelector('.close-button');
-            const backBtn = modal.querySelector('.back-button');
-            const homeBtn = document.getElementById('home-btn-modal');
-
-            const closeModal = () => { modal.style.display = 'none'; };
-
-            closeBtn.onclick = closeModal;
-            backBtn.onclick = closeModal;
-            homeBtn.onclick = closeModal;
-            modal.onclick = (e) => { if (e.target === modal) closeModal(); };
-
-        } catch (error) {
-            modalContent.innerHTML = `<p>Error al cargar la simbología astral.</p>`;
-        }
-    }
-
-    // --- (El resto de las funciones se mantienen igual) ---
-
     // =========================================================================
     // ==                         LÓGICA DE DATOS                             ==
     // =========================================================================
@@ -125,6 +69,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return null;
         }
     }
+
+    // =========================================================================
+    // ==                    LÓGICA VISTA ESCRITORIO (GRID)                   ==
+    // =========================================================================
     function initDesktopView() { const now = new Date(); selectedYear = now.getFullYear(); selectedMonth = now.getMonth() + 1; fillControls(); updateCalendar(); prevMonthBtn.addEventListener('click', () => changeMonth(-1)); nextMonthBtn.addEventListener('click', () => changeMonth(1)); selectMonth.addEventListener('change', () => { selectedMonth = parseInt(selectMonth.value); updateCalendar(); }); selectYear.addEventListener('change', () => { selectedYear = parseInt(selectYear.value); updateCalendar(); }); printBtn.addEventListener('click', () => window.print()); downloadBtn.addEventListener('click', downloadCalendarImage); }
     function fillControls() { selectMonth.innerHTML = NOMBRES_MESES.map((mes, idx) => `<option value="${idx + 1}">${mes}</option>`).join(''); selectMonth.value = selectedMonth; let yearOptions = ''; for (let y = MIN_YEAR; y <= MAX_YEAR; y++) { yearOptions += `<option value="${y}">${y}</option>`; } selectYear.innerHTML = yearOptions; selectYear.value = selectedYear; }
     function changeMonth(direction) { selectedMonth += direction; if (selectedMonth < 1) { selectedMonth = 12; selectedYear--; } else if (selectedMonth > 12) { selectedMonth = 1; selectedYear++; } if (selectedYear < MIN_YEAR) selectedYear = MIN_YEAR; if (selectedYear > MAX_YEAR) selectedYear = MAX_YEAR; fillControls(); updateCalendar(); }
@@ -133,15 +81,142 @@ document.addEventListener('DOMContentLoaded', () => {
     function addEventsToCell(container, dayData) { if (!dayData) return; if (dayData.Moon) { const showsArrow = dayData.Moon.includes('CHANGE'); const moonSign = dayData.Moon.replace('CHANGE ', ''); let eventItems = showsArrow ? [{ category: 'planets', name: 'Moon' }, { type: 'text', value: '→' }, { category: 'signs', name: moonSign }] : [{ category: 'planets', name: 'Moon' }, { category: 'signs', name: moonSign }]; container.appendChild(createEventRow(eventItems)); } if (dayData.Retrograde_Changes?.length > 0) { dayData.Retrograde_Changes.forEach(change => { let eventItems = []; if (change.status === 'retrograde') eventItems = [{ category: 'planets', name: change.planet }, { type: 'text', value: '→' }, { category: 'aspects', name: 'Retrograde' }]; else if (change.status === 'direct') eventItems = [{ category: 'aspects', name: 'Retrograde' }, { type: 'text', value: '→' }, { category: 'planets', name: change.planet }]; if (eventItems.length > 0) container.appendChild(createEventRow(eventItems)); }); } if (dayData.Aspects) { const processed = new Set(); for (const p1 in dayData.Aspects) { for (const p2 in dayData.Aspects[p1]) { const aspectData = dayData.Aspects[p1][p2]; const key = [p1, p2].sort().join('-'); if (processed.has(key)) continue; processed.add(key); container.appendChild(createEventRow([{ category: 'planets', name: p1 }, { category: 'signs', name: aspectData.planet1_sign, isSmall: true }, { category: 'aspects', name: aspectData.type }, { category: 'planets', name: p2 }, { category: 'signs', name: aspectData.planet2_sign, isSmall: true }])); } } } }
     function createEventRow(items) { const row = document.createElement('div'); row.classList.add('event-row'); items.forEach(item => { if (item.type === 'text') { const span = document.createElement('span'); span.textContent = item.value; span.classList.add('event-arrow'); row.appendChild(span); } else { const path = ICON_PATHS[item.category]?.[item.name]; if (path) { const img = document.createElement('img'); img.src = path; img.alt = item.name; if (item.category === 'aspects') img.style.height = '48px'; else if (item.isSmall) img.classList.add('sign-icon-small'); else img.classList.add(`${item.category}-icon`); row.appendChild(img); } } }); return row; }
     function downloadCalendarImage() { html2canvas(calendarContainer).then(canvas => { const link = document.createElement('a'); link.download = `Calendario-Astral-${NOMBRES_MESES[selectedMonth - 1]}-${selectedYear}.png`; link.href = canvas.toDataURL('image/png'); link.click(); }); }
+    
+    // =========================================================================
+    // ==                      LÓGICA VISTA MÓVIL (DIARIA)                    ==
+    // =========================================================================
     function initMobileView() { renderMobileView(mobileDate); prevDayMobileBtn.addEventListener('click', () => changeMobileDay(-1)); nextDayMobileBtn.addEventListener('click', () => changeMobileDay(1)); goToTodayBtn.addEventListener('click', () => { mobileDate = new Date(); renderMobileView(mobileDate); }); showAspectsBtn.addEventListener('click', () => showAspectsModal(mobileDate)); let touchStartX = 0; mobileContainer.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true }); mobileContainer.addEventListener('touchend', e => { const touchEndX = e.changedTouches[0].screenX; const swipeThreshold = 50; if (touchStartX - touchEndX > swipeThreshold) changeMobileDay(1); else if (touchEndX - touchStartX > swipeThreshold) changeMobileDay(-1); }); }
     function changeMobileDay(direction) { mobileDate.setDate(mobileDate.getDate() + direction); renderMobileView(mobileDate); }
     async function renderMobileView(date) { mobileDayContent.innerHTML = `<div class="loader">Cargando...</div>`; const year = date.getFullYear(); const month = date.getMonth() + 1; const day = date.getDate(); const data = await getMonthlyData(year, month); if (!data) { mobileDayContent.innerHTML = `<p>No hay datos disponibles para este día.</p>`; return; } const dayAstroData = data.astro[day] || {}; const dayTextData = data.textos[day] || {}; mobileDayContent.innerHTML = generateDayContentHTML(date, dayAstroData, dayTextData, data.festivos); }
+    
+    // =========================================================================
+    // ==                     FUNCIONES COMPARTIDAS Y MODALES                 ==
+    // =========================================================================
     function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
     function countEvents(data) { let count = 0; if (!data) return 0; if (data.Moon) count++; if (data.Retrograde_Changes) count += data.Retrograde_Changes.length; if (data.Aspects) { const processed = new Set(); for (const p1 in data.Aspects) { for (const p2 in data.Aspects[p1]) { const key = [p1, p2].sort().join('-'); if (processed.has(key)) continue; processed.add(key); count++; } } } return count; }
     function isHoliday(date, festivosDelMes) { return festivosDelMes.includes(date.getDate()); }
     function generateDayContentHTML(date, astro, textos, festivos) { const dayNum = date.getDate(); const esDomingo = date.getDay() === 0; const esFestivo = isHoliday(date, festivos); const eventCount = countEvents(astro); const nombreDia = capitalize(date.toLocaleDateString('es-ES', { weekday: 'long' })); const nombreMes = capitalize(date.toLocaleDateString('es-ES', { month: 'long' })); let html = `<h1 style="color: ${esFestivo || esDomingo ? 'var(--color-texto-domingo)' : 'inherit'}">${nombreDia} ${dayNum} de ${nombreMes} ${date.getFullYear()}</h1>`; if (eventCount >= 4) html += `<p style="text-align: center; color: red; font-weight: bold;"><img class="header-icon" src="assets/aspects/warning.gif" title="Día intenso"> DÍA INTENSO <img class="header-icon" src="assets/aspects/warning.gif" title="Día intenso"></p>`; if (Object.keys(textos).length > 0) { if (textos.introduccion_diaria) html += `<h2>🌞 Introducción</h2><p>${textos.introduccion_diaria}</p>`; if (textos.interpretacion_aspectos?.length > 0) { html += '<h2>🔮 Interpretación</h2>'; textos.interpretacion_aspectos.forEach(t => html += `<p>${t}</p>`); } if (textos.eventos_especiales?.length > 0) { html += '<h2>✨ Eventos</h2>'; textos.eventos_especiales.forEach(t => html += `<p>${t}</p>`); } if (textos.consejo_del_dia) html += `<h2>💡 Consejo</h2><p>${textos.consejo_del_dia}</p>`; } else { html += '<p>Sin interpretaciones disponibles para este día.</p>'; } return html; }
-    async function showDayDetailsModal(year, month, dayNum) { const modal = document.getElementById('modal-detail'); const modalTextos = document.getElementById('modal-textos'); const data = await getMonthlyData(year, month); const date = new Date(year, month - 1, dayNum); if (data) { const astro = data.astro[dayNum] || {}; const textos = data.textos[dayNum] || {}; modalTextos.innerHTML = generateDayContentHTML(date, astro, textos, data.festivos); } else { modalTextos.innerHTML = `<p>Error al cargar los contenidos.</p>`; } modal.style.display = 'flex'; const closeBtn = modal.querySelector('.close-button'); const backBtn = modal.querySelector('.back-button'); const closeModal = () => { modal.style.display = 'none'; }; closeBtn.onclick = closeModal; backBtn.onclick = closeModal; modal.onclick = (e) => { if (e.target === modal) closeModal(); }; }
-    async function showAspectsModal(date) { const modal = document.getElementById('modal-aspects'); const modalContent = document.getElementById('modal-aspects-content'); modalContent.innerHTML = `<div class="loader">Cargando aspectos...</div>`; modal.style.display = 'flex'; const year = date.getFullYear(); const month = date.getMonth() + 1; const day = date.getDate(); const data = await getMonthlyData(year, month); let html = `<h1> 📅Aspectos del Día☀️</h1>`; let specialEventsHtml = ''; if (data && data.astro[day]) { const dayData = data.astro[day]; let eventName = ''; let eventIconPath = ''; if (dayData.Eclipse) { eventName = `Eclipse ${dayData.Eclipse.type} ${dayData.Eclipse.subtype}`; eventIconPath = ICON_PATHS.events[eventName]; } else if (FASES_LUNARES_PRINCIPALES.includes(dayData.Moon_Phase)) { eventName = dayData.Moon_Phase; eventIconPath = ICON_PATHS.events[eventName]; } if (eventName && eventIconPath) { specialEventsHtml = `<div class="special-event-row"><img src="${eventIconPath}" alt="${eventName}"><span>${eventName}</span></div>`; } const eventsContainer = document.createElement('div'); eventsContainer.classList.add('astro-events'); addEventsToCell(eventsContainer, dayData); const regularAspectsHtml = eventsContainer.innerHTML; if (specialEventsHtml || regularAspectsHtml) { html += specialEventsHtml + regularAspectsHtml; } else { html += '<p>No hay eventos ni aspectos mayores para este día.</p>'; } } else { html += '<p>No hay eventos ni aspectos mayores para este día.</p>'; } modalContent.innerHTML = html; const closeBtn = modal.querySelector('.close-button'); const backBtn = modal.querySelector('.back-button'); const closeModal = () => { modal.style.display = 'none'; }; closeBtn.onclick = closeModal; backBtn.onclick = closeModal; modal.onclick = (e) => { if (e.target === modal) closeModal(); }; }
+
+    const homeButtonHtml = `
+        <div class="modal-home-button-container">
+            <button class="btn modal-home-btn">
+                <img src="assets/planets/Sun.png" alt="Volver">
+                <span>Volver</span>
+            </button>
+        </div>
+    `;
+
+    async function showDayDetailsModal(year, month, dayNum) {
+        const modal = document.getElementById('modal-detail');
+        const modalTextos = document.getElementById('modal-textos');
+        const data = await getMonthlyData(year, month);
+        const date = new Date(year, month - 1, dayNum);
+        
+        let contentHtml = '';
+        if (data) {
+            const astro = data.astro[dayNum] || {};
+            const textos = data.textos[dayNum] || {};
+            contentHtml = generateDayContentHTML(date, astro, textos, data.festivos);
+        } else {
+             contentHtml = `<p>Error al cargar los contenidos.</p>`;
+        }
+        
+        modalTextos.innerHTML = contentHtml + homeButtonHtml;
+        modal.style.display = 'flex';
+
+        const closeModal = () => { modal.style.display = 'none'; };
+        modal.querySelector('.close-button').onclick = closeModal;
+        modal.querySelector('.back-button').onclick = closeModal;
+        modal.querySelector('.modal-home-btn').onclick = closeModal;
+        modal.onclick = (e) => { if (e.target === modal) closeModal(); };
+    }
+
+    async function showSymbolModal() {
+        const modal = document.getElementById('modal-symbol');
+        const modalContent = document.getElementById('modal-symbol-content');
+        try {
+            const res = await fetch('Calendar/Simbologia.json');
+            if (!res.ok) throw new Error('Archivo no encontrado');
+            const data = await res.json();
+            
+            let mainHtml = `<h1 style="text-align:center; display: flex; align-items: center; justify-content: center; gap: 10px;"><span>🔮Simbología Astral</span></h1>`;
+            for (const seccion in data) {
+                mainHtml += `<h2 style="margin-top: 20px;">✨${capitalize(seccion)}✨</h2>`;
+                const grupo = data[seccion];
+                for (const key in grupo) {
+                    const item = grupo[key];
+                    let iconPath = ICON_PATHS.signs[key] || ICON_PATHS.planets[key] || ICON_PATHS.aspects[key] || '';
+                    mainHtml += `<div style="margin-bottom: 1rem;">${iconPath ? `<img src="${iconPath}" alt="${key}" style="height: 28px; aspect-ratio: 1 / 1; object-fit: contain; vertical-align: middle; margin-right: 6px;">` : ''}<strong>${item.nombre || key}</strong><br><small style="font-weight:bold;">${item.lema || ''}</small><br><span>${item.descripcion}</span></div>`;
+                }
+            }
+            
+            modalContent.innerHTML = mainHtml + homeButtonHtml;
+            modal.style.display = 'flex';
+
+            const closeModal = () => { modal.style.display = 'none'; };
+            modal.querySelector('.close-button').onclick = closeModal;
+            modal.querySelector('.back-button').onclick = closeModal;
+            modal.querySelector('.modal-home-btn').onclick = closeModal;
+            modal.onclick = (e) => { if (e.target === modal) closeModal(); };
+        } catch (error) {
+            modalContent.innerHTML = `<p>Error al cargar la simbología astral.</p>`;
+        }
+    }
+
+    async function showAspectsModal(date) {
+        const modal = document.getElementById('modal-aspects');
+        const modalContent = document.getElementById('modal-aspects-content');
+        
+        modalContent.innerHTML = `<div class="loader">Cargando aspectos...</div>`;
+        modal.style.display = 'flex';
+        
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        const data = await getMonthlyData(year, month);
+        
+        let html = `<h1>📅Aspectos del Día</h1>`;
+        let specialEventsHtml = '';
+        
+        if (data && data.astro[day]) {
+            const dayData = data.astro[day];
+            let eventName = '';
+            let eventIconPath = '';
+
+            if (dayData.Eclipse) {
+                eventName = `Eclipse ${dayData.Eclipse.type} ${dayData.Eclipse.subtype}`;
+                eventIconPath = ICON_PATHS.events[eventName];
+            } else if (FASES_LUNARES_PRINCIPALES.includes(dayData.Moon_Phase)) {
+                eventName = dayData.Moon_Phase;
+                eventIconPath = ICON_PATHS.events[eventName];
+            }
+
+            if (eventName && eventIconPath) {
+                specialEventsHtml = `<div class="special-event-row"><img src="${eventIconPath}" alt="${eventName}"><span>${eventName}</span></div>`;
+            }
+
+            const eventsContainer = document.createElement('div');
+            eventsContainer.classList.add('astro-events');
+            addEventsToCell(eventsContainer, dayData);
+            const regularAspectsHtml = eventsContainer.innerHTML;
+
+            if (specialEventsHtml || regularAspectsHtml) {
+                html += specialEventsHtml + regularAspectsHtml;
+            } else {
+                html += '<p>No hay eventos ni aspectos mayores para este día.</p>';
+            }
+        } else {
+            html += '<p>No hay eventos ni aspectos mayores para este día.</p>';
+        }
+        
+        modalContent.innerHTML = html + homeButtonHtml;
+
+        const closeModal = () => { modal.style.display = 'none'; };
+        modal.querySelector('.close-button').onclick = closeModal;
+        modal.querySelector('.back-button').onclick = closeModal;
+        modal.querySelector('.modal-home-btn').onclick = closeModal;
+        modal.onclick = (e) => { if (e.target === modal) closeModal(); };
+    }
 
     // =========================================================================
     // ==                           INICIALIZACIÓN                            ==
