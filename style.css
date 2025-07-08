@@ -133,8 +133,8 @@ body {
     pointer-events: none;
 }
 .planets-icon { width: 35px; height: 35px; object-fit: contain; }
-.signs-icon { width: 35px; height: 35px; object-fit: contain; }
-.aspects-icon { width: 45px; height: 45px; object-fit: contain; }
+.signs-icon { width: 40px; height: 40px; object-fit: contain; }
+.aspects-icon { width: 20px; height: 20px; object-fit: contain; }
 .sign-icon-small { width: 28px; height: 28px; object-fit: contain; position: relative; top: 1px; }
 
 .calendar-controls {
