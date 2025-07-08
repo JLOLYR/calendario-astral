@@ -2,12 +2,14 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calendario Astral</title>
     <link href="https://fonts.googleapis.com/css2?family=Linux+Libertine:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
+    <!-- ===== VISTA DE ESCRITORIO (SIN CAMBIOS) ===== -->
     <div id="calendar-header">
         <h1>Calendario Astral</h1>
         <div class="calendar-controls">
@@ -24,21 +26,50 @@
     </div>
     
     <div id="calendar-container"></div>
-    <script src="script.js"></script>
-        <!-- Modal para mostrar información detallada -->
-    <div id="modal-detail" class="modal" style="display:none;">
-    <div class="modal-content">
-        <span class="close-button">&times;</span>
-        <div id="modal-icons"></div>
-        <div id="modal-textos"></div>
-    </div>
-    </div>
-    <div class="modal" id="modal-symbol" style="display: none;">
-        <div class="modal-content">
-            <span class="close-button" onclick="document.getElementById('modal-symbol').style.display='none'">×</span>
-            <div id="modal-symbol-content"></div>
+    
+    <!-- ===== VISTA MÓVIL (SIN CAMBIOS) ===== -->
+    <div id="mobile-view-container">
+        <div class="mobile-header">
+            <div class="mobile-nav">
+                <button id="prev-day-mobile" class="btn">◀</button>
+                <button id="show-aspects-btn" class="btn">Aspectos</button>
+                <button id="go-to-today-btn" class="btn">Hoy</button>
+                <button id="symbol-btn-mobile" class="btn">Simbología</button>
+                <button id="next-day-mobile" class="btn">▶</button>
+            </div>
+        </div>
+        <div id="mobile-day-content">
+            <div class="loader">Cargando...</div>
         </div>
     </div>
 
+    <!-- ===== MODALES (MODIFICADOS) ===== -->
+    <!-- Modal de detalles -->
+    <div id="modal-detail" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="back-button" onclick="this.closest('.modal').style.display='none'">↶</span>
+            <span class="close-button" onclick="this.closest('.modal').style.display='none'">❌</span>
+            <div id="modal-icons"></div>
+            <div id="modal-textos"></div>
+        </div>
+    </div>
+    <!-- Modal de simbología -->
+    <div class="modal" id="modal-symbol" style="display: none;">
+        <div class="modal-content">
+            <span class="back-button" onclick="this.closest('.modal').style.display='none'">↶</span>
+            <span class="close-button" onclick="this.closest('.modal').style.display='none'">❌</span>
+            <div id="modal-symbol-content"></div>
+        </div>
+    </div>
+    <!-- Modal para los Aspectos del día -->
+    <div class="modal" id="modal-aspects" style="display: none;">
+        <div class="modal-content">
+            <span class="back-button" onclick="this.closest('.modal').style.display='none'">↶</span>
+            <span class="close-button" onclick="this.closest('.modal').style.display='none'">❌</span>
+            <div id="modal-aspects-content"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
