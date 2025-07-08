@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const day = date.getDate();
         const data = await getMonthlyData(year, month);
         
-        let html = `<h1>📅Aspectos del Día</h1>`;
+        let html = `<h1>✨Aspectos del Día</h1>`;
         let specialEventsHtml = '';
         
         if (data && data.astro[day]) {
