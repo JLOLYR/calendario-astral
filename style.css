@@ -17,6 +17,7 @@
 
 body {
     font-family: 'Linux Libertine', serif;
+    font-size: 18px; /* <-- AÑADE O MODIFICA ESTA LÍNEA */
     background-color: var(--color-fondo-pagina);
     color: var(--color-texto-principal);
     image-rendering: -webkit-optimize-contrast;
@@ -39,10 +40,10 @@ body {
 
 
 .btn {
-    padding: 8px 16px;
+    padding: 10px 16px;
     font-family: 'Linux Libertine', serif;
-    font-size: 1em;
-    border: 1px solid var(--color-borde-calendario);
+    font-size: 1.2em;
+    border: 1.2px solid var(--color-borde-calendario);
     background-color: var(--color-boton-fondo);
     color: var(--color-boton-texto);
     cursor: pointer;
@@ -96,7 +97,7 @@ body {
     gap: 8px; margin-bottom: 8px;
 }
 .date-number {
-    font-size: 2em; font-weight: bold;
+    font-size: 2.2em; font-weight: bold;
     color: var(--color-texto-principal);
 }
 .date-number.sunday {
@@ -271,7 +272,7 @@ body {
 }
 
 .modal-content h1 {
-    font-size: 1.8em;
+    font-size: 1.9em;
     margin-bottom: 10px;
 }
 
@@ -501,4 +502,109 @@ body {
     width: 24px;
     height: 24px;
     object-fit: contain;
+}
+
+/* === ESTILO PARA EL BOTÓN FLOTANTE DE AYUDA A LA INSTALACIÓN === */
+#install-help-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-color: var(--color-boton-fondo);
+    color: var(--color-boton-texto);
+    border-radius: 50%;
+    border: 2px solid var(--color-borde-calendario);
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 998; /* Debajo de los modales (1000) pero encima de todo lo demás */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s ease-in-out;
+}
+
+#install-help-btn:hover {
+    transform: scale(1.1);
+}
+
+
+/* === ESTILOS PARA EL MODAL DE INSTRUCCIONES === */
+#modal-install-content h1 {
+    text-align: center;
+    margin-bottom: 5px;
+}
+.install-subtitle {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 30px;
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+
+.install-instructions-container {
+    display: flex;
+    gap: 25px;
+}
+
+.install-column {
+    flex: 1;
+    padding: 20px;
+    border: 1px solid var(--color-borde-calendario);
+    border-radius: 8px;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.os-icon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 10px;
+}
+
+.install-column ul {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+}
+
+/* REEMPLAZA ESTA REGLA CSS EN TU ARCHIVO */
+.install-column li {
+    display: flex;
+    align-items: flex-start; /* <-- CLAVE: Alinear al inicio, no al centro */
+    gap: 12px;
+    margin-bottom: 20px; /* Un poco más de espacio */
+    font-size: 0.95em;
+    text-align: left; /* Asegura que el texto dentro del div se alinee a la izquierda */
+}
+
+.install-column li > span:first-child {
+    background-color: var(--color-boton-fondo);
+    color: white;
+    border-radius: 50%;
+    min-width: 24px;
+    height: 24px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+/* REEMPLAZA ESTA REGLA CSS EN TU ARCHIVO */
+.step-icon {
+    width: 20px;  /* Ajusta el tamaño del icono Share.png */
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle; /* Lo alinea mejor con el texto */
+    margin-left: 4px; /* Pequeño espacio a la izquierda */
+}
+
+
+/* Hacemos que las columnas se apilen en pantallas pequeñas */
+@media (max-width: 768px) {
+    .install-instructions-container {
+        flex-direction: column;
+    }
 }
