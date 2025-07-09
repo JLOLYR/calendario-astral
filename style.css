@@ -138,7 +138,7 @@ body {
 }
 .planets-icon { width: 35px; height: 35px; object-fit: contain; }
 .signs-icon { width: 35px; height: 35px; object-fit: contain; }/* <--- El grande */
-.aspects-icon { width: 15px; height: 15px; object-fit: contain; }
+.aspects-icon { width: 35px; height: 35px; object-fit: contain; }
 .sign-icon-small { width: 30px; height: 30px; object-fit: contain; position: relative; top: 1px; }/* <--- El pequeño */
 
 .calendar-controls {
