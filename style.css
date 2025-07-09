@@ -17,7 +17,7 @@
 
 body {
     font-family: 'Linux Libertine', serif;
-    font-size: 18px; /* <-- AÑADE O MODIFICA ESTA LÍNEA */
+    font-size: 20px; /* <-- AÑADE O MODIFICA ESTA LÍNEA */
     background-color: var(--color-fondo-pagina);
     color: var(--color-texto-principal);
     image-rendering: -webkit-optimize-contrast;
