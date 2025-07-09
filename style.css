@@ -509,11 +509,11 @@ body {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     background-color: var(--color-boton-fondo);
     color: var(--color-boton-texto);
-    border-radius: 50%;
+    border-radius: 60%;
     border: 2px solid var(--color-borde-calendario);
     font-size: 24px;
     font-weight: bold;
