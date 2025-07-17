@@ -158,36 +158,36 @@ body {
 
     /* --- ESTILOS DE LA VISTA LANDING --- */
     .landing-header {
-        display: flex;
-        align-items: center;
-        /* --- CAMBIOS CLAVE --- */
-        /* Quitamos space-between para que los elementos no se empujen a los extremos */
-        /* justify-content: space-between; */ 
-        gap: 10px; /* Añadimos un espacio de seguridad entre el título y los botones */
-
-        padding: 15px 15px;
-        margin: 0 10px;
-        border-bottom: 2px solid var(--color-borde-calendario);
+        display: flex;         /* Usamos flexbox, que es suficiente con la configuración correcta. */
+        align-items: center;   /* Centra los elementos verticalmente. */
+        gap: 10px;             /* Espacio entre el título y el grupo de botones. */
+        padding: 15px 15px;    /* Espaciado interno. */
+        margin: 0 10px;        /* Margen exterior. */
+        border-bottom: 2px solid var(--color-borde-calendario); /* Línea dorada. */
     }
+
     #landing-month-year {
+        /* Esta es la instrucción clave: le dice al título que ocupe todo el espacio sobrante. */
+        flex-grow: 1;
+
+        /* Estilos de texto. */
         color: var(--color-texto-principal);
         font-size: 1.7em;
-        font-weight: 350;
+        font-weight: 400; /* Un peso normal es más legible */
         letter-spacing: 0.5px;
+        font-family: 'Linux Libertine', serif;
         
-        /* --- ESTA ES LA LÍNEA MÁS IMPORTANTE --- */
-        flex-grow: 1; /* Le decimos al título que crezca y ocupe todo el espacio sobrante */
-        
-        /* Propiedades de calidad para evitar desbordes en pantallas MUY pequeñas */
+        /* Propiedades de seguridad para evitar que el texto se rompa o desborde. */
         white-space: nowrap;
         overflow: hidden;
-        text-overflow: ellipsis; /* Añade "..." si el texto no cabe */
+        text-overflow: ellipsis;
     }
-    #landing-month-year::before {
-        font-size: 0.5em;
-        margin-right: 5px;
-        color: var(--color-borde-calendario);
-        vertical-align: middle;
+
+    .header-actions {
+        display: flex;         /* El grupo de botones también usa flex. */
+        align-items: center;
+        gap: 8px;              /* Espacio entre el botón "Hoy" y el menú "...". */
+        /* IMPORTANTE: No necesita 'flex-shrink: 0' porque el título ya es el flexible. */
     }
 
     /* Estilo para el nuevo botón "Hoy" */
@@ -235,6 +235,7 @@ body {
     #landing-menu-btn:hover, #landing-menu-btn:active {
         background-color: rgba(212, 178, 131, 0.1); /* Un sutil brillo dorado al tocar */
     }
+    
     .intense-day-row {
         display: flex;
         justify-content: center;
@@ -258,14 +259,7 @@ body {
         background-color: var(--color-borde-calendario); /* Color dorado del borde */
         margin: 15px auto; /* Espaciado vertical y centrado horizontal */
     }
-    .header-actions {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        /* --- Y AQUÍ --- */
-        /* 4. Protegemos los botones para que NUNCA se encojan */
-        flex-shrink: 0; 
-    }
+
 
     /* === AÑADE ESTA NUEVA REGLA PARA LOS PUNTOS DE ASPECTOS === */
     .aspect-dot {
