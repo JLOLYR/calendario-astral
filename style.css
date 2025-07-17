@@ -158,14 +158,16 @@ body {
 
     /* --- ESTILOS DE LA VISTA LANDING --- */
     .landing-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1px 10px; /* Ajustamos el padding */
-    margin: 0 10px; /* Ajustamos el margen */
-    flex-shrink: 0;
-    /* CORRECCIÓN: Quitamos el fondo y añadimos un borde inferior */
-    border-bottom: 2px solid var(--color-borde-calendario); /* Línea dorada */
+        display: flex;
+        align-items: center;
+        /* --- CAMBIOS CLAVE --- */
+        /* Quitamos space-between para que los elementos no se empujen a los extremos */
+        /* justify-content: space-between; */ 
+        gap: 10px; /* Añadimos un espacio de seguridad entre el título y los botones */
+
+        padding: 15px 15px;
+        margin: 0 10px;
+        border-bottom: 2px solid var(--color-borde-calendario);
     }
     #landing-month-year {
         color: var(--color-texto-principal);
@@ -173,17 +175,14 @@ body {
         font-weight: 350;
         letter-spacing: 0.5px;
         
-        /* --- AQUÍ ESTÁ LA MAGIA --- */
-        /* 1. Permitimos que el título se encoja */
-        flex-shrink: 1; 
-        /* 2. Clave: Le damos permiso para ser más pequeño que su contenido */
-        min-width: 0; 
+        /* --- ESTA ES LA LÍNEA MÁS IMPORTANTE --- */
+        flex-grow: 1; /* Le decimos al título que crezca y ocupe todo el espacio sobrante */
         
-        /* 3. (Opcional) Evita que el texto se rompa en varias líneas */
-        white-space: nowrap; 
+        /* Propiedades de calidad para evitar desbordes en pantallas MUY pequeñas */
+        white-space: nowrap;
         overflow: hidden;
-        text-overflow: ellipsis; /* Añade "..." si el texto es demasiado largo */
-}
+        text-overflow: ellipsis; /* Añade "..." si el texto no cabe */
+    }
     #landing-month-year::before {
         font-size: 0.5em;
         margin-right: 5px;
