@@ -314,38 +314,48 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleLandingDayClick(cell, date, dayData) {
-        const now = new Date().getTime();
-        const timeSinceLastTap = now - lastTap;
-        if (timeSinceLastTap < 500 && selectedDayCell === cell) { navigateToDetailView(date); return; }
-        lastTap = now;
+        
+        // LÓGICA DE NAVEGACIÓN: Si la celda que tocas es la que ya está seleccionada...
+        if (selectedDayCell === cell) {
+            // ...es el segundo toque, así que vamos a la vista de interpretación.
+            navigateToDetailView(date);
+            return; // Detenemos la función aquí.
+        }
 
-        if (selectedDayCell) { selectedDayCell.classList.remove('selected'); }
+        // Si es el primer toque en una celda nueva, la lógica continúa:
+
+        // 1. ACTUALIZAR LA SELECCIÓN VISUAL
+        // Quitamos el círculo de la celda que estaba seleccionada antes (si había una).
+        if (selectedDayCell) {
+            selectedDayCell.classList.remove('selected');
+        }
+        // Añadimos el círculo a la nueva celda y la guardamos como la actual.
         cell.classList.add('selected');
-        selectedDayCell = cell;
+        selectedDayCell = cell; 
         
-        landingDayDetails.innerHTML = '';
-        currentDetailDate = date;
+        // 2. CONSTRUIR Y MOSTRAR LOS DETALLES EN EL PANEL INFERIOR
+        landingDayDetails.innerHTML = ''; // Limpiamos el panel de detalles.
+        currentDetailDate = date;     // Guardamos la fecha para el botón "Ver Interpretación".
         
-        let hasContent = false;
-        
-        // --- CONSTRUCCIÓN SECUENCIAL DEL CONTENIDO ---
+        let hasContent = false; // Bandera para saber si hay algo que mostrar.
+        const contentWrapper = document.createElement('div'); // Contenedor para todo el contenido.
 
-        // 1. Añadir "Día Intenso" si corresponde
-        if (countEvents(dayData) >= 5) {
+        // Añadir "DÍA INTENSO" si corresponde
+        if (countEvents(dayData) >= 4) {
             const warningIconPath = ICON_PATHS.alerts.Warning;
             const intenseDayRow = document.createElement('div');
             intenseDayRow.classList.add('intense-day-row');
             intenseDayRow.innerHTML = `<img src="${warningIconPath}" alt="Alerta"><span>DÍA INTENSO</span><img src="${warningIconPath}" alt="Alerta">`;
-            landingDayDetails.appendChild(intenseDayRow);
-            hasContent = true;
-
-            // Añadir separador después de "Día Intenso"
+            contentWrapper.appendChild(intenseDayRow);
+            
+            // Añadir separador
             const separatorTop = document.createElement('div');
             separatorTop.className = 'details-separator';
-            landingDayDetails.appendChild(separatorTop);
+            contentWrapper.appendChild(separatorTop);
+            hasContent = true;
         }
         
-        // 2. Añadir Eventos Especiales (Fase Lunar / Eclipse)
+        // Añadir Eventos Especiales (Fase Lunar / Eclipse)
         const specialEventsDiv = document.createElement('div');
         if (dayData.Eclipse) {
             const eventName = `Eclipse ${dayData.Eclipse.type} ${dayData.Eclipse.subtype}`;
@@ -357,35 +367,42 @@ document.addEventListener('DOMContentLoaded', () => {
             if (eventIconPath) specialEventsDiv.innerHTML += `<div class="special-event-row"><img src="${eventIconPath}" alt="${eventName}"><span>${eventName}</span></div>`;
         }
         if(specialEventsDiv.hasChildNodes()){
-            landingDayDetails.appendChild(specialEventsDiv);
+            contentWrapper.appendChild(specialEventsDiv);
             hasContent = true;
         }
 
-        // 3. Añadir Aspectos Generales (con sus puntos de colores)
+        // Añadir Aspectos Generales
         const eventsContainer = document.createElement('div');
         eventsContainer.classList.add('astro-events');
         addEventsToCell(eventsContainer, dayData);
 
         if (eventsContainer.hasChildNodes()) {
-            landingDayDetails.appendChild(eventsContainer);
+            contentWrapper.appendChild(eventsContainer);
             hasContent = true;
         }
 
-        // 4. Si se encontró CUALQUIER contenido, añadir separador final y botón
+        // 3. RENDERIZAR EL RESULTADO FINAL
+        // Si encontramos cualquier tipo de contenido...
         if (hasContent) {
+            // ...lo añadimos al panel de detalles.
+            landingDayDetails.appendChild(contentWrapper);
+            
+            // Y añadimos el separador final y el botón.
             const separatorBottom = document.createElement('div');
             separatorBottom.className = 'details-separator';
             landingDayDetails.appendChild(separatorBottom);
-
+            
             const interpretationBtn = document.createElement('button');
             interpretationBtn.textContent = 'Ver Interpretación';
             interpretationBtn.classList.add('interpretation-btn');
             interpretationBtn.onclick = () => navigateToDetailView(currentDetailDate);
             landingDayDetails.appendChild(interpretationBtn);
         } else {
+            // Si no se encontró nada, mostramos el mensaje por defecto.
             landingDayDetails.innerHTML = '<p class="initial-prompt">No hay eventos ni aspectos mayores para este día.</p>';
         }
     }
+
     function navigateToDetailView(date) { mobileLandingContainer.style.display = 'none'; mobileContainer.style.display = 'flex'; backToLandingBtn.style.display = 'flex'; mobileDate = date; renderMobileView(date); }
 
     // =========================================================================
