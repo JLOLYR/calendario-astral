@@ -243,32 +243,45 @@ document.addEventListener('DOMContentLoaded', () => {
     async function renderLandingView(date) {
         const year = date.getFullYear();
         const month = date.getMonth() + 1;
+
+        // Obtenemos la fecha de "hoy" para comparar
+        const today = new Date();
+        const todayDate = today.getDate();
+        const todayMonth = today.getMonth() + 1;
+        const todayYear = today.getFullYear();
+        
+        let todayCellElement = null; // Variable para guardar la celda de hoy si la encontramos
+        let todayDataPayload = {};   // Variable para guardar los datos de hoy
+
         landingMonthYear.textContent = `${NOMBRES_MESES[month - 1]} ${year}`;
         landingCalendarGrid.innerHTML = '<div class="loader" style="grid-column: 1 / -1; align-self: center;">Cargando...</div>';
         landingDayDetails.innerHTML = '<p class="initial-prompt">Toca un día para ver sus eventos.</p>';
         if (selectedDayCell) { selectedDayCell.classList.remove('selected'); selectedDayCell = null; }
+        
         const data = await getMonthlyData(year, month);
         landingCalendarGrid.innerHTML = '';
-        if (!data) { landingCalendarGrid.innerHTML = `<p class="loader" style="grid-column: 1 / -1; align-self: center;">No hay datos para este mes.</p>`; return; }
+        
+        if (!data) { landingCalendarGrid.innerHTML = `<p class="loader" style="grid-column: 1 / -1; align-self: center;">No hay datos.</p>`; return; }
+
         const firstDayOfMonth = new Date(year, month - 1, 1).getDay();
         const emptyCells = (firstDayOfMonth === 0) ? 6 : firstDayOfMonth - 1;
         for (let i = 0; i < emptyCells; i++) { const emptyCell = document.createElement('div'); emptyCell.classList.add('landing-day-cell', 'empty'); landingCalendarGrid.appendChild(emptyCell); }
+        
         const daysInMonth = new Date(year, month, 0).getDate();
         for (let dayNum = 1; dayNum <= daysInMonth; dayNum++) {
             const dayCell = document.createElement('div');
             dayCell.classList.add('landing-day-cell');
-            const dayDate = new Date(year, month - 1, dayNum);
-            const dateText = document.createElement('span');
-            dateText.classList.add('date-text');
-            dateText.textContent = dayNum;
-            const selectionCircle = document.createElement('div');
-            selectionCircle.classList.add('selection-circle');
-            dayCell.appendChild(selectionCircle);
-            dayCell.appendChild(dateText);
+            // ... (código existente para crear dateText, selectionCircle, etc.)
+            const dateText = document.createElement('span'); dateText.classList.add('date-text'); dateText.textContent = dayNum;
+            const selectionCircle = document.createElement('div'); selectionCircle.classList.add('selection-circle');
+            dayCell.appendChild(selectionCircle); dayCell.appendChild(dateText);
+
             const dayData = data.astro[String(dayNum)] || {};
             const festivos = data.festivos || [];
+
+            // Lógica para los puntos de colores (sin cambios)
             const aspectColors = getAspectColors(dayData);
-            if (aspectColors.length > 0) { 
+            if (aspectColors.length > 0) {
                 const dotsContainer = document.createElement('div');
                 dotsContainer.classList.add('dots-container');
                 aspectColors.forEach(colorClass => {
@@ -278,10 +291,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 dayCell.appendChild(dotsContainer);
             }
-            if (dayDate.getDay() === 0 || festivos.includes(dayNum)) { dayCell.classList.add('holiday'); }
+
+            // Lógica para festivos y días intensos (sin cambios)
+            if (new Date(year, month - 1, dayNum).getDay() === 0 || festivos.includes(dayNum)) { dayCell.classList.add('holiday'); }
             if (countEvents(dayData) >= 5) { const warningIcon = document.createElement('img'); warningIcon.src = ICON_PATHS.alerts.Warning; warningIcon.classList.add('intense-day-marker'); dayCell.appendChild(warningIcon); }
-            dayCell.addEventListener('click', () => handleLandingDayClick(dayCell, dayDate, dayData));
+
+            dayCell.addEventListener('click', () => handleLandingDayClick(dayCell, new Date(year, month - 1, dayNum), dayData));
             landingCalendarGrid.appendChild(dayCell);
+            
+            // --- NUEVA LÓGICA: IDENTIFICAR LA CELDA DE HOY ---
+            if (dayNum === todayDate && month === todayMonth && year === todayYear) {
+                todayCellElement = dayCell; // Guardamos la referencia a la celda de hoy
+                todayDataPayload = dayData; // Guardamos los datos de hoy
+            }
+        }
+
+        // --- NUEVA LÓGICA: SI ENCONTRAMOS LA CELDA DE HOY, LA SELECCIONAMOS ---
+        if (todayCellElement) {
+            // Usamos la misma función que el click manual para asegurar consistencia
+            handleLandingDayClick(todayCellElement, today, todayDataPayload);
         }
     }
 
