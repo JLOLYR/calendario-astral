@@ -1,14 +1,15 @@
 /*
 ============================================================
-==           GUÍA DE COLORES Y FONDOS PRINCIPALES         ==
+==           GUÍA DE COLORES Y FUENTES GLOBALES           ==
 ============================================================
 */
 :root {
-    --color-fondo-pagina: #e8e4d8;
+    --color-fondo-pagina: #fdfaf5;
     --color-fondo-celda-vacia: rgba(209, 215, 224, 0.5);
     --color-fondo-cabecera: #e8e4d8;
-    --color-texto-principal: #333;
+    --color-texto-principal: #2c2c2c;
     --color-texto-domingo: #d9534f;
+    --color-seleccion-dia: #a95ea0a5; /* Azul índigo */
     --color-borde-calendario: #d4b283;
     --opacidad-marca-agua: 0.08;
     --color-boton-fondo: #887a68;
@@ -16,14 +17,20 @@
 }
 
 body {
-    font-family: 'Linux Libertine', serif;
-    font-size: 20px; /* <-- AÑADE O MODIFICA ESTA LÍNEA */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    font-size: 18px;
     background-color: var(--color-fondo-pagina);
     color: var(--color-texto-principal);
-    image-rendering: -webkit-optimize-contrast;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
 }
 
-/* --- ESTILOS DE LA CABECERA Y BOTONES --- */
+/*
+============================================================
+==                    VISTA DE ESCRITORIO                 ==
+============================================================
+*/
 #calendar-header {
     display: flex;
     justify-content: space-between;
@@ -32,579 +39,360 @@ body {
     margin: 0 auto 20px auto;
     padding: 0 10px;
 }
+.action-buttons { display: flex; gap: 10px; }
+.btn { padding: 10px 16px; font-family: 'Linux Libertine', serif; font-size: 1.2em; border: 1.2px solid var(--color-borde-calendario); background-color: var(--color-boton-fondo); color: var(--color-boton-texto); cursor: pointer; border-radius: 4px; transition: background-color 0.2s; }
+.btn:hover { background-color: #6d6051; }
 
-.action-buttons {
-    display: flex;
-    gap: 10px;
-}
-
-
-.btn {
-    padding: 10px 16px;
-    font-family: 'Linux Libertine', serif;
-    font-size: 1.2em;
-    border: 1.2px solid var(--color-borde-calendario);
-    background-color: var(--color-boton-fondo);
-    color: var(--color-boton-texto);
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.2s;
-}
-
-.btn:hover {
-    background-color: #6d6051;
-}
-
-/* El resto de estilos se mantiene igual... */
-#calendar-container {
-    position: relative;
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    max-width: 1600px;
-    margin: 0 auto;
-    border: 2px solid var(--color-borde-calendario);
-    z-index: 1;
-}
-#calendar-container::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background-image: url('assets/aspects/Home.png');
-    background-position: center; background-repeat: no-repeat;
-    background-size: contain;
-    opacity: var(--opacidad-marca-agua);
-    z-index: -1;
-}
-.calendar-cell {
-    position: relative;
-    border: 1px solid var(--color-borde-calendario);
-    background-color: transparent;
-    min-height: 180px; padding: 8px;
-    display: flex; flex-direction: column;
-    overflow: hidden;
-}
-.day-header {
-    background-color: var(--color-fondo-cabecera);
-    font-weight: bold; text-align: center;
-    padding: 10px; min-height: auto;
-}
-.empty-cell {
-    background-color: var(--color-fondo-celda-vacia);
-}
-.day-title-container {
-    display: flex;
-    align-items: center; justify-content: left;
-    gap: 8px; margin-bottom: 8px;
-}
-.date-number {
-    font-size: 2.2em; font-weight: bold;
-    color: var(--color-texto-principal);
-}
-.date-number.sunday {
-    color: var(--color-texto-domingo);
-}
-
-.astro-events {
-    display: flex; flex-direction: column;
-    gap: 8px;
-}
-.event-row {
-    display: flex; align-items: center;
-    gap: 5px; height: 32px;
-}
-.event-arrow {
-    font-weight: bold; color: var(--color-texto-principal);
-    margin: 0 4px;
-    font-size: 2.2em;
-    position: relative;
-    top: -5px;
-}
-.day-event-icon {
-    position: absolute; top: 10px; left: 50%;
-    transform: translateX(-50%);
-    width: 40px; height: 40px;
-    object-fit: contain; z-index: 1;
-}
-.event-row {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    margin-bottom: 6px;
-}
+#calendar-container { position: relative; display: grid; grid-template-columns: repeat(7, 1fr); max-width: 1600px; margin: 0 auto; border: 2px solid var(--color-borde-calendario); z-index: 1; }
+#calendar-container::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('assets/aspects/Home.png'); background-position: center; background-repeat: no-repeat; background-size: contain; opacity: var(--opacidad-marca-agua); z-index: -1; }
+.calendar-cell { position: relative; border: 1px solid var(--color-borde-calendario); background-color: transparent; min-height: 180px; padding: 8px; display: flex; flex-direction: column; overflow: hidden; }
+.day-header { background-color: var(--color-fondo-cabecera); font-weight: bold; text-align: center; padding: 10px; min-height: auto; }
+.empty-cell { background-color: var(--color-fondo-celda-vacia); }
+.day-title-container { display: flex; align-items: center; justify-content: left; gap: 8px; margin-bottom: 8px; }
+.date-number { font-size: 2.2em; font-weight: bold; color: var(--color-texto-principal); }
+.date-number.sunday { color: var(--color-texto-domingo); }
+.astro-events { display: flex; flex-direction: column; gap: 8px; }
+.event-row { display: flex; align-items: center; gap: 5px; height: 32px; margin-bottom: 6px; }
+.event-arrow { font-weight: bold; margin: 0 4px; font-size: 2.2em; position: relative; top: -5px; }
+.day-event-icon { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 50px; height: 40px; object-fit: contain; z-index: 1; }
 .warning-icon {
-    position: absolute; top: 0%; right: 10%;
-    width: 35px; height: 35px;
-    pointer-events: none;
-}
-.planets-icon { width: 35px; height: 35px; object-fit: contain; }
-.signs-icon { width: 35px; height: 35px; object-fit: contain; }/* <--- El grande */
-.aspects-icon { width: 35px; height: 35px; object-fit: contain; }
-.sign-icon-small { width: 30px; height: 30px; object-fit: contain; position: relative; top: 1px; }/* <--- El pequeño */
-
-.calendar-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
-}
-
-.sunday-label {
-    color: var(--color-texto-domingo);
-}
-
-.nav-button {
-  background-color: #887458; /* similar al botón PDF */
-  border: none;
-  color: white;
-  font-size: 1.2rem;
-  padding: 0.4rem 0.6rem;
-  border-radius: 6px;
-  cursor: pointer;
-  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s, background-color 0.3s;
-}
-
-.nav-button:hover {
-  background-color: #a68b6a;
-  transform: scale(1.05);
-}
-
-.nav-select {
-  background-color: #f7f2e7;
-  color: #333;
-  border: 1px solid #a68b6a;
-  border-radius: 6px;
-  padding: 0.3rem 0.5rem;
-  font-size: 1rem;
-  box-shadow: inset 0 0 2px rgba(0,0,0,0.1);
-}
-.modal {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(0,0,0,0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.modal-content {
-    background: #fff7e6;
-    padding: 30px;
-    border-radius: 10px;
-    max-width: 700px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 0 20px rgba(0,0,0,0.3);
-    position: relative;
-}
-
-.close-button {
     position: absolute;
-    top: 27px; right: 10px;
-    font-size: 30px;
-    cursor: pointer;
-    color: #d9534f;
-}
-
-
-#modal-symbol-content p {
-    font-size: 1.1em;
-    line-height: 1.6;
-}
-
-
-/*
-============================================================
-==              ESTILOS ESPECIALES PARA IMPRESIÓN           ==
-============================================================
-*/
-@media print {
-    /* Ocultamos los elementos que no queremos en el PDF/papel */
-    body {
-        background-color: #ffffff; /* Fondo blanco para imprimir */
-    }
-    #calendar-header, #mobile-view-container {
-        display: none; /* Ocultamos ambas vistas */
-    }
-    
-    #calendar-container {
-        display: grid !important; /* Forzamos la vista de calendario en impresión */
-        border: none; /* Quitamos el borde principal */
-    }
-
-    #calendar-container::before {
-        display: none; /* Ocultamos la marca de agua */
-    }
-
-    .calendar-cell {
-        border: 1px solid #ccc; /* Un borde más suave para imprimir */
-        page-break-inside: avoid; 
-    }
-    
-    /* Forzamos que los colores se impriman (algunos navegadores los quitan) */
-    * {
-       -webkit-print-color-adjust: exact !important;
-       color-adjust: exact !important;                
-    }
-}
-
-#calendar-container > .day-header:nth-child(7) {
-    color: var(--color-texto-domingo);
-}
-/* ==== Animación y estilo al pasar el mouse por celdas con eventos ==== */
-.calendar-cell.highlight:hover {
-    transform: scale(1.02);
-    border: 2px solid #c0922f;
-    box-shadow: 0 0 10px rgba(192, 146, 47, 0.7);
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-}
-.modal-content {
-    font-size: 1.15em; /* Aumentar letra */
-    background-image: url('assets/aspects/Fondo_2.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-blend-mode: lighten;
-    background-color: rgba(255, 247, 230, 0.95); /* fondo semiopaco */
-}
-
-.modal-content h1 {
-    font-size: 1.9em;
-    margin-bottom: 10px;
-}
-
-.modal-content h2 {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 20px;
-    font-size: 1.4em;
-}
-.modal-content {
-    background: #fff7e6;
-    padding: 30px;
-    border-radius: 10px;
-    max-width: 700px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 0 20px rgba(0,0,0,0.3);
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    background-image: url('assets/aspects/Fondo_2.png');
-    background-size: contain;
-    background-repeat: repeat;
-    background-position: center;
-    background-blend-mode: normal;
-    opacity: 0.95;
-}
-
-#modal-textos h1 {
-    text-align: center;
-    font-size: 1.7em;
-    margin-top: 0;
-    margin-bottom: 20px;
-}
-
-.header-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.header-icon {
-    width: 32px;
-    height: 32px;
+    top: 5px;   /* Un poco de espacio desde arriba */
+    right: 5px; /* Un poco de espacio desde la derecha */
+    width: 35px;
+    height: 35px;
     object-fit: contain;
-    vertical-align: middle;
+    pointer-events: none; /* Para que no interfiera con el clic en la celda */
+    z-index: 2; /* Para que esté por encima de otros elementos de la celda */
 }
-
-.modal-content {
-    /* Esta propiedad es clave para que los botones absolutos funcionen */
-    position: relative; 
-    /* ... el resto de tus estilos para modal-content ... */
-    background: #fff7e6;
-    padding: 30px;
-    border-radius: 10px;
-    max-width: 700px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 0 20px rgba(0,0,0,0.3);
-    display: flex;
-    flex-direction: column;
-    background-image: url('assets/aspects/Fondo_2.png');
-    background-size: contain;
-    background-repeat: repeat;
-    background-position: center;
-    background-blend-mode: normal;
-    opacity: 0.95;
-}
-
-.close-button {
-    position: absolute;
-    top: 27px;
-    right: 30px;
-    font-size: 20px;
-    cursor: pointer;
-    color: #d9534f;
-    z-index: 10;
-}
-
-/* === NUEVO ESTILO PARA EL BOTÓN DE VOLVER === */
-.back-button {
-    position: absolute;
-    top: 33px;  /* Ajustado para alinear verticalmente con la 'x' */
-    left: 25px;
-    font-size: 37px;
-    font-weight: bolder;
-    color: #101eec; /* Un color más sutil que el de cerrar */
-    cursor: pointer;
-    z-index: 10;
-    line-height: 1;
-    transition: transform 0.2s;
-}
-.back-button:hover {
-    transform: scale(1.1);
-}
+.planets-icon, .signs-icon, .aspects-icon { width: 35px; height: 35px; object-fit: contain; }
+.sign-icon-small { width: 30px; height: 30px; object-fit: contain; position: relative; top: 1px; }
+.calendar-controls { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; }
+.nav-button { background-color: #887458; border: none; color: white; font-size: 1.2rem; padding: 0.4rem 0.6rem; border-radius: 6px; cursor: pointer; box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2); transition: transform 0.2s, background-color 0.3s; }
+.nav-button:hover { background-color: #a68b6a; transform: scale(1.05); }
+.nav-select { background-color: #f7f2e7; color: #333; border: 1px solid #a68b6a; border-radius: 6px; padding: 0.3rem 0.5rem; font-size: 1rem; box-shadow: inset 0 0 2px rgba(0,0,0,0.1); }
+#calendar-container > .day-header:nth-child(7) { color: var(--color-texto-domingo); }
+.calendar-cell.highlight:hover { transform: scale(1.02); border: 2px solid #c0922f; box-shadow: 0 0 10px rgba(192, 146, 47, 0.7); cursor: pointer; transition: all 0.2s ease-in-out; }
 
 /*
 ============================================================
-==      NUEVOS ESTILOS PARA LA VISTA MÓVIL Y ADAPTABLE    ==
+==                   MODALES Y OTROS                      ==
 ============================================================
 */
-/* Por defecto, la vista móvil está oculta */
+.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
+.modal-content { background: var(--color-fondo-pagina); padding: 30px; border-radius: 10px; max-width: 700px; max-height: 90vh; overflow-y: auto; box-shadow: 0 0 20px rgba(0,0,0,0.3); position: relative; display: flex; flex-direction: column; background-size: contain; background-repeat: repeat; background-position: center; background-blend-mode: normal; opacity: 0.90; }
+.close-button { position: absolute; top: 27px; right: 30px; font-size: 20px; cursor: pointer; color: #d9534f; z-index: 10; }
+.modal-content h1 { font-size: 1.9em; margin-bottom: 10px; }
+.modal-content h2 { display: flex; align-items: center; gap: 10px; margin-top: 20px; font-size: 1.4em; }
+.modal-home-button-container { display: flex; justify-content: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--color-borde-calendario); }
+.modal-home-btn { display: flex; align-items: center; gap: 10px; font-size: 1.1em; }
+.modal-home-btn img { width: 24px; height: 24px; object-fit: contain; }
+.loader { text-align: center; padding: 40px; font-size: 1.2em; color: var(--color-texto-principal); }
+#modal-symbol-content h1,
+#modal-aspects-content h1 {
+    /* Esta es la línea dorada, usando la variable de color que ya tienes */
+    border-bottom: 2px solid var(--color-borde-calendario);
+    
+    /* Añadimos un poco de espacio entre el texto y la línea */
+    padding-bottom: 15px; 
+    
+    /* Añadimos un poco de espacio entre la línea y el contenido de abajo */
+    margin-bottom: 25px; 
+}
+
+/* Modal de instalación */
+#modal-install-content h1 { text-align: center; margin-bottom: 5px; }
+.install-subtitle { text-align: center; margin-top: 0; margin-bottom: 30px; font-size: 0.9em; opacity: 0.8; }
+.install-instructions-container { display: flex; gap: 25px; }
+.install-column { flex: 1; padding: 20px; border: 1px solid var(--color-borde-calendario); border-radius: 8px; text-align: center; background-color: rgba(255, 255, 255, 0.2); }
+.os-icon { width: 50px; height: 50px; margin-bottom: 10px; }
+.install-column ul { list-style: none; padding: 0; text-align: left; }
+.install-column li { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 20px; font-size: 0.95em; text-align: left; }
+.install-column li > span:first-child { background-color: var(--color-boton-fondo); color: white; border-radius: 50%; min-width: 24px; height: 24px; display: inline-flex; justify-content: center; align-items: center; font-weight: bold; }
+.step-icon { width: 20px; height: 20px; display: inline-block; vertical-align: middle; margin-left: 4px; }
+
+
+/*
+============================================================
+==              ESTILOS PARA VISTA MÓVIL UNIFICADOS       ==
+============================================================
+*/
+
+/* Ocultar vistas móviles por defecto en escritorio */
+#mobile-landing-container,
 #mobile-view-container {
     display: none;
 }
 
-/* Media Query: Se aplica en pantallas con ancho máximo de 768px (tablets y móviles) */
+/* Aplicar solo en pantallas de móvil/tablet */
 @media (max-width: 768px) {
-
-    /* Ocultamos la vista de escritorio */
+    /* 1. OCULTAR VISTA DE ESCRITORIO */
     #calendar-header,
     #calendar-container {
         display: none;
     }
 
-    /* Mostramos y estilizamos la vista móvil */
-    #mobile-view-container {
+    /* 2. MOSTRAR LA VISTA DE ATERRIZAJE (LANDING) */
+    #mobile-landing-container {
         display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100vh;
+        box-sizing: border-box;
+        background-color: var(--color-fondo-pagina);
+    }
+    
+    /* VISTA DE DETALLE DIARIA (OCULTA HASTA QUE SE LLAME POR JS) */
+    #mobile-view-container {
+        /* display: none; -> Ya está por defecto, se activa a 'flex' con JS */
         flex-direction: column;
         width: 100%;
         min-height: 100vh;
         padding: 10px;
         box-sizing: border-box;
-        /* === FONDO AHORA APLICADO A TODA LA PANTALLA MÓVIL === */
         background-image: url('assets/aspects/Fondo_2.png');
         background-size: cover;
         background-position: center;
-        background-attachment: fixed; /* Mantiene el fondo fijo al hacer scroll */
-    }
-    
-    .mobile-header {
-        padding-bottom: 10px;
-        border-bottom: 2px solid var(--color-borde-calendario);
-        flex-shrink: 0;
-    }
-    
-    .mobile-nav {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 5px;
+        background-attachment: fixed;
     }
 
+    /* --- ESTILOS DE LA VISTA LANDING --- */
+    .landing-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1px 10px; /* Ajustamos el padding */
+    margin: 0 10px; /* Ajustamos el margen */
+    flex-shrink: 0;
+    /* CORRECCIÓN: Quitamos el fondo y añadimos un borde inferior */
+    border-bottom: 2px solid var(--color-borde-calendario); /* Línea dorada */
+    }
+    #landing-month-year {
+    color: var(--color-texto-principal); /* Vuelve al color de texto normal */
+    font-size: 1.7em; /* Un poco más grande para darle jerarquía */
+    font-weight: 350;
+    letter-spacing: 0.5px; 
+    }
+    #landing-month-year::before {
+        font-size: 0.5em;
+        margin-right: 5px;
+        color: var(--color-borde-calendario);
+        vertical-align: middle;
+    }
+
+    /* Estilo para el nuevo botón "Hoy" */
+    .btn-today {
+        background: none;
+        border: 1.5px solid #d4b283;
+        color: #4a4520;
+        padding: 6px 12px;
+        border-radius: 20px; /* Botón tipo "píldora" */
+        font-size: 0.8em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-today:active {
+        background-color: #e0e0e0;
+        transform: scale(0.95);
+    }
+    .landing-menu-container { position: relative; }
+    #landing-menu-btn {
+        /* Quitamos el estilo de botón por defecto */
+        background: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+
+        /* Estilo del círculo */
+        width: 38px;
+        height: 38px;
+        border: 1.5px solid var(--color-borde-calendario); /* Borde dorado */
+        border-radius: 50%; /* Lo hace redondo */
+        
+        /* Color de los puntos y centrado */
+        color: var(--color-borde-calendario); /* Puntos dorados */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        /* Ajustes de fuente y animación */
+        font-size: 1.6em; /* Tamaño de los puntos */
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    #landing-menu-btn:hover, #landing-menu-btn:active {
+        background-color: rgba(212, 178, 131, 0.1); /* Un sutil brillo dorado al tocar */
+    }
+    .intense-day-row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    .intense-day-row span {
+        color: var(--color-texto-domingo);
+        font-weight: bold;
+        font-size: 1.1em;
+    }
+    .intense-day-row img {
+        width: 24px;
+        height: 24px;
+    }
+        /* === AÑADE ESTA NUEVA REGLA PARA LAS LÍNEAS DE SEPARACIÓN === */
+    .details-separator {
+        width: 90%;
+        height: 1px;
+        background-color: var(--color-borde-calendario); /* Color dorado del borde */
+        margin: 15px auto; /* Espaciado vertical y centrado horizontal */
+    }
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px; /* Espacio entre el botón "Hoy" y el menú "..." */
+    }
+
+    /* === AÑADE ESTA NUEVA REGLA PARA LOS PUNTOS DE ASPECTOS === */
+    .aspect-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 12px; /* Espacio entre el punto y el primer icono */
+        flex-shrink: 0; /* Evita que el punto se encoja si no hay espacio */
+    }
+    #landing-menu-dropdown { position: absolute; top: 100%; right: 0; background: white; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 100; display: none; flex-direction: column; width: 180px; }
+    #landing-menu-dropdown a { padding: 12px 15px; color: var(--color-texto-principal); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    #landing-menu-dropdown a:hover { background-color: #f0f0f0; }
+
+    .landing-week-headers { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; padding: 10px 5px 5px 5px; font-size: 0.7em; font-weight: 600; color: #8e8e93; flex-shrink: 0; }
+    .landing-week-headers span:last-child { color: var(--color-texto-domingo); }
+
+    #landing-calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; flex-grow: 1; padding: 0 5px; background-color: #f1f1f1; border-top: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0; }
+
+    .landing-day-cell { display: flex; flex-direction: column; justify-content: center; align-items: center; aspect-ratio: 1 / 1; cursor: pointer; background-color: var(--color-fondo-pagina); position: relative; }
+    .landing-day-cell.empty { background-color: transparent; pointer-events: none; }
+    .selection-circle { position: absolute; width: 80%; height: 80%; background-color: var(--color-seleccion-dia); border-radius: 50%; z-index: 1; display: none; transform: scale(0.8); transition: transform 0.2s ease-out; }
+    .landing-day-cell.selected .selection-circle { display: block; transform: scale(1); }
+    .date-text { font-size: 1.1em; z-index: 2; }
+    .landing-day-cell.holiday .date-text { color: var(--color-texto-domingo); }
+    .landing-day-cell.selected .date-text { color: white; }
+
+    .dots-container { position: absolute; bottom: 15%; display: flex; gap: 3px; z-index: 2; }
+    .event-dot { width: 5px; height: 5px; border-radius: 50%; }
+    .dot-conjunction { background-color: #0101ff; }
+    .dot-opposition  { background-color: #FFD700; }
+    .dot-square      { background-color: #ff0033; }
+    .dot-trine       { background-color: #19c319; }
+    .dot-sextile     { background-color: #00adf1; }
+    .intense-day-marker { position: absolute; top: 4px; right: 4px; width: 15px; height: 15px; z-index: 2; }
+
+    #landing-day-details { flex-shrink: 0; padding: 15px; height: 40vh; overflow-y: auto; background-color: rgba(247,247,247,.95); width: 100%; box-sizing: border-box; }
+    .initial-prompt { color: #888; text-align: center; padding-top: 20px; }
+    .day-details-header { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #ddd; }
+    .special-event-row { display:flex; align-items:center; gap:10px; font-weight:600; margin-bottom:8px; }
+    .special-event-row img { width:50px; height:50px; }
+    .intense-day-warning { color: var(--color-texto-domingo); font-weight: bold; text-align: center; font-size: 1.1em; }
+    .interpretation-btn {
+        display: block;
+        width: 80%;
+        margin: 25px auto 10px auto; /* Más espacio superior */
+        padding: 12px;
+        font-size: 1em;
+        font-weight: 300;
+        text-align: center;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out; /* Animación suave */
+
+        /* --- ¡AQUÍ PUEDES CAMBIAR EL ESTILO! --- */
+        
+        /* Estilo "Outline" (solo borde) */
+        background-color: transparent; /* 1. Fondo transparente */
+        border: 2px solid #d4b283; /* 2. Borde con el color del tema */
+        color: #3a3834; /* 3. Texto con el color del tema */
+    }
+
+    /* Efecto al pasar el mouse (o tocar en móvil) */
+    .interpretation-btn:hover {
+        background-color: var(--color-boton-fondo); /* El fondo se rellena */
+        color: var(--color-boton-texto); /* El texto se vuelve blanco */
+    }
+    
+    /* --- ESTILOS DE LA VISTA DE DETALLE DIARIA --- */
+    .mobile-header { padding-bottom: 10px; border-bottom: 2px solid var(--color-borde-calendario); flex-shrink: 0; }
+    .mobile-nav { display: flex; justify-content: space-between; align-items: center; gap: 5px; }
+    .mobile-nav .btn { padding: 8px 6px; font-size: 0.85em; flex-grow: 1; text-align: center; white-space: nowrap; }
+    #mobile-day-content { flex-grow: 1; overflow-y: auto; padding: 15px; margin-top: 10px; border-radius: 8px; background-color: var(--color-fondo-pagina);font-weight: normal;  }
+    #mobile-day-content h1 { font-size: 1.5em; text-align: center; margin-bottom: 15px; }
+    #mobile-day-content h2 { font-size: 1.2em; margin-top: 15px; display: flex; align-items: center; gap: 8px; }
+    #mobile-day-content .header-icon { width: 28px; height: 28px; }
+
+    /* --- BOTÓN FLOTANTE DE VOLVER --- */
+    #back-to-landing-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-color: rgba(136, 122, 104, 0.9);
+    color: white;
+    border-radius: 50%;
+    border: 1px solid white;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 998;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    /* CLAVE: Oculto por defecto. JavaScript se encargará de mostrarlo. */
+    display: none; 
+    justify-content: center;
+    align-items: center;
+    line-height: 1;
+    transition: transform 0.2s;
+    }
+    #back-to-landing-btn:hover {
+        transform: scale(1.1);
+    }
+    #back-to-landing-btn:hover { transform: scale(1.1); }
+    
+    /* Modal de instalación en móvil */
+    .install-instructions-container { flex-direction: column; }
     .mobile-nav .btn {
         padding: 8px 6px;
         font-size: 0.85em;
         flex-grow: 1;
         text-align: center;
         white-space: nowrap;
+        transition: transform 0.1s ease-out; /* Añadimos una transición suave */
+        font-family: 'Linux Libertine', sans-serif;
+        font-weight: 200;
     }
 
-    #mobile-day-content {
-        flex-grow: 1;
-        overflow-y: auto;
-        padding: 15px;
-        margin-top: 10px;
-        border-radius: 8px;
-        /* El fondo de imagen se movió, dejamos solo el color semi-transparente */
-        background-color: rgba(232, 228, 216, 0.95);
+    .mobile-nav .btn:active {
+        transform: scale(0.95); /* El botón se encoge un 5% al presionarlo */
+        filter: brightness(0.9); /* Se oscurece ligeramente */
     }
 
-    #mobile-day-content h1 { font-size: 1.5em; text-align: center; margin-bottom: 15px; }
-    #mobile-day-content h2 { font-size: 1.2em; margin-top: 15px; display: flex; align-items: center; gap: 8px; }
-    #mobile-day-content p { line-height: 1.6; }
-    #mobile-day-content .header-icon { width: 28px; height: 28px; }
-    
-    .loader {
-        text-align: center;
-        padding: 40px;
-        font-size: 1.2em;
-        color: var(--color-texto-principal);
-    }
-    
-    #modal-aspects-content h1 {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-    #modal-aspects-content .astro-events {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        align-items: center;
-    }
-        .special-event-row {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        margin-bottom: 25px;
-        padding-bottom: 15px;
-        border-bottom: 1px solid var(--color-borde-calendario);
-        text-align: left;
-        width: 100%;
-    }
+    /* Para el botón de "Ver Interpretación" */
 
-    .special-event-row img {
-        width: 50px;
-        height: 50px;
-        object-fit: contain;
-    }
-
-    .special-event-row span {
-        font-size: 1.2em;
-        font-weight: bold;
+    .interpretation-btn:active {
+        transform: scale(0.98); /* Un efecto un poco más sutil */
+        filter: brightness(0.95);
     }
 }
 
-/* === ESTILO PARA EL NUEVO BOTÓN HOME EN EL MODAL === */
-.modal-home-button-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 30px; /* Espacio superior para separarlo del contenido */
-    padding-top: 20px; /* Espacio extra */
-    border-top: 1px solid var(--color-borde-calendario); /* Línea divisoria sutil */
-}
-
-/* Usamos una clase en lugar de un ID para poder reutilizarlo */
-.modal-home-btn {
-    display: flex;
-    align-items: center;
-    gap: 10px; /* Espacio entre el icono y el texto */
-    font-size: 1.1em;
-}
-
-.modal-home-btn img {
-    width: 24px;
-    height: 24px;
-    object-fit: contain;
-}
-
-/* === ESTILO PARA EL BOTÓN FLOTANTE DE AYUDA A LA INSTALACIÓN === */
-#install-help-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 60px;
-    height: 60px;
-    background-color: var(--color-boton-fondo);
-    color: var(--color-boton-texto);
-    border-radius: 60%;
-    border: 2px solid var(--color-borde-calendario);
-    font-size: 24px;
-    font-weight: bold;
-    cursor: pointer;
-    z-index: 998; /* Debajo de los modales (1000) pero encima de todo lo demás */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: transform 0.2s ease-in-out;
-}
-
-#install-help-btn:hover {
-    transform: scale(1.1);
-}
-
-
-/* === ESTILOS PARA EL MODAL DE INSTRUCCIONES === */
-#modal-install-content h1 {
-    text-align: center;
-    margin-bottom: 5px;
-}
-.install-subtitle {
-    text-align: center;
-    margin-top: 0;
-    margin-bottom: 30px;
-    font-size: 0.9em;
-    opacity: 0.8;
-}
-
-.install-instructions-container {
-    display: flex;
-    gap: 25px;
-}
-
-.install-column {
-    flex: 1;
-    padding: 20px;
-    border: 1px solid var(--color-borde-calendario);
-    border-radius: 8px;
-    text-align: center;
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-.os-icon {
-    width: 50px;
-    height: 50px;
-    margin-bottom: 10px;
-}
-
-.install-column ul {
-    list-style: none;
-    padding: 0;
-    text-align: left;
-}
-
-/* REEMPLAZA ESTA REGLA CSS EN TU ARCHIVO */
-.install-column li {
-    display: flex;
-    align-items: flex-start; /* <-- CLAVE: Alinear al inicio, no al centro */
-    gap: 12px;
-    margin-bottom: 20px; /* Un poco más de espacio */
-    font-size: 0.95em;
-    text-align: left; /* Asegura que el texto dentro del div se alinee a la izquierda */
-}
-
-.install-column li > span:first-child {
-    background-color: var(--color-boton-fondo);
-    color: white;
-    border-radius: 50%;
-    min-width: 24px;
-    height: 24px;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: bold;
-}
-
-/* REEMPLAZA ESTA REGLA CSS EN TU ARCHIVO */
-.step-icon {
-    width: 20px;  /* Ajusta el tamaño del icono Share.png */
-    height: 20px;
-    display: inline-block;
-    vertical-align: middle; /* Lo alinea mejor con el texto */
-    margin-left: 4px; /* Pequeño espacio a la izquierda */
-}
-
-
-/* Hacemos que las columnas se apilen en pantallas pequeñas */
-@media (max-width: 768px) {
-    .install-instructions-container {
-        flex-direction: column;
-    }
+/*
+============================================================
+==                   ESTILOS DE IMPRESIÓN                 ==
+============================================================
+*/
+@media print {
+    body { background-color: #ffffff; }
+    #calendar-header, #mobile-view-container, #mobile-landing-container { display: none; }
+    #calendar-container { display: grid !important; border: none; }
+    #calendar-container::before { display: none; }
+    .calendar-cell { border: 1px solid #ccc; page-break-inside: avoid; }
+    * { -webkit-print-color-adjust: exact !important; color-adjust: exact !important; }
 }

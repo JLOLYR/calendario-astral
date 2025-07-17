@@ -17,6 +17,32 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
+    <!-- ===== NUEVA VISTA DE ATERRIZAJE MÓVIL ===== -->
+    <div id="mobile-landing-container">
+        <div class="landing-header">
+            <h2 id="landing-month-year"></h2>
+            <div class="header-actions">
+            <button id="landing-today-btn" class="btn-today">Hoy</button>
+            <div class="landing-menu-container">
+                <button id="landing-menu-btn">⋮</button>
+                <div id="landing-menu-dropdown" style="display: none;">
+                    <a href="#" id="landing-symbol-btn">🔮 Simbología</a>
+                    <a href="#" id="landing-info-btn">📲 Información</a>
+                    <a href="#" id="landing-download-btn">📥 Descargar</a>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="landing-week-headers">
+            <span>LUN</span><span>MAR</span><span>MIE</span><span>JUE</span><span>VIE</span><span>SAB</span><span>DOM</span>
+        </div>
+        <div id="landing-calendar-grid">
+            <!-- El calendario se generará aquí con JS -->
+        </div>
+        <div id="landing-day-details">
+            <p class="initial-prompt">Toca un día para ver sus eventos.</p>
+        </div>
+    </div>
     <!-- ===== VISTA DE ESCRITORIO ===== -->
     <div id="calendar-header">
         <h1>Calendario Astral</h1>
@@ -47,10 +73,11 @@
             </div>
         </div>
         <div id="mobile-day-content">
+            <!-- El contenido del día se carga aquí -->
             <div class="loader">Cargando...</div>
         </div>
+        <button id="back-to-landing-btn" title="Volver al mes">❮</button>
     </div>
-
     <!-- ===== MODALES EXISTENTES (CORREGIDOS) ===== -->
     <!-- Modal de detalles del día -->
     <div id="modal-detail" class="modal" style="display:none;">
@@ -78,7 +105,7 @@
     </div>
 
     <!-- ===== NUEVO BOTÓN Y MODAL PARA AYUDA DE INSTALACIÓN (CORREGIDO) ===== -->
-    <button id="install-help-btn" title="Cómo instalar la aplicación">📲</button>
+    
 
     <div class="modal" id="modal-install" style="display: none;">
         <div class="modal-content">
