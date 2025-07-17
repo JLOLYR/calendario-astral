@@ -168,11 +168,22 @@ body {
     border-bottom: 2px solid var(--color-borde-calendario); /* Línea dorada */
     }
     #landing-month-year {
-    color: var(--color-texto-principal); /* Vuelve al color de texto normal */
-    font-size: 1.7em; /* Un poco más grande para darle jerarquía */
-    font-weight: 350;
-    letter-spacing: 0.5px; 
-    }
+        color: var(--color-texto-principal);
+        font-size: 1.7em;
+        font-weight: 350;
+        letter-spacing: 0.5px;
+        
+        /* --- AQUÍ ESTÁ LA MAGIA --- */
+        /* 1. Permitimos que el título se encoja */
+        flex-shrink: 1; 
+        /* 2. Clave: Le damos permiso para ser más pequeño que su contenido */
+        min-width: 0; 
+        
+        /* 3. (Opcional) Evita que el texto se rompa en varias líneas */
+        white-space: nowrap; 
+        overflow: hidden;
+        text-overflow: ellipsis; /* Añade "..." si el texto es demasiado largo */
+}
     #landing-month-year::before {
         font-size: 0.5em;
         margin-right: 5px;
@@ -251,7 +262,10 @@ body {
     .header-actions {
         display: flex;
         align-items: center;
-        gap: 8px; /* Espacio entre el botón "Hoy" y el menú "..." */
+        gap: 8px;
+        /* --- Y AQUÍ --- */
+        /* 4. Protegemos los botones para que NUNCA se encojan */
+        flex-shrink: 0; 
     }
 
     /* === AÑADE ESTA NUEVA REGLA PARA LOS PUNTOS DE ASPECTOS === */
@@ -380,13 +394,13 @@ body {
     .install-instructions-container { flex-direction: column; }
     .mobile-nav .btn {
         padding: 8px 6px;
-        font-size: 0.85em;
+        font-size: 0.9em;
         flex-grow: 1;
         text-align: center;
         white-space: nowrap;
         transition: transform 0.1s ease-out; /* Añadimos una transición suave */
         font-family: 'Linux Libertine', sans-serif;
-        font-weight: 200;
+        font-weight: 350;
     }
 
     .mobile-nav .btn:active {
