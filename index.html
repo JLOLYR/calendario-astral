@@ -22,6 +22,8 @@
         <div class="landing-header">
             <h2 id="landing-month-year"></h2>
             <div class="header-actions">
+                <button id="enable-notifications-btn" class="btn-today">🔔 Activar Avisos</button>
+                <button id="landing-today-btn" class="btn-today">Hoy</button>
             <button id="landing-today-btn" class="btn-today">Hoy</button>
             <div class="landing-menu-container">
                 <button id="landing-menu-btn">⋮</button>
@@ -146,6 +148,9 @@
     <button id="modal-back-btn" title="Volver">❮</button>
 
     <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <!-- Firebase Cloud Messaging -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-messaging-compat.js"></script>
     <script src="script.js"></script>
     <script>
         if ('serviceWorker' in navigator) {

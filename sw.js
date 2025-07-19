@@ -1,5 +1,19 @@
 // sw.js CORREGIDO
+importScripts('https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/9.6.1/firebase-messaging-compat.js');
 
+// Pega aquí el MISMO objeto de configuración que en script.js
+const firebaseConfig = {
+    apiKey: "TU_API_KEY",
+    authDomain: "TU_AUTH_DOMAIN",
+    projectId: "TU_PROJECT_ID",
+    storageBucket: "TU_STORAGE_BUCKET",
+    messagingSenderId: "TU_MESSAGING_SENDER_ID",
+    appId: "TU_APP_ID"
+};
+
+firebase.initializeApp(firebaseConfig);
+const messaging = firebase.messaging();
 // --- CAMBIO 1: Hacemos un nombre de caché más específico para evitar conflictos ---
 const CACHE_NAME = 'calendario-astral-cache-v1.1'; 
 
@@ -77,4 +91,23 @@ self.addEventListener('fetch', event => {
         );
       })
   );
+});
+messaging.onBackgroundMessage((payload) => {
+    console.log('Push recibido en segundo plano: ', payload);
+
+    const notificationTitle = payload.notification.title;
+    const notificationOptions = {
+        body: payload.notification.body,
+        icon: payload.notification.icon || './assets/icons/icon-192x192.png'
+    };
+
+    self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+// --- NUEVO: LISTENER PARA CUANDO SE HACE CLIC EN LA NOTIFICACIÓN ---
+self.addEventListener('notificationclick', event => {
+    event.notification.close();
+    event.waitUntil(
+        clients.openWindow('/') // Abre la página principal de tu app
+    );
 });

@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const symbolBtn = document.getElementById('symbol-btn');
     
     // Vista Móvil (Detalle)
+    const enableNotificationsBtn = document.getElementById('enable-notifications-btn');
     const mobileContainer = document.getElementById('mobile-view-container');
     const mobileDayContent = document.getElementById('mobile-day-content');
     const prevDayMobileBtn = document.getElementById('prev-day-mobile');
@@ -58,6 +59,63 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Modales y otros
     const installHelpBtn = document.getElementById('install-help-btn');
+
+    const firebaseConfig = {
+        apiKey: "TU_API_KEY",
+        authDomain: "TU_AUTH_DOMAIN",
+        projectId: "TU_PROJECT_ID",
+        storageBucket: "TU_STORAGE_BUCKET",
+        messagingSenderId: "TU_MESSAGING_SENDER_ID",
+        appId: "TU_APP_ID"
+    };
+
+    // Inicializa Firebase
+    firebase.initializeApp(firebaseConfig);
+    const messaging = firebase.messaging();
+
+    function requestNotificationPermission() {
+        console.log('Pidiendo permiso...');
+        Notification.requestPermission().then((permission) => {
+            if (permission === 'granted') {
+                console.log('Permiso de notificación concedido.');
+                
+                // Obtenemos el token del dispositivo
+                messaging.getToken({ vapidKey: 'PEGA_AQUÍ_TU_CLAVE_VAPID_DE_FIREBASE' })
+                .then((currentToken) => {
+                    if (currentToken) {
+                        console.log('Token de FCM obtenido:', currentToken);
+                        // En una app real, enviarías este token a tu servidor.
+                        // Aquí, lo usaremos para suscribirnos a un tema.
+                        subscribeToDailyTopic(currentToken);
+                    } else {
+                        console.log('No se pudo obtener el token. Pide permiso de nuevo.');
+                    }
+                }).catch((err) => {
+                    console.log('Ocurrió un error al obtener el token.', err);
+                });
+
+            } else {
+                console.log('Permiso de notificación denegado.');
+            }
+        });
+    }
+
+    // Función para suscribir al usuario al tema de notificaciones diarias
+    function subscribeToDailyTopic(token) {
+        // Usaremos un "topic" para enviar notificaciones a todos los usuarios a la vez
+        const topic = 'daily_updates';
+        // Esta URL puede variar. Es una forma de gestionar suscripciones.
+        // Para simplificar, asumimos que el backend lo gestionará.
+        // Por ahora, solo confirmamos que el usuario está listo.
+        alert('¡Genial! Recibirás un aviso astrológico cada día a las 9:00 am.');
+    }
+
+
+    // Dentro de la función initMobileLandingView, añade el listener
+    function initMobileLandingView() {
+        // ... tu código existente ...
+        enableNotificationsBtn.addEventListener('click', requestNotificationPermission);
+    }
 
     // --- Estado de la aplicación ---
     let selectedYear, selectedMonth;
