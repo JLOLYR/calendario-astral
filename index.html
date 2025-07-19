@@ -10,7 +10,7 @@
     <meta name="theme-color" content="#887a68">
 
     <!-- Fuentes y Estilos -->
-    <link href="https://fonts.googleapis.com/css2?family=Linux+Libertine:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Linux+Libertine:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     
     <!-- Librerías Externas -->
@@ -76,7 +76,7 @@
             <!-- El contenido del día se carga aquí -->
             <div class="loader">Cargando...</div>
         </div>
-        <button id="back-to-landing-btn" title="Volver al mes">❮</button>
+        <button id="back-to-landing-btn" title="Volver al mes"></button>
     </div>
     <!-- ===== MODALES EXISTENTES (CORREGIDOS) ===== -->
     <!-- Modal de detalles del día -->
@@ -143,17 +143,19 @@
             </div>
         </div>
     </div>
+    <button id="modal-back-btn" title="Volver">❮</button>
 
     <!-- Scripts -->
     <script src="script.js"></script>
     <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/calendario-astral/sw.js') // Asegúrate que la ruta es correcta
-            .then(registration => console.log('Service Worker registrado:', registration.scope))
-            .catch(error => console.log('Fallo en registro de SW:', error));
-        });
-      }
+        if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                // --- CAMBIA ESTA LÍNEA ---
+                navigator.serviceWorker.register('sw.js') // <-- Quitamos la ruta absoluta
+                    .then(registration => console.log('Service Worker registrado:', registration.scope))
+                    .catch(error => console.log('Fallo en registro de SW:', error));
+                });
+            }
     </script>
 </body>
 </html>

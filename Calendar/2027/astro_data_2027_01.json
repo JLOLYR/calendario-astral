@@ -1,0 +1,657 @@
+{
+    "2027": {
+        "1": {
+            "1": {
+                "Moon": "CHANGE Scorpio",
+                "Aspects": {
+                    "North Node": {
+                        "South Node": {
+                            "type": "Opposition",
+                            "planet1_sign": "Aquarius",
+                            "planet2_sign": "Leo"
+                        }
+                    },
+                    "Sun": {
+                        "Mercury": {
+                            "type": "Conjunction",
+                            "planet1_sign": "Capricorn",
+                            "planet2_sign": "Capricorn"
+                        }
+                    }
+                },
+                "Moon_Phase": null,
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "2": {
+                "Moon": "Scorpio",
+                "Aspects": {
+                    "Moon": {
+                        "Mercury": {
+                            "type": "Sextile",
+                            "planet1_sign": "Scorpio",
+                            "planet2_sign": "Capricorn"
+                        }
+                    }
+                },
+                "Moon_Phase": null,
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "3": {
+                "Moon": "CHANGE Sagittarius",
+                "Aspects": {
+                    "Moon": {
+                        "North Node": {
+                            "type": "Square",
+                            "planet1_sign": "Scorpio",
+                            "planet2_sign": "Aquarius"
+                        },
+                        "South Node": {
+                            "type": "Square",
+                            "planet1_sign": "Scorpio",
+                            "planet2_sign": "Leo"
+                        }
+                    },
+                    "Jupiter": {
+                        "Chiron": {
+                            "type": "Trine",
+                            "planet1_sign": "Leo",
+                            "planet2_sign": "Aries"
+                        }
+                    },
+                    "Venus": {
+                        "Jupiter": {
+                            "type": "Square",
+                            "planet1_sign": "Scorpio",
+                            "planet2_sign": "Leo"
+                        }
+                    }
+                },
+                "Moon_Phase": null,
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "4": {
+                "Moon": "Sagittarius",
+                "Aspects": {},
+                "Moon_Phase": "Balsámica",
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "5": {
+                "Moon": "Sagittarius",
+                "Aspects": {
+                    "Moon": {
+                        "North Node": {
+                            "type": "Sextile",
+                            "planet1_sign": "Sagittarius",
+                            "planet2_sign": "Aquarius"
+                        },
+                        "South Node": {
+                            "type": "Trine",
+                            "planet1_sign": "Sagittarius",
+                            "planet2_sign": "Leo"
+                        },
+                        "Chiron": {
+                            "type": "Trine",
+                            "planet1_sign": "Sagittarius",
+                            "planet2_sign": "Aries"
+                        }
+                    }
+                },
+                "Moon_Phase": "Balsámica",
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "6": {
+                "Moon": "CHANGE Capricorn",
+                "Aspects": {
+                    "Moon": {
+                        "Saturn": {
+                            "type": "Square",
+                            "planet1_sign": "Capricorn",
+                            "planet2_sign": "Aries"
+                        }
+                    }
+                },
+                "Moon_Phase": "Balsámica",
+                "Retrograde_Changes": [
+                    {
+                        "planet": "Chiron",
+                        "status": "direct"
+                    }
+                ],
+                "Eclipse": null
+            },
+            "7": {
+                "Moon": "Capricorn",
+                "Aspects": {},
+                "Moon_Phase": "Balsámica",
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "8": {
+                "Moon": "CHANGE Aquarius",
+                "Aspects": {
+                    "Moon": {
+                        "Venus": {
+                            "type": "Sextile",
+                            "planet1_sign": "Aquarius",
+                            "planet2_sign": "Sagittarius"
+                        }
+                    },
+                    "Venus": {
+                        "Neptune": {
+                            "type": "Trine",
+                            "planet1_sign": "Sagittarius",
+                            "planet2_sign": "Aries"
+                        }
+                    }
+                },
+                "Moon_Phase": "Luna Nueva",
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "9": {
+                "Moon": "Aquarius",
+                "Aspects": {
+                    "Moon": {
+                        "Pluto": {
+                            "type": "Conjunction",
+                            "planet1_sign": "Aquarius",
+                            "planet2_sign": "Aquarius"
+                        }
+                    },
+                    "Venus": {
+                        "Uranus": {
+                            "type": "Opposition",
+                            "planet1_sign": "Sagittarius",
+                            "planet2_sign": "Gemini"
+                        }
+                    }
+                },
+                "Moon_Phase": "Luna Nueva",
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "10": {
+                "Moon": "Aquarius",
+                "Aspects": {
+                    "Moon": {
+                        "North Node": {
+                            "type": "Conjunction",
+                            "planet1_sign": "Aquarius",
+                            "planet2_sign": "Aquarius"
+                        },
+                        "South Node": {
+                            "type": "Opposition",
+                            "planet1_sign": "Aquarius",
+                            "planet2_sign": "Leo"
+                        },
+                        "Jupiter": {
+                            "type": "Opposition",
+                            "planet1_sign": "Aquarius",
+                            "planet2_sign": "Leo"
+                        }
+                    },
+                    "Mercury": {
+                        "Chiron": {
+                            "type": "Square",
+                            "planet1_sign": "Capricorn",
+                            "planet2_sign": "Aries"
+                        }
+                    }
+                },
+                "Moon_Phase": null,
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "11": {
+                "Moon": "CHANGE Pisces",
+                "Aspects": {
+                    "Venus": {
+                        "Pluto": {
+                            "type": "Sextile",
+                            "planet1_sign": "Sagittarius",
+                            "planet2_sign": "Aquarius"
+                        }
+                    }
+                },
+                "Moon_Phase": null,
+                "Retrograde_Changes": [
+                    {
+                        "planet": "Mars",
+                        "status": "retrograde"
+                    }
+                ],
+                "Eclipse": null
+            },
+            "12": {
+                "Moon": "Pisces",
+                "Aspects": {
+                    "Moon": {
+                        "Mars": {
+                            "type": "Opposition",
+                            "planet1_sign": "Pisces",
+                            "planet2_sign": "Virgo"
+                        }
+                    }
+                },
+                "Moon_Phase": "Creciente",
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "13": {
+                "Moon": "CHANGE Aries",
+                "Aspects": {
+                    "Sun": {
+                        "Moon": {
+                            "type": "Sextile",
+                            "planet1_sign": "Capricorn",
+                            "planet2_sign": "Pisces"
+                        }
+                    },
+                    "Moon": {
+                        "Uranus": {
+                            "type": "Sextile",
+                            "planet1_sign": "Aries",
+                            "planet2_sign": "Gemini"
+                        }
+                    }
+                },
+                "Moon_Phase": "Creciente",
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "14": {
+                "Moon": "Aries",
+                "Aspects": {
+                    "Moon": {
+                        "Pluto": {
+                            "type": "Sextile",
+                            "planet1_sign": "Aries",
+                            "planet2_sign": "Aquarius"
+                        },
+                        "Venus": {
+                            "type": "Trine",
+                            "planet1_sign": "Aries",
+                            "planet2_sign": "Sagittarius"
+                        },
+                        "Saturn": {
+                            "type": "Conjunction",
+                            "planet1_sign": "Aries",
+                            "planet2_sign": "Aries"
+                        }
+                    },
+                    "Mercury": {
+                        "Neptune": {
+                            "type": "Sextile",
+                            "planet1_sign": "Aquarius",
+                            "planet2_sign": "Aries"
+                        },
+                        "Uranus": {
+                            "type": "Trine",
+                            "planet1_sign": "Aquarius",
+                            "planet2_sign": "Gemini"
+                        }
+                    },
+                    "Uranus": {
+                        "Neptune": {
+                            "type": "Sextile",
+                            "planet1_sign": "Gemini",
+                            "planet2_sign": "Aries"
+                        }
+                    }
+                },
+                "Moon_Phase": "Creciente",
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "15": {
+                "Moon": "Aries",
+                "Aspects": {
+                    "Venus": {
+                        "Saturn": {
+                            "type": "Trine",
+                            "planet1_sign": "Sagittarius",
+                            "planet2_sign": "Aries"
+                        }
+                    },
+                    "Mercury": {
+                        "Pluto": {
+                            "type": "Conjunction",
+                            "planet1_sign": "Aquarius",
+                            "planet2_sign": "Aquarius"
+                        }
+                    }
+                },
+                "Moon_Phase": "Creciente",
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "16": {
+                "Moon": "CHANGE Taurus",
+                "Aspects": {
+                    "Moon": {
+                        "Mercury": {
+                            "type": "Square",
+                            "planet1_sign": "Taurus",
+                            "planet2_sign": "Aquarius"
+                        }
+                    },
+                    "Sun": {
+                        "Chiron": {
+                            "type": "Square",
+                            "planet1_sign": "Capricorn",
+                            "planet2_sign": "Aries"
+                        }
+                    },
+                    "Venus": {
+                        "Mars": {
+                            "type": "Square",
+                            "planet1_sign": "Sagittarius",
+                            "planet2_sign": "Virgo"
+                        }
+                    }
+                },
+                "Moon_Phase": "Cuarto Creciente",
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "17": {
+                "Moon": "Taurus",
+                "Aspects": {},
+                "Moon_Phase": null,
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "18": {
+                "Moon": "CHANGE Gemini",
+                "Aspects": {
+                    "Sun": {
+                        "Moon": {
+                            "type": "Trine",
+                            "planet1_sign": "Capricorn",
+                            "planet2_sign": "Taurus"
+                        }
+                    },
+                    "Mercury": {
+                        "Saturn": {
+                            "type": "Sextile",
+                            "planet1_sign": "Aquarius",
+                            "planet2_sign": "Aries"
+                        }
+                    },
+                    "Moon": {
+                        "Mars": {
+                            "type": "Square",
+                            "planet1_sign": "Gemini",
+                            "planet2_sign": "Virgo"
+                        }
+                    }
+                },
+                "Moon_Phase": null,
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "19": {
+                "Moon": "Gemini",
+                "Aspects": {
+                    "Moon": {
+                        "Venus": {
+                            "type": "Opposition",
+                            "planet1_sign": "Gemini",
+                            "planet2_sign": "Sagittarius"
+                        },
+                        "Jupiter": {
+                            "type": "Sextile",
+                            "planet1_sign": "Gemini",
+                            "planet2_sign": "Leo"
+                        },
+                        "Chiron": {
+                            "type": "Sextile",
+                            "planet1_sign": "Gemini",
+                            "planet2_sign": "Aries"
+                        }
+                    }
+                },
+                "Moon_Phase": null,
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "20": {
+                "Moon": "CHANGE Cancer",
+                "Aspects": {
+                    "Moon": {
+                        "Mars": {
+                            "type": "Sextile",
+                            "planet1_sign": "Cancer",
+                            "planet2_sign": "Virgo"
+                        }
+                    }
+                },
+                "Moon_Phase": "Gibosa Creciente",
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "21": {
+                "Moon": "Cancer",
+                "Aspects": {
+                    "Sun": {
+                        "Uranus": {
+                            "type": "Trine",
+                            "planet1_sign": "Aquarius",
+                            "planet2_sign": "Gemini"
+                        }
+                    }
+                },
+                "Moon_Phase": "Gibosa Creciente",
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "22": {
+                "Moon": "CHANGE Leo",
+                "Aspects": {
+                    "Sun": {
+                        "Neptune": {
+                            "type": "Sextile",
+                            "planet1_sign": "Aquarius",
+                            "planet2_sign": "Aries"
+                        },
+                        "Moon": {
+                            "type": "Opposition",
+                            "planet1_sign": "Aquarius",
+                            "planet2_sign": "Leo"
+                        }
+                    }
+                },
+                "Moon_Phase": "Gibosa Creciente",
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "23": {
+                "Moon": "Leo",
+                "Aspects": {
+                    "Mercury": {
+                        "Venus": {
+                            "type": "Sextile",
+                            "planet1_sign": "Aquarius",
+                            "planet2_sign": "Sagittarius"
+                        }
+                    }
+                },
+                "Moon_Phase": "Luna Llena",
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "24": {
+                "Moon": "CHANGE Virgo",
+                "Aspects": {},
+                "Moon_Phase": null,
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "25": {
+                "Moon": "Virgo",
+                "Aspects": {
+                    "Sun": {
+                        "Pluto": {
+                            "type": "Conjunction",
+                            "planet1_sign": "Aquarius",
+                            "planet2_sign": "Aquarius"
+                        }
+                    },
+                    "Mercury": {
+                        "North Node": {
+                            "type": "Conjunction",
+                            "planet1_sign": "Aquarius",
+                            "planet2_sign": "Aquarius"
+                        },
+                        "South Node": {
+                            "type": "Opposition",
+                            "planet1_sign": "Aquarius",
+                            "planet2_sign": "Leo"
+                        }
+                    }
+                },
+                "Moon_Phase": null,
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "26": {
+                "Moon": "CHANGE Libra",
+                "Aspects": {
+                    "Moon": {
+                        "Uranus": {
+                            "type": "Trine",
+                            "planet1_sign": "Libra",
+                            "planet2_sign": "Gemini"
+                        },
+                        "Neptune": {
+                            "type": "Opposition",
+                            "planet1_sign": "Libra",
+                            "planet2_sign": "Aries"
+                        },
+                        "Pluto": {
+                            "type": "Trine",
+                            "planet1_sign": "Libra",
+                            "planet2_sign": "Aquarius"
+                        }
+                    },
+                    "Venus": {
+                        "North Node": {
+                            "type": "Sextile",
+                            "planet1_sign": "Sagittarius",
+                            "planet2_sign": "Aquarius"
+                        },
+                        "South Node": {
+                            "type": "Trine",
+                            "planet1_sign": "Sagittarius",
+                            "planet2_sign": "Leo"
+                        }
+                    }
+                },
+                "Moon_Phase": "Gibosa Menguante",
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "27": {
+                "Moon": "Libra",
+                "Aspects": {
+                    "Mercury": {
+                        "Jupiter": {
+                            "type": "Opposition",
+                            "planet1_sign": "Aquarius",
+                            "planet2_sign": "Leo"
+                        }
+                    }
+                },
+                "Moon_Phase": "Gibosa Menguante",
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "28": {
+                "Moon": "CHANGE Scorpio",
+                "Aspects": {
+                    "Moon": {
+                        "Mercury": {
+                            "type": "Trine",
+                            "planet1_sign": "Libra",
+                            "planet2_sign": "Aquarius"
+                        }
+                    },
+                    "Venus": {
+                        "Jupiter": {
+                            "type": "Trine",
+                            "planet1_sign": "Sagittarius",
+                            "planet2_sign": "Leo"
+                        }
+                    }
+                },
+                "Moon_Phase": "Gibosa Menguante",
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "29": {
+                "Moon": "Scorpio",
+                "Aspects": {
+                    "Mercury": {
+                        "Chiron": {
+                            "type": "Sextile",
+                            "planet1_sign": "Aquarius",
+                            "planet2_sign": "Aries"
+                        }
+                    }
+                },
+                "Moon_Phase": "Gibosa Menguante",
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "30": {
+                "Moon": "CHANGE Sagittarius",
+                "Aspects": {
+                    "Sun": {
+                        "Saturn": {
+                            "type": "Sextile",
+                            "planet1_sign": "Aquarius",
+                            "planet2_sign": "Aries"
+                        }
+                    },
+                    "Moon": {
+                        "Jupiter": {
+                            "type": "Square",
+                            "planet1_sign": "Scorpio",
+                            "planet2_sign": "Leo"
+                        }
+                    }
+                },
+                "Moon_Phase": "Cuarto Menguante",
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            },
+            "31": {
+                "Moon": "Sagittarius",
+                "Aspects": {
+                    "Moon": {
+                        "Neptune": {
+                            "type": "Trine",
+                            "planet1_sign": "Sagittarius",
+                            "planet2_sign": "Aries"
+                        }
+                    },
+                    "Venus": {
+                        "Chiron": {
+                            "type": "Trine",
+                            "planet1_sign": "Sagittarius",
+                            "planet2_sign": "Aries"
+                        }
+                    }
+                },
+                "Moon_Phase": null,
+                "Retrograde_Changes": [],
+                "Eclipse": null
+            }
+        }
+    }
+}

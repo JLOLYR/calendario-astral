@@ -171,5 +171,44 @@
       "simbolo": "⚹",
       "descripcion": "Oportunidad y cooperación. Dos planetas están en signos compatibles, creando una oportunidad para que sus energías colaboren. Es una puerta abierta que debemos decidir cruzar. Requiere un esfuerzo consciente para aprovechar su potencial."
     }
+  },
+
+  "Tipos de Día": {
+    "Día Armónico": {
+      "nombre": "Día Armónico",
+      "gif": "assets/aspects/armonico.gif",
+      "condicion": "≥ 2 Trígonos y ≤ 1 Cuadratura",
+      "descripcion": "La energía fluye con facilidad. Es un día excelente para iniciar proyectos, socializar y disfrutar. Los talentos naturales se expresan sin esfuerzo, pero hay que evitar la complacencia."
+    },
+    "Día Creativo": {
+      "nombre": "Día Creativo",
+      "gif": "assets/aspects/creativo.gif",
+      "condicion": "≥ 2 Sextiles o (≥ 1 Sextil + ≥ 1 Trígono)",
+      "descripcion": "Surgen oportunidades y nuevas ideas. Es un día ideal para la comunicación, el brainstorming y encontrar soluciones ingeniosas. La energía es colaborativa, pero requiere que tomes la iniciativa para aprovecharla."
+    },
+    "Día de Fricción": {
+      "nombre": "Día de Fricción",
+      "gif": "assets/aspects/friccion.gif",
+      "condicion": "≥ 2 Cuadraturas o ≥ 2 Oposiciones",
+      "descripcion": "Puede haber roces, desafíos o la necesidad de tomar decisiones. La energía te empuja a actuar y resolver conflictos internos o externos. Es una oportunidad para crecer a través de la superación de obstáculos."
+    },
+    "Día de Tensión": {
+      "nombre": "Día de Tensión",
+      "gif": "assets/aspects/tension.gif",
+      "condicion": "≥ 1 Cuadraturas más ≥ 1 Oposiciones",
+      "descripcion": "La presión es alta y los desafíos son significativos. Es un día que exige paciencia, conciencia y un manejo cuidadoso de la energía. Evita las confrontaciones innecesarias y enfócate en lo esencial."
+    },
+    "Día de Revelación": {
+      "nombre": "Día de Revelación",
+      "gif": "assets/aspects/revelacion.gif",
+      "condicion": "Sol en conjunción con un planeta lento",
+      "descripcion": "Un tema importante de tu vida se ilumina, trayendo claridad y conciencia. Es un día para la introspección y para entender mejor tu propósito o camino a largo plazo."
+    },
+    "Día de Cambio": {
+      "nombre": "Día de Cambio",
+      "gif": "assets/aspects/cambio.gif",
+      "condicion": "Un planeta (no la Luna) cambia de signo",
+      "descripcion": "El tono energético general se modifica. Un área de tu vida comienza un nuevo capítulo. Es un día para adaptarse a nuevas corrientes y estar abierto a diferentes perspectivas."
+    }
   }
 }

@@ -179,7 +179,15 @@
                 },
                 "Moon_Phase": "Balsámica",
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Virgo",
+                        "to": "Libra",
+                        "time": "04:15"
+                    }
+                ]
             },
             "10": {
                 "Moon": "Libra",
@@ -219,7 +227,15 @@
                 },
                 "Moon_Phase": "Luna Nueva",
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Libra",
+                        "to": "Scorpio",
+                        "time": "11:30"
+                    }
+                ]
             },
             "12": {
                 "Moon": "Scorpio",
@@ -333,7 +349,15 @@
                 },
                 "Moon_Phase": "Creciente",
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Capricorn",
+                        "to": "Aquarius",
+                        "time": "21:45"
+                    }
+                ]
             },
             "19": {
                 "Moon": "Aquarius",
@@ -388,7 +412,15 @@
                 },
                 "Moon_Phase": null,
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Aquarius",
+                        "to": "Pisces",
+                        "time": "08:45"
+                    }
+                ]
             },
             "22": {
                 "Moon": "Pisces",
@@ -418,7 +450,15 @@
                 },
                 "Moon_Phase": "Gibosa Creciente",
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Sun",
+                        "from": "Libra",
+                        "to": "Scorpio",
+                        "time": "05:45"
+                    }
+                ]
             },
             "24": {
                 "Moon": "Aries",
@@ -455,7 +495,21 @@
                         "status": "retrograde"
                     }
                 ],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Venus",
+                        "from": "Scorpio",
+                        "to": "Libra",
+                        "time": "05:15"
+                    },
+                    {
+                        "planet": "Moon",
+                        "from": "Aries",
+                        "to": "Taurus",
+                        "time": "19:45"
+                    }
+                ]
             },
             "26": {
                 "Moon": "Taurus",
@@ -497,7 +551,15 @@
                 },
                 "Moon_Phase": "Luna Llena",
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Taurus",
+                        "to": "Gemini",
+                        "time": "21:15"
+                    }
+                ]
             },
             "28": {
                 "Moon": "Gemini",
@@ -534,7 +596,15 @@
                 },
                 "Moon_Phase": null,
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Gemini",
+                        "to": "Cancer",
+                        "time": "22:15"
+                    }
+                ]
             },
             "30": {
                 "Moon": "Cancer",

@@ -26,7 +26,15 @@
                 },
                 "Moon_Phase": "Creciente",
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Virgo",
+                        "to": "Libra",
+                        "time": "17:30"
+                    }
+                ]
             },
             "2": {
                 "Moon": "Libra",
@@ -77,7 +85,21 @@
                 },
                 "Moon_Phase": "Cuarto Creciente",
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Libra",
+                        "to": "Scorpio",
+                        "time": "05:45"
+                    },
+                    {
+                        "planet": "Venus",
+                        "from": "Taurus",
+                        "to": "Gemini",
+                        "time": "11:45"
+                    }
+                ]
             },
             "5": {
                 "Moon": "Scorpio",
@@ -124,7 +146,15 @@
                         "status": "retrograde"
                     }
                 ],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Scorpio",
+                        "to": "Sagittarius",
+                        "time": "18:15"
+                    }
+                ]
             },
             "7": {
                 "Moon": "Sagittarius",
@@ -200,7 +230,15 @@
                 "Aspects": {},
                 "Moon_Phase": "Luna Llena",
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Capricorn",
+                        "to": "Aquarius",
+                        "time": "13:30"
+                    }
+                ]
             },
             "12": {
                 "Moon": "Aquarius",
@@ -242,7 +280,15 @@
                 },
                 "Moon_Phase": null,
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Aquarius",
+                        "to": "Pisces",
+                        "time": "19:45"
+                    }
+                ]
             },
             "14": {
                 "Moon": "Pisces",
@@ -297,7 +343,15 @@
                 },
                 "Moon_Phase": "Gibosa Menguante",
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Pisces",
+                        "to": "Aries",
+                        "time": "00:45"
+                    }
+                ]
             },
             "17": {
                 "Moon": "Aries",
@@ -374,7 +428,15 @@
                 },
                 "Moon_Phase": null,
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Taurus",
+                        "to": "Gemini",
+                        "time": "06:30"
+                    }
+                ]
             },
             "21": {
                 "Moon": "Gemini",
@@ -413,7 +475,21 @@
                 },
                 "Moon_Phase": "Balsámica",
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Gemini",
+                        "to": "Cancer",
+                        "time": "08:30"
+                    },
+                    {
+                        "planet": "Sun",
+                        "from": "Cancer",
+                        "to": "Leo",
+                        "time": "09:30"
+                    }
+                ]
             },
             "23": {
                 "Moon": "Cancer",
@@ -467,7 +543,15 @@
                 },
                 "Moon_Phase": "Balsámica",
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Cancer",
+                        "to": "Leo",
+                        "time": "11:30"
+                    }
+                ]
             },
             "25": {
                 "Moon": "Leo",
@@ -550,7 +634,15 @@
                 "Aspects": {},
                 "Moon_Phase": "Creciente",
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Virgo",
+                        "to": "Libra",
+                        "time": "01:45"
+                    }
+                ]
             },
             "30": {
                 "Moon": "Libra",
@@ -577,7 +669,15 @@
                         "status": "retrograde"
                     }
                 ],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Libra",
+                        "to": "Scorpio",
+                        "time": "13:30"
+                    }
+                ]
             }
         }
     }

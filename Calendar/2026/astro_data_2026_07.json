@@ -33,7 +33,15 @@
                 },
                 "Moon_Phase": "Luna Llena",
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Capricorn",
+                        "to": "Aquarius",
+                        "time": "15:45"
+                    }
+                ]
             },
             "2": {
                 "Moon": "Aquarius",
@@ -95,7 +103,15 @@
                 },
                 "Moon_Phase": "Gibosa Menguante",
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Aquarius",
+                        "to": "Pisces",
+                        "time": "02:45"
+                    }
+                ]
             },
             "5": {
                 "Moon": "Pisces",
@@ -132,7 +148,15 @@
                 },
                 "Moon_Phase": "Gibosa Menguante",
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Pisces",
+                        "to": "Aries",
+                        "time": "11:15"
+                    }
+                ]
             },
             "7": {
                 "Moon": "Aries",
@@ -189,7 +213,15 @@
                         "status": "retrograde"
                     }
                 ],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Aries",
+                        "to": "Taurus",
+                        "time": "16:45"
+                    }
+                ]
             },
             "9": {
                 "Moon": "Taurus",
@@ -204,7 +236,15 @@
                 },
                 "Moon_Phase": null,
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Venus",
+                        "from": "Leo",
+                        "to": "Virgo",
+                        "time": "13:30"
+                    }
+                ]
             },
             "10": {
                 "Moon": "CHANGE Gemini",
@@ -241,7 +281,15 @@
                 },
                 "Moon_Phase": null,
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Taurus",
+                        "to": "Gemini",
+                        "time": "18:45"
+                    }
+                ]
             },
             "11": {
                 "Moon": "Gemini",
@@ -335,7 +383,15 @@
                 },
                 "Moon_Phase": "Balsámica",
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Cancer",
+                        "to": "Leo",
+                        "time": "18:45"
+                    }
+                ]
             },
             "15": {
                 "Moon": "Leo",
@@ -369,7 +425,15 @@
                 "Aspects": {},
                 "Moon_Phase": null,
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Leo",
+                        "to": "Virgo",
+                        "time": "20:15"
+                    }
+                ]
             },
             "17": {
                 "Moon": "Virgo",
@@ -467,14 +531,30 @@
                 },
                 "Moon_Phase": "Creciente",
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Libra",
+                        "to": "Scorpio",
+                        "time": "09:45"
+                    }
+                ]
             },
             "22": {
                 "Moon": "Scorpio",
                 "Aspects": {},
                 "Moon_Phase": "Cuarto Creciente",
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Sun",
+                        "from": "Cancer",
+                        "to": "Leo",
+                        "time": "15:15"
+                    }
+                ]
             },
             "23": {
                 "Moon": "CHANGE Sagittarius",
@@ -496,7 +576,15 @@
                 },
                 "Moon_Phase": null,
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Scorpio",
+                        "to": "Sagittarius",
+                        "time": "21:15"
+                    }
+                ]
             },
             "24": {
                 "Moon": "Sagittarius",
@@ -545,7 +633,15 @@
                 "Aspects": {},
                 "Moon_Phase": "Gibosa Creciente",
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Sagittarius",
+                        "to": "Capricorn",
+                        "time": "09:45"
+                    }
+                ]
             },
             "27": {
                 "Moon": "Capricorn",
@@ -641,7 +737,15 @@
                 "Aspects": {},
                 "Moon_Phase": null,
                 "Retrograde_Changes": [],
-                "Eclipse": null
+                "Eclipse": null,
+                "Sign_Changes": [
+                    {
+                        "planet": "Moon",
+                        "from": "Aquarius",
+                        "to": "Pisces",
+                        "time": "08:15"
+                    }
+                ]
             }
         }
     }

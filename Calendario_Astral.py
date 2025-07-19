@@ -7,7 +7,7 @@ import os
 import json
 
 # -------SET YEAR-------
-AÑO = 2026  # Define aquí el año que deseas generar completamente
+AÑO = 2027  # Define aquí el año que deseas generar completamente
 Orbe = 0.025 # Orbe de olgura para los aspectos. 
 # -------SET TIME & GEOGRAPHIC COORDINATES-------
 time_str = '00:00'
