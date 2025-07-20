@@ -422,7 +422,10 @@
                 },
                 "Moon_Phase": "Balsámica",
                 "Retrograde_Changes": [],
-                "Eclipse": null,
+                "Eclipse": {
+                    "type": "Solar",
+                    "subtype": "Annular"
+                },
                 "Sign_Changes": [
                     {
                         "planet": "Moon",

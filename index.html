@@ -9,6 +9,9 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#887a68">
 
+    <link rel="icon" href="assets/icons/icon-192x192.png" type="image/png">
+    <meta name="theme-color" content="#887a68">
+
     <!-- Fuentes y Estilos -->
     <link href="https://fonts.googleapis.com/css2?family=Linux+Libertine:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -22,21 +25,22 @@
         <div class="landing-header">
             <h2 id="landing-month-year"></h2>
             <div class="header-actions">
-                <!-- Solo dejamos UN botón "Hoy" -->
+                <!-- Solo UN botón "Hoy" -->
                 <button id="landing-today-btn" class="btn-today">Hoy</button>
                 
                 <div class="landing-menu-container">
                     <button id="landing-menu-btn">⋮</button>
                     <div id="landing-menu-dropdown" style="display: none;">
-                        <!-- Hemos movido "Activar Avisos" aquí, como un enlace <a> -->
-                        <a href="#" id="enable-notifications-btn">🔔 Activar Avisos</a>
+                        <!-- 1. VOLVEMOS A USAR UN <button> para máxima compatibilidad -->
+                        <button id="enable-notifications-btn" class="menu-button">🔔 Activar Avisos</button>
+                        
+                        <!-- 2. Los otros elementos se mantienen como enlaces <a> -->
                         <a href="#" id="landing-symbol-btn">🔮 Simbología</a>
                         <a href="#" id="landing-info-btn">📲 Instalar</a>
                         <a href="#" id="landing-download-btn">📥 Descargar</a>
                     </div>
                 </div>
             </div>
-        </div>
         </div>
         <div class="landing-week-headers">
             <span>LUN</span><span>MAR</span><span>MIE</span><span>JUE</span><span>VIE</span><span>SAB</span><span>DOM</span>

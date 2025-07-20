@@ -322,6 +322,34 @@ body {
     #landing-menu-dropdown a { padding: 12px 15px; color: var(--color-texto-principal); text-decoration: none; display: flex; align-items: center; gap: 8px; }
     #landing-menu-dropdown a:hover { background-color: #f0f0f0; }
 
+    /* === AÑADE ESTA NUEVA REGLA PARA EL BOTÓN === */
+    .menu-button {
+        /* Quitamos todos los estilos de botón por defecto */
+        background: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+        
+        /* Le aplicamos EXACTAMENTE los mismos estilos que a los enlaces <a> */
+        padding: 14px 18px;
+        color: var(--color-texto-principal);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        
+        /* Aseguramos que el texto se alinee a la izquierda y la fuente sea correcta */
+        text-align: left;
+        font-family: inherit; /* Hereda la fuente del sistema */
+        font-size: 1rem;      /* Tamaño de fuente estándar */
+        width: 100%;          /* Ocupa todo el ancho del menú */
+        cursor: pointer;
+    }
+
+    .menu-button:hover {
+        background-color: #f0f0f0;
+    }
+
     .landing-week-headers {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
