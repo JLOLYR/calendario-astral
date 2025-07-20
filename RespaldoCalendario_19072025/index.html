@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario Astral</title>
+    
+    <!-- Enlaces para PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#887a68">
+
+    <!-- Fuentes y Estilos -->
+    <link href="https://fonts.googleapis.com/css2?family=Linux+Libertine:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Librerías Externas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <!-- ===== NUEVA VISTA DE ATERRIZAJE MÓVIL ===== -->
+    <div id="mobile-landing-container">
+        <div class="landing-header">
+            <h2 id="landing-month-year"></h2>
+            <div class="header-actions">
+                <button id="enable-notifications-btn" class="btn-today">🔔 Activar Avisos</button>
+                <button id="landing-today-btn" class="btn-today">Hoy</button>
+            <button id="landing-today-btn" class="btn-today">Hoy</button>
+            <div class="landing-menu-container">
+                <button id="landing-menu-btn">⋮</button>
+                <div id="landing-menu-dropdown" style="display: none;">
+                    <a href="#" id="landing-symbol-btn">🔮 Simbología</a>
+                    <a href="#" id="landing-info-btn">📲 Instalar</a>
+                    <a href="#" id="landing-download-btn">📥 Descargar</a>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="landing-week-headers">
+            <span>LUN</span><span>MAR</span><span>MIE</span><span>JUE</span><span>VIE</span><span>SAB</span><span>DOM</span>
+        </div>
+        <div id="landing-calendar-grid">
+            <!-- El calendario se generará aquí con JS -->
+        </div>
+        <div id="landing-day-details">
+            <p class="initial-prompt">Toca un día para ver sus eventos.</p>
+        </div>
+    </div>
+    <!-- ===== VISTA DE ESCRITORIO ===== -->
+    <div id="calendar-header">
+        <h1>Calendario Astral</h1>
+        <div class="calendar-controls">
+            <button id="prev-month" class="nav-button">◀</button>
+            <select id="select-month" class="nav-select"></select>
+            <select id="select-year" class="nav-select"></select>
+            <button id="next-month" class="nav-button">▶</button>
+        </div>
+        <div class="action-buttons">
+            <button class="btn" id="symbol-btn">Simbología</button>
+            <button id="print-btn" class="btn">Imprimir / Guardar PDF</button>
+            <button id="download-btn" class="btn">Descargar Imagen</button>
+        </div>
+    </div>
+    
+    <div id="calendar-container"></div>
+    
+    <!-- ===== VISTA MÓVIL ===== -->
+    <div id="mobile-view-container">
+        <div class="mobile-header">
+            <div class="mobile-nav">
+                <button id="prev-day-mobile" class="btn">◀</button>
+                <button id="show-aspects-btn" class="btn">Aspectos</button>
+                <button id="go-to-today-btn" class="btn">Hoy</button>
+                <button id="symbol-btn-mobile" class="btn">Simbología</button>
+                <button id="next-day-mobile" class="btn">▶</button>
+            </div>
+        </div>
+        <div id="mobile-day-content">
+            <!-- El contenido del día se carga aquí -->
+            <div class="loader">Cargando...</div>
+        </div>
+        <button id="back-to-landing-btn" title="Volver al mes"></button>
+    </div>
+    <!-- ===== MODALES EXISTENTES (CORREGIDOS) ===== -->
+    <!-- Modal de detalles del día -->
+    <div id="modal-detail" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close-button">❌</span>
+            <div id="modal-icons"></div>
+            <div id="modal-textos"></div>
+        </div>
+    </div>
+    
+    <!-- Modal de simbología -->
+    <div class="modal" id="modal-symbol" style="display: none;">
+        <div class="modal-content">
+            <span class="close-button">❌</span>
+            <div id="modal-symbol-content"></div>
+        </div>
+    </div>
+    
+    <!-- Modal para los Aspectos del día -->
+    <div class="modal" id="modal-aspects" style="display: none;">
+        <div class="modal-content">
+            <span class="close-button">❌</span>
+            <div id="modal-aspects-content"></div>
+        </div>
+    </div>
+
+    <!-- ===== NUEVO BOTÓN Y MODAL PARA AYUDA DE INSTALACIÓN (CORREGIDO) ===== -->
+    
+
+    <div class="modal" id="modal-install" style="display: none;">
+        <div class="modal-content">
+            <span class="close-button">❌</span>
+            <div id="modal-install-content">
+                <h1>🧩Instala tu Calendario Astral</h1>
+                <p class="install-subtitle">Accede a tu calendario como una app, ¡incluso sin conexión! y GRATIS!</p>
+                <div class="install-instructions-container">
+                    
+                    <!-- Columna para Android -->
+                    <div class="install-column">
+                        <!-- ICONO CORREGIDO -->
+                        <img src="assets/icons/Android.png" class="os-icon" alt="Android">
+                        <h2>En Android</h2>
+                        <ul>
+                            <li><span>1.</span> <div>Toca el menú de opciones (<span>⋮</span>) de Chrome.</div></li>
+                            <li><span>2.</span> <div>Selecciona <strong>"Instalar aplicación"</strong> o <strong>"Añadir a pantalla de inicio"</strong>.</div></li>
+                            <li><span>3.</span> <div>¡Listo! El icono aparecerá en tu pantalla de inicio.</div></li>
+                        </ul>
+                    </div>
+
+                    <!-- Columna para iPhone/iOS -->
+                    <div class="install-column">
+                        <!-- ICONO CORREGIDO -->
+                        <img src="assets/icons/Apple.png" class="os-icon" alt="iOS">
+                        <h2>En iPhone (Safari)</h2>
+                        <ul>
+                            <li><span>1.</span> <div>Toca el botón "Compartir" <img src="assets/icons/Share.png" class="step-icon" alt="Icono Compartir">.</div></li>
+                            <li><span>2.</span> <div>Desplázate hacia abajo en el menú.</div></li>
+                            <li><span>3.</span> <div>Selecciona <strong>"Añadir a pantalla de inicio"</strong>.</div></li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <button id="modal-back-btn" title="Volver">❮</button>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <!-- Firebase Cloud Messaging -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-messaging-compat.js"></script>
+    <script src="script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                // --- CAMBIA ESTA LÍNEA ---
+                navigator.serviceWorker.register('sw.js') // <-- Quitamos la ruta absoluta
+                    .then(registration => console.log('Service Worker registrado:', registration.scope))
+                    .catch(error => console.log('Fallo en registro de SW:', error));
+                });
+            }
+    </script>
+</body>
+</html>

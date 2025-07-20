@@ -47,24 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const installHelpBtn = document.getElementById('install-help-btn');
     const enableNotificationsBtn = document.getElementById('enable-notifications-btn');
 
-    function setupNotifications() {
-        // --- INICIALIZACIÓN DE ONESIGNAL ---
-        window.OneSignal = window.OneSignal || [];
-        OneSignal.push(function() {
-            OneSignal.init({
-                // --- PEGA TU APP ID PÚBLICO AQUÍ ---
-                appId: "e52f122e-bf59-4379-a5e7-9ab4760c34c8", // Reemplaza con tu App ID
-            });
-        });
-
-        // --- LÓGICA PARA EL BOTÓN ---
-        enableNotificationsBtn.addEventListener('click', () => {
-            console.log('Pidiendo permiso...');
-            OneSignal.push(function() {
-                OneSignal.registerForPushNotifications();
-            });
-        });
-    }
     // --- Estado de la aplicación ---
     let selectedYear, selectedMonth;
     let mobileDate = new Date();
