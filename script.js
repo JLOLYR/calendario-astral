@@ -219,6 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function initializeApp() {
         // --- LISTENERS GLOBALES ---
         symbolBtn.addEventListener('click', showSymbolModal);
+        symbolBtnMobile.addEventListener('click', showSymbolModal);
         if(installHelpBtn) installHelpBtn.addEventListener('click', showInstallHelpModal);
         backToLandingBtn.addEventListener('click', () => {
             mobileContainer.style.display = 'none';
