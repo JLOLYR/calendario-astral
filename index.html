@@ -22,15 +22,18 @@
         <div class="landing-header">
             <h2 id="landing-month-year"></h2>
             <div class="header-actions">
-                <button id="enable-notifications-btn" class="btn-today">🔔 Activar Avisos</button>
+                <!-- Solo dejamos UN botón "Hoy" -->
                 <button id="landing-today-btn" class="btn-today">Hoy</button>
-            <button id="landing-today-btn" class="btn-today">Hoy</button>
-            <div class="landing-menu-container">
-                <button id="landing-menu-btn">⋮</button>
-                <div id="landing-menu-dropdown" style="display: none;">
-                    <a href="#" id="landing-symbol-btn">🔮 Simbología</a>
-                    <a href="#" id="landing-info-btn">📲 Instalar</a>
-                    <a href="#" id="landing-download-btn">📥 Descargar</a>
+                
+                <div class="landing-menu-container">
+                    <button id="landing-menu-btn">⋮</button>
+                    <div id="landing-menu-dropdown" style="display: none;">
+                        <!-- Hemos movido "Activar Avisos" aquí, como un enlace <a> -->
+                        <a href="#" id="enable-notifications-btn">🔔 Activar Avisos</a>
+                        <a href="#" id="landing-symbol-btn">🔮 Simbología</a>
+                        <a href="#" id="landing-info-btn">📲 Instalar</a>
+                        <a href="#" id="landing-download-btn">📥 Descargar</a>
+                    </div>
                 </div>
             </div>
         </div>
