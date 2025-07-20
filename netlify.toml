@@ -1,19 +1,11 @@
-# netlify.toml (VERSIÓN CORREGIDA FINAL)
-[build]
-  # Comando de construcción: Lo dejamos vacío porque no necesitamos compilar nada.
-  command = ""
-  
-  # Directorio de publicación: El punto "." significa "la carpeta raíz del proyecto".
-  # Aquí es donde Netlify encontrará tu index.html.
-  publish = "."
-# ===================================================================
-# Primero, definimos una sección general para las funciones
-#[functions]
-  # Especificamos la carpeta donde están nuestras funciones
-  #directory = "netlify/functions/" 
+# netlify.toml (VERSIÓN FINAL Y SIMPLIFICADA)
 
-# Luego, definimos la programación para una función específica
-# El nombre de la función va entre comillas dentro de la tabla
-#[functions."daily-notification"]
-  # Y aquí va la programación cron
-  #schedule = "* * * * *"
+# Solo le decimos a Netlify dónde están nuestras funciones y cómo programarlas.
+# No definimos NADA sobre la construcción (build) o publicación (publish),
+# para que Netlify use sus valores por defecto, que son correctos para tu proyecto.
+
+[functions]
+  directory = "netlify/functions/"
+
+[functions."daily-notification"]
+  schedule = "* * * * *" # Recuerda cambiar esto a "0 9 * * *" cuando termines de probar
