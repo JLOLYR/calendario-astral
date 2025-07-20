@@ -8,12 +8,12 @@
   publish = "."
 # ===================================================================
 # Primero, definimos una sección general para las funciones
-[functions]
+#[functions]
   # Especificamos la carpeta donde están nuestras funciones
-  directory = "netlify/functions/" 
+  #directory = "netlify/functions/" 
 
 # Luego, definimos la programación para una función específica
 # El nombre de la función va entre comillas dentro de la tabla
-[functions."daily-notification"]
+#[functions."daily-notification"]
   # Y aquí va la programación cron
-  schedule = "* * * * *"
+  #schedule = "* * * * *"
