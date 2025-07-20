@@ -15,11 +15,12 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 // --- CAMBIO 1: Hacemos un nombre de caché más específico para evitar conflictos ---
-const CACHE_NAME = 'calendario-astral-cache-v1.2'; 
+const CACHE_NAME = 'calendario-astral-cache-v1.3'; 
 
 // --- CAMBIO 2: Simplificamos y corregimos las rutas ---
 const URLS_TO_CACHE = [
   '/', // Esto representa la carpeta raíz del proyecto
+  './',
   './index.html',
   './style.css',
   './script.js',
