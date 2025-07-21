@@ -217,22 +217,32 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==                           INICIALIZACIÓN                            ==
     // =========================================================================
     function initializeApp() {
-        // --- LISTENERS GLOBALES ---
+    // --- LISTENERS GLOBALES ---
         symbolBtn.addEventListener('click', showSymbolModal);
-        symbolBtnMobile.addEventListener('click', showSymbolModal);
+        symbolBtnMobile.addEventListener('click', showSymbolModal); // Listener corregido
         if(installHelpBtn) installHelpBtn.addEventListener('click', showInstallHelpModal);
+        
         backToLandingBtn.addEventListener('click', () => {
             mobileContainer.style.display = 'none';
             backToLandingBtn.style.display = 'none';
             mobileLandingContainer.style.display = 'flex';
         });
 
+        // --- NUEVO LISTENER PARA ONESIGNAL ---
+        enableNotificationsBtn.addEventListener('click', () => {
+            // Simplemente le decimos al SDK de OneSignal que pida el permiso.
+            OneSignal.push(function() {
+                console.log('Pidiendo permiso de notificación...');
+                OneSignal.showNativePrompt();
+            });
+        });
+
         // --- INICIALIZACIÓN DE VISTAS ---
         initDesktopView();
         initMobileView();
         initMobileLandingView();
-        setupNotifications(); // Configura los listeners de notificaciones
+        // Ya no llamamos a setupNotifications() aquí.
     }
-    
+
     initializeApp();
 });
