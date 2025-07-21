@@ -1,15 +1,14 @@
-const CACHE_NAME = 'calendario-astral-cache-v1.4'; // Aumentamos la versión para forzar la actualización
+const CACHE_NAME = 'calendario-astral-cache-v1.5'; 
 
-// Lista de archivos esenciales para que la app funcione offline.
-// Usamos rutas relativas desde la raíz.
 const URLS_TO_CACHE = [
   '/',
-  'index.html',
-  'style.css',
-  'script.js',
-  'manifest.json',
-  'assets/icons/icon-192x192.png',
-  'assets/icons/icon-512x512.png'
+  './',
+  './index.html',
+  './style.css', // <-- AÑADIDO
+  './script.js',
+  './manifest.json',
+  './assets/icons/icon-192x192.png',
+  './assets/icons/icon-512x512.png'
 ];
 
 // --- 1. Evento de INSTALACIÓN ---
