@@ -1,6 +1,6 @@
 {
-  "name": "Calendario Astral",
-  "short_name": "AstroCal",
+  "name": "Ephemeris",
+  "short_name": "Ephemeris",
   "scope": "/",
   "start_url": "/",
   "display": "standalone",
