@@ -1,114 +1,86 @@
-// sw.js CORREGIDO
-importScripts('https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/9.6.1/firebase-messaging-compat.js');
+const CACHE_NAME = 'calendario-astral-cache-v1.4'; // Aumentamos la versión para forzar la actualización
 
-// Pega aquí el MISMO objeto de configuración que en script.js
-const firebaseConfig = {
-    apiKey: "TU_API_KEY",
-    authDomain: "TU_AUTH_DOMAIN",
-    projectId: "TU_PROJECT_ID",
-    storageBucket: "TU_STORAGE_BUCKET",
-    messagingSenderId: "TU_MESSAGING_SENDER_ID",
-    appId: "TU_APP_ID"
-};
-
-firebase.initializeApp(firebaseConfig);
-const messaging = firebase.messaging();
-// --- CAMBIO 1: Hacemos un nombre de caché más específico para evitar conflictos ---
-const CACHE_NAME = 'calendario-astral-cache-v1.3'; 
-
-// --- CAMBIO 2: Simplificamos y corregimos las rutas ---
+// Lista de archivos esenciales para que la app funcione offline.
+// Usamos rutas relativas desde la raíz.
 const URLS_TO_CACHE = [
-  '/', // Esto representa la carpeta raíz del proyecto
-  './',
-  './index.html',
-  './style.css',
-  './script.js',
-  './manifest.json',
-  // --- Las rutas a tus assets también deben ser relativas ---
-  './assets/icons/icon-192x192.png',
-  './assets/icons/icon-512x512.png',
-  './assets/aspects/Home.png',
-  './assets/aspects/Fondo_2.png'
-  // --- CAMBIO 3: Hemos eliminado las URLs externas de esta lista ---
-  // El fetch listener las cacheará automáticamente la primera vez.
+  '/',
+  'index.html',
+  'style.css',
+  'script.js',
+  'manifest.json',
+  'assets/icons/icon-192x192.png',
+  'assets/icons/icon-512x512.png'
 ];
 
-// Evento de instalación (sin cambios en la lógica)
+// --- 1. Evento de INSTALACIÓN ---
+// Se ejecuta una sola vez cuando el Service Worker es nuevo.
 self.addEventListener('install', event => {
+  console.log('[Service Worker] Instalando...');
+  // waitUntil espera a que la promesa se resuelva para terminar la instalación.
   event.waitUntil(
+    // Abrimos el caché con nuestro nombre.
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('Cache abierto, añadiendo archivos principales.');
+        console.log('[Service Worker] Guardando archivos principales en caché.');
+        // Añadimos todos los archivos de nuestra lista al caché.
         return cache.addAll(URLS_TO_CACHE);
-      })
-      .catch(error => {
-        // --- AÑADIDO: Un log de error más específico para depurar ---
-        console.error('Fallo al ejecutar cache.addAll:', error);
       })
   );
 });
 
-// Evento de activación (sin cambios en la lógica)
+// --- 2. Evento de ACTIVACIÓN ---
+// Se ejecuta después de la instalación, cuando el SW toma el control.
+// Es el lugar perfecto para limpiar cachés antiguos.
 self.addEventListener('activate', event => {
+  console.log('[Service Worker] Activando...');
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('Limpiando caché antiguo:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
+        // Borramos cualquier caché que no tenga el nombre del caché actual.
+        cacheNames.filter(cacheName => cacheName !== CACHE_NAME)
+                  .map(cacheName => caches.delete(cacheName))
       );
     })
   );
+  // Le dice al SW que tome el control de la página inmediatamente.
   return self.clients.claim();
 });
 
-// Evento fetch (sin cambios, tu lógica es excelente)
+// --- 3. Evento FETCH (El más importante) ---
+// Se ejecuta cada vez que la página hace una petición de red (para un CSS, JS, imagen, etc.).
 self.addEventListener('fetch', event => {
+  // Ignoramos las peticiones que no son GET.
+  if (event.request.method !== 'GET') {
+    return;
+  }
+  
   event.respondWith(
+    // Estrategia "Cache First":
     caches.match(event.request)
-      .then(response => {
-        if (response) {
-          return response;
+      .then(cachedResponse => {
+        // Si encontramos una respuesta en el caché, la devolvemos inmediatamente.
+        if (cachedResponse) {
+          console.log('[Service Worker] Devolviendo desde caché:', event.request.url);
+          return cachedResponse;
         }
-        return fetch(event.request).then(
-          networkResponse => {
-            // Tu lógica aquí es buena, pero podemos simplificar la condición un poco
-            if (!networkResponse || networkResponse.status !== 200) {
-              return networkResponse;
+
+        // Si no está en el caché, vamos a la red.
+        console.log('[Service Worker] Buscando en la red:', event.request.url);
+        return fetch(event.request).then(networkResponse => {
+            // Si la petición de red es exitosa, la guardamos en el caché para la próxima vez.
+            // Esto es crucial para que los archivos JSON de los meses se guarden offline.
+            if (networkResponse && networkResponse.status === 200) {
+                const responseToCache = networkResponse.clone();
+                caches.open(CACHE_NAME).then(cache => {
+                    cache.put(event.request, responseToCache);
+                });
             }
-            // Para URLs externas (como Google Fonts), el tipo de respuesta puede ser 'opaque'.
-            // Tu código ya las manejará bien.
-            const responseToCache = networkResponse.clone();
-            caches.open(CACHE_NAME)
-              .then(cache => {
-                cache.put(event.request, responseToCache);
-              });
             return networkResponse;
-          }
-        );
+        }).catch(error => {
+            // Si tanto el caché como la red fallan, devolvemos una respuesta genérica de error.
+            console.error('[Service Worker] Error en fetch:', error);
+            // Podrías devolver una página offline personalizada aquí si quisieras.
+        });
       })
   );
-});
-messaging.onBackgroundMessage((payload) => {
-    console.log('Push recibido en segundo plano: ', payload);
-
-    const notificationTitle = payload.notification.title;
-    const notificationOptions = {
-        body: payload.notification.body,
-        icon: payload.notification.icon || './assets/icons/icon-192x192.png'
-    };
-
-    self.registration.showNotification(notificationTitle, notificationOptions);
-});
-
-// --- NUEVO: LISTENER PARA CUANDO SE HACE CLIC EN LA NOTIFICACIÓN ---
-self.addEventListener('notificationclick', event => {
-    event.notification.close();
-    event.waitUntil(
-        clients.openWindow('/') // Abre la página principal de tu app
-    );
 });
