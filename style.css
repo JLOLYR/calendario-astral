@@ -163,7 +163,8 @@ body {
         
         /* --- CAMBIOS CLAVE PARA ESTABILIZAR EL DISEÑO --- */
         /* Usamos la altura dinámica de la ventana gráfica */
-        height: 100vh; 
+        height: 100dvh;
+        height: 100vh;  
         /* Forzamos a que no se pueda hacer scroll en este contenedor */
         overflow: hidden; 
 
