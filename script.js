@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // --- NUEVO LISTENER PARA ONESIGNAL ---
         enableNotificationsBtn.addEventListener('click', () => {
-            // Simplemente le decimos al SDK de OneSignal que pida el permiso.
+            // Simplemente le decimos al SDK de OneSignal que pid el permiso.
             OneSignal.push(function() {
                 console.log('Pidiendo permiso de notificación...');
                 OneSignal.showNativePrompt();
