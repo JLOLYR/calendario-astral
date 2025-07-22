@@ -1,11 +1,18 @@
-# netlify.toml (VERSIÓN FINAL Y SIMPLIFICADA)
+# netlify.toml (VERSIÓN FINAL Y CORRECTA)
 
-# Solo le decimos a Netlify dónde están nuestras funciones y cómo programarlas.
-# No definimos NADA sobre la construcción (build) o publicación (publish),
-# para que Netlify use sus valores por defecto, que son correctos para tu proyecto.
+# 1. Configuración de Build (se queda igual)
+[build]
+  publish = "."
 
+# 2. Configuración GENERAL de las funciones
 [functions]
   directory = "netlify/functions/"
 
+# 3. Configuración ESPECÍFICA de tu función
 [functions."daily-notification"]
-  schedule = "* * * * *" # Recuerda cambiar esto a "0 9 * * *" cuando termines de probar
+  schedule = "* * * * *" # Recuerda cambiar esto a "0 9 * * *"
+  
+  # === ESTA ES LA LÍNEA MÁGICA QUE SOLUCIONA TODO ===
+  # Le decimos a Netlify que incluya la carpeta "Calendar" completa
+  # en el paquete de esta función. La ruta es relativa a la raíz del proyecto.
+  included_files = ["Calendar/**"]
