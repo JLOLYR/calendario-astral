@@ -161,30 +161,45 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // =========================================================================
     // ==              VISTA ATERRIZAJE MÓVIL (LANDING)                     ==
-    // =========================================================================
     function initMobileLandingView() {
         renderLandingView(landingDate);
         let touchStartX = 0;
         let touchStartY = 0;
-        mobileLandingContainer.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].clientX; touchStartY = e.changedTouches[0].clientY; }, { passive: true });
+        mobileLandingContainer.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].clientX; // Usamos clientX para mayor compatibilidad
+            touchStartY = e.changedTouches[0].clientY; // Guardamos la posición Y inicial
+        }, { passive: true });
+
         mobileLandingContainer.addEventListener('touchend', e => {
             const touchEndX = e.changedTouches[0].clientX;
-            const touchEndY = e.changedTouches[0].clientY;
-            const deltaX = touchEndX - touchStartX;
-            const deltaY = touchEndY - touchStartY;
-            const swipeThreshold = 50;
+            const touchEndY = e.changedTouches[0].clientY; // Guardamos la posición Y final
+            const deltaX = touchEndX - touchStartX; // Movimiento horizontal
+            const deltaY = touchEndY - touchStartY; // Movimiento vertical
+            const swipeThreshold = 50; // Mínimo de píxeles para considerarlo un swipe
+
             if (Math.abs(deltaX) > Math.abs(deltaY)) {
                 if (Math.abs(deltaX) > swipeThreshold) {
-                    if (deltaX < 0) { changeLandingMonth(1); } else { changeLandingMonth(-1); }
+                    if (deltaX < 0) {
+                        changeLandingMonth(1);
+                    } else {
+                        changeLandingMonth(-1);
+                    }
                 }
             }
         });
+
         landingMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); landingMenuDropdown.style.display = landingMenuDropdown.style.display === 'none' ? 'block' : 'none'; });
         landingSymbolBtn.addEventListener('click', showSymbolModal);
         landingInfoBtn.addEventListener('click', showInstallHelpModal);
         landingDownloadBtn.addEventListener('click', downloadCalendarImage);
-        landingTodayBtn.addEventListener('click', () => { landingDate = new Date(); renderLandingView(landingDate); });
-        document.addEventListener('click', () => { if(landingMenuDropdown) landingMenuDropdown.style.display = 'none'; });
+        landingTodayBtn.addEventListener('click', () => {
+            landingDate = new Date(); // Resetea la fecha a hoy
+            renderLandingView(landingDate); // Vuelve a dibujar el calendario
+        });
+        document.addEventListener('click', () => { landingMenuDropdown.style.display = 'none'; });
+
+        // --- CAMBIO CLAVE: Devolvemos la promesa de renderLandingView ---
+        return renderLandingView(landingDate);
     }
     function changeLandingMonth(direction) { landingDate.setMonth(landingDate.getMonth() + direction); renderLandingView(landingDate); }
     async function renderLandingView(date) { const year = date.getFullYear(); const month = date.getMonth() + 1; const today = new Date(); const todayDate = today.getDate(); const todayMonth = today.getMonth() + 1; const todayYear = today.getFullYear(); let todayCellElement = null; let todayDataPayload = {}; landingMonthYear.textContent = `${NOMBRES_MESES[month - 1]} ${year}`; landingCalendarGrid.innerHTML = '<div class="loader">Cargando...</div>'; landingDayDetails.innerHTML = '<p class="initial-prompt">Toca un día.</p>'; if (selectedDayCell) { selectedDayCell.classList.remove('selected'); selectedDayCell = null; } const data = await getMonthlyData(year, month); landingCalendarGrid.innerHTML = ''; if (!data) { landingCalendarGrid.innerHTML = `<p class="loader">No hay datos.</p>`; return; } const firstDayOfMonth = new Date(year, month - 1, 1).getDay(); const emptyCells = (firstDayOfMonth === 0) ? 6 : firstDayOfMonth - 1; for (let i = 0; i < emptyCells; i++) { const emptyCell = document.createElement('div'); emptyCell.classList.add('landing-day-cell', 'empty'); landingCalendarGrid.appendChild(emptyCell); } const daysInMonth = new Date(year, month, 0).getDate(); for (let dayNum = 1; dayNum <= daysInMonth; dayNum++) { const dayCell = document.createElement('div'); dayCell.classList.add('landing-day-cell'); const dateText = document.createElement('span'); dateText.classList.add('date-text'); dateText.textContent = dayNum; const selectionCircle = document.createElement('div'); selectionCircle.classList.add('selection-circle'); dayCell.appendChild(selectionCircle); dayCell.appendChild(dateText); const dayData = data.astro[String(dayNum)] || {}; const festivos = data.festivos || []; let specialEventIconPath = ''; let specialEventClasses = 'event-day-marker'; if (dayData.Eclipse) { specialEventIconPath = 'assets/aspects/eclipse.gif'; } else if (dayData.Moon_Phase === 'Luna Nueva') { specialEventIconPath = 'assets/aspects/luna_nueva.gif'; specialEventClasses += ' moon-event-marker'; } else if (dayData.Moon_Phase === 'Luna Llena') { specialEventIconPath = 'assets/aspects/luna_llena.gif'; specialEventClasses += ' moon-event-marker'; } if (specialEventIconPath) { const eventIcon = document.createElement('img'); eventIcon.src = specialEventIconPath; eventIcon.className = specialEventClasses; dayCell.appendChild(eventIcon); } if (countEvents(dayData) >= 4) { const warningIcon = document.createElement('img'); warningIcon.src = ICON_PATHS.alerts.Warning; warningIcon.className = 'intense-day-marker'; dayCell.appendChild(warningIcon); } const aspectColors = getAspectColors(dayData); if (aspectColors.length > 0) { const dotsContainer = document.createElement('div'); dotsContainer.classList.add('dots-container'); aspectColors.forEach(colorClass => { const dot = document.createElement('div'); dot.classList.add('event-dot', colorClass); dotsContainer.appendChild(dot); }); dayCell.appendChild(dotsContainer); } if (new Date(year, month - 1, dayNum).getDay() === 0 || festivos.includes(dayNum)) { dayCell.classList.add('holiday'); } dayCell.addEventListener('click', () => handleLandingDayClick(dayCell, new Date(year, month - 1, dayNum), dayData)); landingCalendarGrid.appendChild(dayCell); if (dayNum === todayDate && month === todayMonth && year === todayYear) { todayCellElement = dayCell; todayDataPayload = dayData; } } if (todayCellElement) { handleLandingDayClick(todayCellElement, today, todayDataPayload); } }
@@ -216,10 +231,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // ==                           INICIALIZACIÓN                            ==
     // =========================================================================
-    function initializeApp() {
-    // --- LISTENERS GLOBALES ---
+    async function initializeApp() {
+        // --- Primero, configuramos todos los listeners que no dependen de datos ---
         symbolBtn.addEventListener('click', showSymbolModal);
-        symbolBtnMobile.addEventListener('click', showSymbolModal); // Listener corregido
+        symbolBtnMobile.addEventListener('click', showSymbolModal);
+        
         if(installHelpBtn) installHelpBtn.addEventListener('click', showInstallHelpModal);
         
         backToLandingBtn.addEventListener('click', () => {
@@ -228,20 +244,15 @@ document.addEventListener('DOMContentLoaded', () => {
             mobileLandingContainer.style.display = 'flex';
         });
 
-        // --- NUEVO LISTENER PARA ONESIGNAL ---
-        enableNotificationsBtn.addEventListener('click', () => {
-            // Simplemente le decimos al SDK de OneSignal que pid el permiso.
-            OneSignal.push(function() {
-                console.log('Pidiendo permiso de notificación...');
-                OneSignal.showNativePrompt();
-            });
-        });
+        // --- AHORA, LA LÓGICA DE INICIALIZACIÓN SECUENCIAL ---
 
-        // --- INICIALIZACIÓN DE VISTAS ---
+        // 1. Esperamos a que la vista de aterrizaje móvil se dibuje por completo.
+        await initMobileLandingView();
+
+        // 2. SOLO DESPUÉS de que la primera vista esté lista, inicializamos el resto.
         initDesktopView();
         initMobileView();
-        initMobileLandingView();
-        // Ya no llamamos a setupNotifications() aquí.
+        setupNotifications(); // Asegúrate de que esta función exista si la llamas aquí
     }
 
     initializeApp();
