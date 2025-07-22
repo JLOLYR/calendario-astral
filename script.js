@@ -227,7 +227,18 @@ document.addEventListener('DOMContentLoaded', () => {
     async function showAndScrollToSymbol(key) { await showSymbolModal(); const targetId = 'simbologia-' + key.replace(/\s+/g, '-').toLowerCase(); const targetElement = document.getElementById(targetId); if (targetElement) { targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' }); } }
     async function showAspectsModal(date) { const modal = document.getElementById('modal-aspects'); const modalContent = document.getElementById('modal-aspects-content'); modalContent.innerHTML = `<div class="loader">Cargando...</div>`; modal.style.display = 'flex'; modalBackBtn.style.display = 'flex'; const year = date.getFullYear(); const month = date.getMonth() + 1; const day = date.getDate(); const data = await getMonthlyData(year, month); let html = `<h1>✨Aspectos</h1>`; let specialEventsHtml = ''; if (data && data.astro[day]) { const dayData = data.astro[day]; let eventName = ''; let eventIconPath = ''; if (dayData.Eclipse) { eventName = `Eclipse ${dayData.Eclipse.type} ${dayData.Eclipse.subtype}`; eventIconPath = ICON_PATHS.events[eventName]; } else if (FASES_LUNARES_PRINCIPALES.includes(dayData.Moon_Phase)) { eventName = dayData.Moon_Phase; eventIconPath = ICON_PATHS.events[eventName]; } if (eventName && eventIconPath) { specialEventsHtml = `<div class="special-event-row"><img src="${eventIconPath}" alt="${eventName}"><span>${eventName}</span></div>`; } const eventsContainer = document.createElement('div'); eventsContainer.classList.add('astro-events'); addEventsToCell(eventsContainer, dayData); const regularAspectsHtml = eventsContainer.innerHTML; if (specialEventsHtml || regularAspectsHtml) { html += specialEventsHtml + regularAspectsHtml; } else { html += '<p>No hay aspectos mayores.</p>'; } } else { html += '<p>No hay aspectos mayores.</p>'; } modalContent.innerHTML = html; const closeModal = () => { modal.style.display = 'none'; modalBackBtn.style.display = 'none'; }; modal.querySelector('.close-button').onclick = closeModal; modalBackBtn.onclick = closeModal; modal.onclick = (e) => { if (e.target === modal) closeModal(); }; }
     function showInstallHelpModal() { const modal = document.getElementById('modal-install'); modal.style.display = 'flex'; modalBackBtn.style.display = 'flex'; const closeModal = () => { modal.style.display = 'none'; modalBackBtn.style.display = 'none'; }; modal.querySelector('.close-button').onclick = closeModal; modalBackBtn.onclick = closeModal; modal.onclick = (e) => { if (e.target === modal) { closeModal(); } }; }
-
+    function setDynamicHeight() {
+        // La propiedad 'window.innerHeight' nos da la altura real de la
+        // ventana de visualización, sin incluir barras de navegador.
+        const vh = window.innerHeight;
+        // Seleccionamos nuestro contenedor principal.
+        const mobileLanding = document.getElementById('mobile-landing-container');
+        if (mobileLanding) {
+            // Le aplicamos la altura calculada directamente como un estilo en línea.
+            // Multiplicamos por 1 para asegurar que es un número.
+            mobileLanding.style.height = `${vh}px`;
+        }
+    }
     // =========================================================================
     // ==                           INICIALIZACIÓN                            ==
     // =========================================================================
@@ -244,12 +255,14 @@ document.addEventListener('DOMContentLoaded', () => {
             mobileLandingContainer.style.display = 'flex';
         });
 
-        // --- AHORA, LA LÓGICA DE INICIALIZACIÓN SECUENCIAL ---
-
-        // 1. Esperamos a que la vista de aterrizaje móvil se dibuje por completo.
-        await initMobileLandingView();
+        // --- LÓGICA DE AJUSTE DE ALTURA ---
+        // La ejecutamos una vez al cargar la página.
+        setDynamicHeight(); 
+        // Y la volvemos a ejecutar si el usuario gira el teléfono.
+        window.addEventListener('resize', setDynamicHeight);
 
         // 2. SOLO DESPUÉS de que la primera vista esté lista, inicializamos el resto.
+        await initMobileLandingView();
         initDesktopView();
         initMobileView();
         setupNotifications(); // Asegúrate de que esta función exista si la llamas aquí
