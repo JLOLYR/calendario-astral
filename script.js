@@ -48,22 +48,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const enableNotificationsBtn = document.getElementById('enable-notifications-btn');
 
     function setupNotifications() {
-        // --- INICIALIZACIÓN DE ONESIGNAL ---
-        window.OneSignal = window.OneSignal || [];
-        OneSignal.push(function() {
-            OneSignal.init({
-                // --- PEGA TU APP ID PÚBLICO AQUÍ ---
-                appId: "e52f122e-bf59-4379-a5e7-9ab4760c34c8", // Reemplaza con tu App ID
+        // Esta función se asegura de que el botón de notificaciones funcione.
+        if (enableNotificationsBtn) {
+            enableNotificationsBtn.addEventListener('click', () => {
+                // Simplemente le pedimos al SDK de OneSignal (cargado en index.html) que pida el permiso.
+                if (window.OneSignal) {
+                    window.OneSignal.push(function() {
+                        console.log('Pidiendo permiso de notificación a través de OneSignal...');
+                        OneSignal.showNativePrompt();
+                    });
+                } else {
+                    console.error('El SDK de OneSignal no está disponible.');
+                }
             });
-        });
-
-        // --- LÓGICA PARA EL BOTÓN ---
-        enableNotificationsBtn.addEventListener('click', () => {
-            console.log('Pidiendo permiso...');
-            OneSignal.push(function() {
-                OneSignal.registerForPushNotifications();
-            });
-        });
+        }
     }
     // --- Estado de la aplicación ---
     let selectedYear, selectedMonth;
@@ -74,52 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const MIN_YEAR = 2020;
     const MAX_YEAR = 2030;
     const dataCache = {};
-
-    // =========================================================================
-    // ==                  LÓGICA DE NOTIFICACIONES (FIREBASE)                ==
-    // =========================================================================
-    function setupNotifications() {
-        try {
-            // Pega aquí el objeto de configuración que copiaste de Firebase
-            const firebaseConfig = {
-                apiKey: "TU_API_KEY",
-                authDomain: "TU_AUTH_DOMAIN",
-                projectId: "TU_PROJECT_ID",
-                storageBucket: "TU_STORAGE_BUCKET",
-                messagingSenderId: "TU_MESSAGING_SENDER_ID",
-                appId: "TU_APP_ID"
-            };
-
-            firebase.initializeApp(firebaseConfig);
-            const messaging = firebase.messaging();
-
-            enableNotificationsBtn.addEventListener('click', () => {
-                console.log('Pidiendo permiso...');
-                Notification.requestPermission().then((permission) => {
-                    if (permission === 'granted') {
-                        console.log('Permiso de notificación concedido.');
-                        messaging.getToken({ vapidKey: 'PEGA_AQUÍ_TU_CLAVE_VAPID_DE_FIREBASE' })
-                        .then((currentToken) => {
-                            if (currentToken) {
-                                console.log('Token de FCM obtenido:', currentToken);
-                                alert('¡Genial! Recibirás un aviso astrológico cada día a las 9:00 am.');
-                            } else {
-                                console.log('No se pudo obtener el token.');
-                            }
-                        }).catch((err) => {
-                            console.log('Ocurrió un error al obtener el token.', err);
-                        });
-                    } else {
-                        console.log('Permiso de notificación denegado.');
-                    }
-                });
-            });
-        } catch (error) {
-            console.error("Error al inicializar Firebase:", error);
-            // Ocultamos el botón si Firebase falla, para no confundir al usuario
-            if(enableNotificationsBtn) enableNotificationsBtn.style.display = 'none';
-        }
-    }
 
     // =========================================================================
     // ==                         LÓGICA DE DATOS                             ==
@@ -243,12 +195,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==                           INICIALIZACIÓN                            ==
     // =========================================================================
     async function initializeApp() {
-        // --- Primero, configuramos todos los listeners que no dependen de datos ---
+        // Listeners globales
         symbolBtn.addEventListener('click', showSymbolModal);
         symbolBtnMobile.addEventListener('click', showSymbolModal);
-        
         if(installHelpBtn) installHelpBtn.addEventListener('click', showInstallHelpModal);
-        
         backToLandingBtn.addEventListener('click', () => {
             mobileContainer.style.display = 'none';
             backToLandingBtn.style.display = 'none';

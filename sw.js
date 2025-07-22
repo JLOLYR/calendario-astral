@@ -1,4 +1,4 @@
-const CACHE_NAME = 'calendario-astral-cache-v1.6'; // Aumentamos la versión OTRA VEZ
+const CACHE_NAME = 'calendario-astral-cache-vBeta'; // Aumentamos la versión OTRA VEZ
 
 const URLS_TO_CACHE = [
   '/', // La ruta raíz que pide el manifest
