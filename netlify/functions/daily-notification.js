@@ -20,51 +20,75 @@ function getDayClassification(dayData) {
 }
 
 exports.handler = async function(event, context) {
+    console.log("--- INICIANDO EJECUCIÓN DE FUNCIÓN DIARIA ---");
+
     const today = new Date();
     const year = today.getFullYear();
     const month = today.getMonth() + 1;
     const day = today.getDate();
+    
+    console.log(`Fecha de hoy: ${year}-${month}-${day}`);
 
-    const filePath = path.join(__dirname, "..", "..", "Calendar", String(year), `astro_data_${year}_${String(month).padStart(2, "0")}.json`);    let dayData;
+    const filePath = path.join(__dirname, "..", "..", "Calendar", String(year), `astro_data_${year}_${String(month).padStart(2, "0")}.json`);
+    console.log(`Intentando leer el archivo: ${filePath}`);
+    
+    let dayData;
     try {
         const file = fs.readFileSync(filePath, 'utf8');
         const monthlyData = JSON.parse(file);
         dayData = monthlyData[String(year)][String(month)][String(day)];
+        if (!dayData) {
+            console.log(`Archivo leído, pero no se encontraron datos para el día ${day}.`);
+            return { statusCode: 200, body: "No hay datos para hoy." };
+        }
+        console.log("Datos del día obtenidos exitosamente:", JSON.stringify(dayData, null, 2));
     } catch (error) {
-        console.error("Error al leer el archivo JSON:", error);
+        console.error("Error al leer o parsear el archivo JSON:", error);
         return { statusCode: 500, body: "Error al leer datos." };
     }
 
-    if (!dayData) { return { statusCode: 200, body: "No hay datos para hoy." }; }
-
-    let notificationPayload = getDayClassification(dayData);
-    if (!notificationPayload) { 
-        if (dayData.Eclipse) { notificationPayload = { title: "¡Día de Eclipse! 🌑", body: "La energía es potente y transformadora." }; }
-        else if (dayData.Moon_Phase === "Luna Nueva") { notificationPayload = { title: "¡Luna Nueva! 🌱", body: "Momento perfecto para plantar intenciones." }; }
-        else if (dayData.Moon_Phase === "Luna Llena") { notificationPayload = { title: "¡Luna Llena! 🌕", body: "Las emociones llegan a su clímax." }; }
-        else { return { statusCode: 200, body: "No hay notificación para hoy." }; }
+    console.log("Clasificando el tipo de día...");
+    const classification = getDayClassification(dayData);
+    
+    let notificationPayload = {};
+    
+    if (classification) {
+        console.log(`Día clasificado como: ${classification.title}`);
+        notificationPayload = classification;
+    } else if (dayData.Eclipse) {
+        console.log("Evento detectado: Eclipse");
+        notificationPayload = { title: "¡Día de Eclipse! 🌑", body: "La energía es potente y transformadora." };
+    } else if (dayData.Moon_Phase === "Luna Nueva") {
+        console.log("Evento detectado: Luna Nueva");
+        notificationPayload = { title: "¡Luna Nueva! 🌱", body: "Momento perfecto para plantar intenciones." };
+    } else if (dayData.Moon_Phase === "Luna Llena") {
+        console.log("Evento detectado: Luna Llena");
+        notificationPayload = { title: "¡Luna Llena! 🌕", body: "Las emociones llegan a su clímax." };
+    } else {
+        console.log("No se encontró ninguna clasificación o evento especial. No se enviará notificación.");
+        return { statusCode: 200, body: "No hay notificación para hoy." };
     }
 
-    // --- CÓDIGO CORREGIDO Y SEGURO ---
-    await fetch('https://onesignal.com/api/v1/notifications', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json; charset=utf-8',
-            // Leemos la clave secreta desde las variables de entorno de Netlify
-            'Authorization': `Basic ${process.env.ONESIGNAL_REST_API_KEY}`
-        },
-        body: JSON.stringify({
-            // Leemos el App ID desde las variables de entorno de Netlify
-            app_id: process.env.ONESIGNAL_APP_ID,
-            included_segments: ["Subscribed Users"],
-            headings: { "en": notificationPayload.title },
-            contents: { "en": notificationPayload.body },
-            web_url: "https://TU_URL_DE_NETLIFY_AQUI/" // Reemplaza con la URL real de tu app
-        })
-    });
-
-    return {
-        statusCode: 200,
-        body: "Notificación enviada."
-    };
+    console.log(`Enviando notificación a OneSignal con el título: "${notificationPayload.title}"`);
+    try {
+        await fetch('https://onesignal.com/api/v1/notifications', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': `Basic ${process.env.ONESIGNAL_REST_API_KEY}`
+            },
+            body: JSON.stringify({
+                app_id: process.env.ONESIGNAL_APP_ID,
+                included_segments: ["Subscribed Users"],
+                headings: { "en": notificationPayload.title },
+                contents: { "en": notificationPayload.body },
+                web_url: "https://TU_URL_DE_NETLIFY_AQUI/"
+            })
+        });
+        console.log("Notificación enviada a OneSignal exitosamente.");
+        return { statusCode: 200, body: "Notificación enviada." };
+    } catch (error) {
+        console.error("Error al enviar la notificación a OneSignal:", error);
+        return { statusCode: 500, body: "Error al enviar notificación." };
+    }
 };
