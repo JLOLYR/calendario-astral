@@ -25,8 +25,7 @@ exports.handler = async function(event, context) {
     const month = today.getMonth() + 1;
     const day = today.getDate();
 
-    const filePath = path.join(__dirname, `../../Calendar/${year}/astro_data_${year}_${String(month).padStart(2, '0')}.json`);
-    let dayData;
+    const filePath = path.join(__dirname, "..", "..", "Calendar", String(year), `astro_data_${year}_${String(month).padStart(2, "0")}.json`);    let dayData;
     try {
         const file = fs.readFileSync(filePath, 'utf8');
         const monthlyData = JSON.parse(file);
