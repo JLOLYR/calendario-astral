@@ -160,7 +160,13 @@ body {
         display: flex;
         flex-direction: column;
         width: 100%;
-        height: 100vh;
+        
+        /* --- CAMBIOS CLAVE PARA ESTABILIZAR EL DISEÑO --- */
+        /* Usamos la altura dinámica de la ventana gráfica */
+        height: 100vh; 
+        /* Forzamos a que no se pueda hacer scroll en este contenedor */
+        overflow: hidden; 
+
         box-sizing: border-box;
         background-color: var(--color-fondo-pagina);
     }
