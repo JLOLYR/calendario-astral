@@ -110,6 +110,14 @@ exports.handler = async function(event, context) {
         return { statusCode: 500, body: "Variables de entorno no configuradas." };
     }
     console.log(`App ID encontrado: ${appId.substring(0, 4)}... (verificado)`);
+
+    console.log(`API Key encontrada: ${apiKey ? apiKey.substring(0, 4) + '...' : 'NO ENCONTRADA O INDEFINIDA'}`);
+
+    if (!appId || !apiKey) {
+        console.error("¡ERROR CRÍTICO! Las variables de entorno ONESIGNAL_APP_ID o ONESIGNAL_REST_API_KEY no están definidas en Netlify.");
+        return { statusCode: 500, body: "Variables de entorno no configuradas." };
+    }
+    console.log(`App ID encontrado: ${appId.substring(0, 4)}... (verificado)`);
     
     try {
         const response = await fetch('https://onesignal.com/api/v1/notifications', {
