@@ -128,7 +128,8 @@ exports.handler = async function(event, context) {
             },
             body: JSON.stringify({
                 app_id: appId,
-                included_segments: ["Active Subscriptions"],
+                //included_segments: ["Engaged Subscriptions"],
+                include_player_ids: ["TU_PLAYER_ID_DE_PRUEBA"], // Agrega esta línea con un ID válido
                 headings: { "en": notificationPayload.title },
                 contents: { "en": notificationPayload.body },
                 web_url: "https://calm-cactus-1f88bf.netlify.app/" // Reemplaza con tu URL real
