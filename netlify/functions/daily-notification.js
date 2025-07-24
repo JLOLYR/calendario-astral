@@ -120,7 +120,7 @@ exports.handler = async function(event, context) {
     console.log(`App ID encontrado: ${appId.substring(0, 4)}... (verificado)`);
     
     try {
-        const response = await fetch('https://onesignal.com/api/v1/notifications', {
+        const response = await fetch('https://api.onesignal.com/v1/notifications', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
