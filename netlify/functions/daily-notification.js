@@ -124,7 +124,7 @@ exports.handler = async function(event, context) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
-                'Authorization': `Basic ${apiKey}`
+                'Authorization': `key ${apiKey}`
             },
             body: JSON.stringify({
                 app_id: appId,
