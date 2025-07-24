@@ -104,7 +104,7 @@ exports.handler = async function(event, context) {
 
     console.log(`Enviando notificación a OneSignal con el título: "${notificationPayload.title}"`);
     const appId = process.env.ONESIGNAL_APP_ID;
-    const apiKey = process.env.ONESIGNAL_REST_API_KEY;
+    const apiKey = process.env.REST_API_KEY;
     if (!appId || !apiKey) {
         console.error("¡ERROR CRÍTICO! Las variables de entorno ONESIGNAL_APP_ID o ONESIGNAL_REST_API_KEY no están definidas en Netlify.");
         return { statusCode: 500, body: "Variables de entorno no configuradas." };
