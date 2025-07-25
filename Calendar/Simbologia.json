@@ -195,7 +195,7 @@
     "Día de Tensión": {
       "nombre": "Día de Tensión",
       "gif": "assets/aspects/tension.gif",
-      "condicion": "≥ 1 Cuadraturas más ≥ 1 Oposiciones",
+      "condicion": "≥ 2 Cuadraturas más ≥ 1 Oposiciones",
       "descripcion": "La presión es alta y los desafíos son significativos. Es un día que exige paciencia, conciencia y un manejo cuidadoso de la energía. Evita las confrontaciones innecesarias y enfócate en lo esencial."
     },
     "Día de Revelación": {
@@ -209,6 +209,24 @@
       "gif": "assets/aspects/cambio.gif",
       "condicion": "Un planeta (no la Luna) cambia de signo",
       "descripcion": "El tono energético general se modifica. Un área de tu vida comienza un nuevo capítulo. Es un día para adaptarse a nuevas corrientes y estar abierto a diferentes perspectivas."
+    },
+    "Día Amoroso": {
+      "nombre": "Día Amoroso",
+      "gif": "assets/aspects/amor.gif",
+      "condicion": "Aspecto armónico (conjunción, trígono o sextil) entre Sol y Venus.",
+      "descripcion": "La energía del amor, la belleza y el placer está exaltada. Es un día ideal para citas, socializar, disfrutar del arte y cuidar de ti mismo. Las relaciones personales fluyen con facilidad y armonía."
+    },
+    "Día Suertudo": {
+      "nombre": "Día Suertudo",
+      "gif": "assets/aspects/trebol.gif",
+      "condicion": "Aspecto armónico (conjunción, trígono o sextil) entre Júpiter y el Sol o Venus.",
+      "descripcion": "La suerte y la expansión están de tu lado. Es un día favorable para tomar riesgos calculados, iniciar nuevos proyectos, aprender y buscar oportunidades de crecimiento. La confianza y el optimismo están en su punto más alto."
+    },
+    "Día de Mala Suerte": {
+      "nombre": "Día de Mala Suerte",
+      "gif": "assets/aspects/diablo.gif",
+      "condicion": "Aspecto tenso (conjunción, cuadratura u oposición) entre Marte y Saturno.",
+      "descripcion": "La energía puede sentirse bloqueada o frustrante. Es un día para actuar con extrema cautela, paciencia y disciplina. Evita las confrontaciones, los riesgos innecesarios y las decisiones impulsivas. Enfócate en el trabajo duro y metódico."
     }
   }
 }

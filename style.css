@@ -156,22 +156,22 @@ body {
     }
 
     /* 2. MOSTRAR LA VISTA DE ATERRIZAJE (LANDING) */
-    #mobile-landing-container {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        
-        /* ALTURA DE RESPALDO: Usamos 100% para que intente llenar su contenedor padre (el body) */
-        height: 100%; 
-        
-        position: fixed; /* Lo fijamos a la ventana para asegurar el tamaño */
-        top: 0;
-        left: 0;
+#mobile-landing-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    
+    /* ALTURA DE RESPALDO: Usamos 100% para que intente llenar su contenedor padre (el body) */
+    height: 100%; 
+    
+    position: fixed; /* Lo fijamos a la ventana para asegurar el tamaño */
+    top: 0;
+    left: 0;
 
-        overflow: hidden; 
-        box-sizing: border-box;
-        background-color: var(--color-fondo-pagina);
-    }
+    overflow: hidden; 
+    box-sizing: border-box;
+    background-color: var(--color-fondo-pagina);
+}
     
     /* VISTA DE DETALLE DIARIA (OCULTA HASTA QUE SE LLAME POR JS) */
     #mobile-view-container {
@@ -309,6 +309,18 @@ body {
         width: 24px;
         height: 24px;
     }
+    .special-day-row.day-love span {
+        color: #d6507c; /* Rosa */
+    }
+
+    .special-day-row.day-lucky span {
+        color: #4CAF50; /* Verde */
+    }
+
+    .special-day-row.day-bad-luck span {
+        color: #212121; /* Negro/Gris Oscuro */
+    }
+
         /* === AÑADE ESTA NUEVA REGLA PARA LAS LÍNEAS DE SEPARACIÓN === */
     .details-separator {
         width: 90%;
@@ -682,4 +694,48 @@ body {
     #calendar-container::before { display: none; }
     .calendar-cell { border: 1px solid #ccc; page-break-inside: avoid; }
     * { -webkit-print-color-adjust: exact !important; color-adjust: exact !important; }
+}
+
+/*
+============================================================
+==                    ESTILOS PARA ICONOS CLICKABLES        ==
+============================================================
+*/
+
+/* Estilos generales para los iconos que representan elementos del calendario (planetas, signos, aspectos) */
+.planets-icon,
+.signs-icon,
+.aspects-icon,
+.day-event-icon /* También los iconos de día como eclipses y fases lunares */
+{
+    cursor: pointer; /* Indica que el elemento es clickeable */
+    transition: transform 0.2s ease-in-out; /* Añade una transición suave para el efecto de escala */
+}
+
+/* Efecto al pasar el ratón por encima (hover) o al tocar/activar (active) */
+.planets-icon:hover,
+.signs-icon:hover,
+.aspects-icon:hover,
+.day-event-icon:hover,
+.planets-icon:active,
+.signs-icon:active,
+.aspects-icon:active,
+.day-event-icon:active
+{
+    transform: scale(1.15); /* Aumenta el tamaño un 15% */
+    z-index: 5; /* Asegura que el icono clickeado esté por encima de otros elementos */
+}
+
+/* Si quieres que el efecto sea más pronunciado en el 'active' (cuando se hace clic) */
+.planets-icon:active,
+.signs-icon:active,
+.aspects-icon:active,
+.day-event-icon:active {
+    transform: scale(1.25); /* Un poco más grande al hacer clic */
+}
+
+/* Si quieres que el efecto sea sutil para los puntos de aspectos */
+.aspect-dot {
+    /* Ya tienes estas reglas, pero si quisieras añadirles un efecto hover, podrías hacerlo aquí. */
+    /* Por ahora, los puntos no necesitan un efecto de escala, se manejan con el punto */
 }

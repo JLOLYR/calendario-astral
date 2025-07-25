@@ -2,37 +2,26 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Calendario Astral</title>
     
-    <!-- Enlaces para PWA -->
+    <!-- PWA & Theme -->
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="assets/icons/icon-192x192.png" type="image/png">
-    <meta name="theme-color" content="#887a68">
+    <meta name="theme-color" content="#1a237e"> <!-- Color para la nueva UI móvil -->
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192x192.png">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
 
-    <!-- Fuentes y Estilos -->
-    <link href="https://fonts.googleapis.com/css2?family=Linux+Libertine:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- FUENTES CORREGIDAS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Fuente #1: Inter (para la nueva UI móvil) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Fuente #2: Linux Libertine (para la vista de escritorio) -->
+    <link href="https://fonts.googleapis.com/css2?family=Linux+Libertine:wght@400;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style.css">
     
-    <!-- Librerías Externas -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
-
-    <!-- ========================================================================= -->
-    <!-- ===        SDK DE ONESIGNAL (CORREGIDO Y EN EL LUGAR CORRECTO)        === -->
-    <!-- ========================================================================= -->
-    <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
-    <script>
-      window.OneSignal = window.OneSignal || [];
-      OneSignal.push(function() {
-        OneSignal.init({
-          // --- ¡¡¡IMPORTANTE!!! ---
-          // Reemplaza "YOUR_APP_ID" con tu App ID real de OneSignal
-          appId:"e52f122e-bf59-4379-a5e7-9ab4760c34c8", // Pega tu App ID aquí
-        });
-      });
-    </script>
-    <!-- ========================================================================= -->
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
     <!-- ===== VISTA DE ATERRIZAJE MÓVIL (CORREGIDA) ===== -->
