@@ -404,12 +404,14 @@ body {
         /* 1. Usamos 'flex' para controlar el crecimiento y encogimiento de forma robusta. */
         flex: 1 1 0;
         /* 2. ¡La magia! Permite el scroll vertical SÓLO dentro de este elemento si es necesario. */
-        overflow-y: auto; 
+        overflow-y: auto;
+        overflow-x: hidden; 
         
         padding: 8px 5px 20px 5px; /* 3. Añadimos más padding abajo para que haya espacio al final del scroll. */
         background-color: #f1f1f1;
         border-top: none;
         border-bottom: 1px solid #e0e0e0;
+        min-width: 0;
     }
     .landing-day-cell { 
         display: flex; 
@@ -437,6 +439,9 @@ body {
         display: flex;
         gap: 3px;
         z-index: 1; 
+        flex-wrap: wrap; /* Permite que los puntos pasen a la siguiente línea si no caben */
+        justify-content: center; /* Centra los puntos en su contenedor */
+        padding: 0 1px; /* Añade un mínimo espacio lateral para que no se peguen al borde */
     }
     .event-dot { width: 5px; height: 5px; border-radius: 50%; }
     .dot-conjunction { background-color: #0101ff; }
