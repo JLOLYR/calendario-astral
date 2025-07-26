@@ -19,7 +19,16 @@ document.addEventListener('DOMContentLoaded', () => {
             'Día de Mala Suerte': 'assets/aspects/diablo.gif'
         }
     };
-    
+
+    const PERSONAL_EVENT_TYPES = {
+        cumpleanos: { name: '🎂 Cumpleaños', icon: 'assets/aspects/cumpleanos.gif' },
+        reunion:    { name: '👥 Reunión',    icon: 'assets/aspects/reunion.gif' },
+        contrato:   { name: '✍️ Contrato',   icon: 'assets/aspects/firma.gif' },
+        examen:     { name: '📝 Examen',     icon: 'assets/aspects/prueba.gif' },
+        cita:       { name: '❤️ Cita',       icon: 'assets/aspects/cita.gif' },
+        medico:     { name: '⚕️ Médico',      icon: 'assets/aspects/medico.gif' },
+        viaje:      { name: '✈️ Viaje',       icon: 'assets/aspects/viaje.gif' },
+    };
     
     // --- Elementos del DOM ---
     const calendarContainer = document.getElementById('calendar-container');
@@ -52,6 +61,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalBackBtn = document.getElementById('modal-back-btn');
     const installHelpBtn = document.getElementById('install-help-btn');
     const enableNotificationsBtn = document.getElementById('enable-notifications-btn');
+    const modalAddEvent = document.getElementById('modal-add-event');
+    const eventTypeSelector = document.getElementById('event-type-selector');
+    const eventNameInput = document.getElementById('event-name-input');
+    const eventDateInput = document.getElementById('event-date-input');
+    const saveEventBtn = document.getElementById('save-event-btn');
+    const cancelEventBtn = document.getElementById('cancel-event-btn');
+    const landingAboutBtn = document.getElementById('landing-about-btn');
 
     // --- Estado de la aplicación ---
     let selectedYear, selectedMonth;
@@ -66,7 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // ==                     FUNCIONES AUXILIARES Y COMPARTIDAS              ==
     // =========================================================================
-    
     const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
     const countEvents = (data) => {
@@ -186,6 +201,48 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
     
+    // FUNCIONES PARA MANEJAR EVENTOS PERSONALES (localStorage)
+    function getPersonalEvents() {
+        const events = localStorage.getItem('personalCalendarEvents');
+        return events ? JSON.parse(events) : {};
+    }
+
+    function savePersonalEvents(events) {
+        localStorage.setItem('personalCalendarEvents', JSON.stringify(events));
+    }
+
+    function addPersonalEvent(date, eventData) {
+        const allEvents = getPersonalEvents();
+        const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        
+        if (!allEvents[dateKey]) {
+            allEvents[dateKey] = [];
+        }
+        
+        allEvents[dateKey].push(eventData);
+        savePersonalEvents(allEvents);
+    }
+    
+    function deletePersonalEvent(date, eventIndex) {
+
+        const allEvents = getPersonalEvents();
+        const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        
+        if (allEvents[dateKey] && allEvents[dateKey][eventIndex]) {
+            // Elimina el evento del array de ese día
+            allEvents[dateKey].splice(eventIndex, 1);
+
+            // Si ya no quedan eventos ese día, elimina la entrada del día completo
+            if (allEvents[dateKey].length === 0) {
+                delete allEvents[dateKey];
+            }
+
+            savePersonalEvents(allEvents);
+            renderLandingView(landingDate); // Refresca la vista para mostrar los cambios
+        }
+    }
+
+
     // =========================================================================
     // ==                         LÓGICA DE DATOS                             ==
     // =========================================================================
@@ -255,8 +312,122 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('click', () => { landingMenuDropdown.style.display = 'none'; });
         return renderLandingView(landingDate);
     }
+
     function changeLandingMonth(direction) { landingDate.setMonth(landingDate.getMonth() + direction); renderLandingView(landingDate); }
-    async function renderLandingView(date) { const year = date.getFullYear(); const month = date.getMonth() + 1; const today = new Date(); const todayDate = today.getDate(); const todayMonth = today.getMonth() + 1; const todayYear = today.getFullYear(); let todayCellElement = null; let todayDataPayload = {}; landingMonthYear.textContent = `${NOMBRES_MESES[month - 1]} ${year}`; landingCalendarGrid.innerHTML = '<div class="loader">Cargando...</div>'; landingDayDetails.innerHTML = '<p class="initial-prompt">Toca un día.</p>'; if (selectedDayCell) { selectedDayCell.classList.remove('selected'); selectedDayCell = null; } const data = await getMonthlyData(year, month); landingCalendarGrid.innerHTML = ''; if (!data) { landingCalendarGrid.innerHTML = `<p class="loader">No hay datos.</p>`; return; } const firstDayOfMonth = new Date(year, month - 1, 1).getDay(); const emptyCells = (firstDayOfMonth === 0) ? 6 : firstDayOfMonth - 1; for (let i = 0; i < emptyCells; i++) { const emptyCell = document.createElement('div'); emptyCell.classList.add('landing-day-cell', 'empty'); landingCalendarGrid.appendChild(emptyCell); } const daysInMonth = new Date(year, month, 0).getDate(); for (let dayNum = 1; dayNum <= daysInMonth; dayNum++) { const dayCell = document.createElement('div'); dayCell.classList.add('landing-day-cell'); const dateText = document.createElement('span'); dateText.classList.add('date-text'); dateText.textContent = dayNum; const selectionCircle = document.createElement('div'); selectionCircle.classList.add('selection-circle'); dayCell.appendChild(selectionCircle); dayCell.appendChild(dateText); const dayData = data.astro[String(dayNum)] || {}; const festivos = data.festivos || []; let specialEventIconPath = ''; let specialEventClasses = 'event-day-marker'; if (dayData.Eclipse) { specialEventIconPath = 'assets/aspects/eclipse.gif'; } else if (dayData.Moon_Phase === 'Luna Nueva') { specialEventIconPath = 'assets/aspects/luna_nueva.gif'; specialEventClasses += ' moon-event-marker'; } else if (dayData.Moon_Phase === 'Luna Llena') { specialEventIconPath = 'assets/aspects/luna_llena.gif'; specialEventClasses += ' moon-event-marker'; } if (specialEventIconPath) { const eventIcon = document.createElement('img'); eventIcon.src = specialEventIconPath; eventIcon.className = specialEventClasses; dayCell.appendChild(eventIcon); } if (countEvents(dayData) >= 3) { const warningIcon = document.createElement('img'); warningIcon.src = ICON_PATHS.alerts.Warning; warningIcon.className = 'intense-day-marker'; dayCell.appendChild(warningIcon); } const aspectColors = getAspectColors(dayData); if (aspectColors.length > 0) { const dotsContainer = document.createElement('div'); dotsContainer.classList.add('dots-container'); aspectColors.forEach(colorClass => { const dot = document.createElement('div'); dot.classList.add('event-dot', colorClass); dotsContainer.appendChild(dot); }); dayCell.appendChild(dotsContainer); } if (new Date(year, month - 1, dayNum).getDay() === 0 || festivos.includes(dayNum)) { dayCell.classList.add('holiday'); } dayCell.addEventListener('click', () => handleLandingDayClick(dayCell, new Date(year, month - 1, dayNum), dayData)); landingCalendarGrid.appendChild(dayCell); if (dayNum === todayDate && month === todayMonth && year === todayYear) { todayCellElement = dayCell; todayDataPayload = dayData; } } if (todayCellElement) { handleLandingDayClick(todayCellElement, today, todayDataPayload); } }
+    
+    async function renderLandingView(date) {
+        const personalEvents = getPersonalEvents(); // **CORRECCIÓN #1**
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const today = new Date();
+        const todayDate = today.getDate();
+        const todayMonth = today.getMonth() + 1;
+        const todayYear = today.getFullYear();
+        let todayCellElement = null;
+        let todayDataPayload = {};
+        landingMonthYear.textContent = `${NOMBRES_MESES[month - 1]} ${year}`;
+        landingCalendarGrid.innerHTML = '<div class="loader">Cargando...</div>';
+        landingDayDetails.innerHTML = '<p class="initial-prompt">Toca un día.</p>';
+        if (selectedDayCell) {
+            selectedDayCell.classList.remove('selected');
+            selectedDayCell = null;
+        }
+        const data = await getMonthlyData(year, month);
+        landingCalendarGrid.innerHTML = '';
+        if (!data) {
+            landingCalendarGrid.innerHTML = `<p class="loader">No hay datos.</p>`;
+            return;
+        }
+        const firstDayOfMonth = new Date(year, month - 1, 1).getDay();
+        const emptyCells = (firstDayOfMonth === 0) ? 6 : firstDayOfMonth - 1;
+        for (let i = 0; i < emptyCells; i++) {
+            const emptyCell = document.createElement('div');
+            emptyCell.classList.add('landing-day-cell', 'empty');
+            landingCalendarGrid.appendChild(emptyCell);
+        }
+        const daysInMonth = new Date(year, month, 0).getDate();
+        for (let dayNum = 1; dayNum <= daysInMonth; dayNum++) {
+            const dayCell = document.createElement('div');
+            dayCell.classList.add('landing-day-cell');
+            const dateText = document.createElement('span');
+            dateText.classList.add('date-text');
+            dateText.textContent = dayNum;
+            const selectionCircle = document.createElement('div');
+            selectionCircle.classList.add('selection-circle');
+            dayCell.appendChild(selectionCircle);
+            dayCell.appendChild(dateText);
+            const dayData = data.astro[String(dayNum)] || {};
+            const festivos = data.festivos || [];
+            let specialEventIconPath = '';
+            let specialEventClasses = 'event-day-marker';
+            if (dayData.Eclipse) {
+                specialEventIconPath = 'assets/aspects/eclipse.gif';
+            } else if (dayData.Moon_Phase === 'Luna Nueva') {
+                specialEventIconPath = 'assets/aspects/luna_nueva.gif';
+                specialEventClasses += ' moon-event-marker';
+            } else if (dayData.Moon_Phase === 'Luna Llena') {
+                specialEventIconPath = 'assets/aspects/luna_llena.gif';
+                specialEventClasses += ' moon-event-marker';
+            }
+            if (specialEventIconPath) {
+                const eventIcon = document.createElement('img');
+                eventIcon.src = specialEventIconPath;
+                eventIcon.className = specialEventClasses;
+                dayCell.appendChild(eventIcon);
+            }
+            if (countEvents(dayData) >= 3) {
+                const warningIcon = document.createElement('img');
+                warningIcon.src = ICON_PATHS.alerts.Warning;
+                warningIcon.className = 'intense-day-marker';
+                dayCell.appendChild(warningIcon);
+            }
+            const aspectColors = getAspectColors(dayData);
+            if (aspectColors.length > 0) {
+                const dotsContainer = document.createElement('div');
+                dotsContainer.classList.add('dots-container');
+                aspectColors.forEach(colorClass => {
+                    const dot = document.createElement('div');
+                    dot.classList.add('event-dot', colorClass);
+                    dotsContainer.appendChild(dot);
+                });
+                dayCell.appendChild(dotsContainer);
+            }
+            if (new Date(year, month - 1, dayNum).getDay() === 0 || festivos.includes(dayNum)) {
+                dayCell.classList.add('holiday');
+            }
+
+            // **CORRECCIÓN #2: MOSTRAR ICONO PERSONAL**
+            const dateKey = `${year}-${String(month).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
+            const dayPersonalEvents = personalEvents[dateKey];
+
+            // Lógica de prioridad: el evento personal tiene más importancia que el warning.
+            if (dayPersonalEvents && dayPersonalEvents.length > 0) {
+                // Si hay un evento personal, mostrar su icono.
+                const eventIcon = document.createElement('img');
+                eventIcon.src = dayPersonalEvents[0].icon;
+                eventIcon.className = 'personal-event-icon-grid'; // Usa el estilo de la esquina derecha
+                eventIcon.title = dayPersonalEvents[0].name;
+                dayCell.appendChild(eventIcon);
+            } else if (countEvents(dayData) >= 3) {
+                // Si NO hay evento personal PERO el día es intenso, mostrar el warning.
+                const warningIcon = document.createElement('img');
+                warningIcon.src = ICON_PATHS.alerts.Warning;
+                warningIcon.className = 'intense-day-marker'; // Este ya estaba posicionado a la derecha
+                dayCell.appendChild(warningIcon);
+            }
+            // **FIN DE CORRECCIÓN #2**
+
+            dayCell.addEventListener('click', () => handleLandingDayClick(dayCell, new Date(year, month - 1, dayNum), dayData));
+            landingCalendarGrid.appendChild(dayCell);
+            if (dayNum === todayDate && month === todayMonth && year === todayYear) {
+                todayCellElement = dayCell;
+                todayDataPayload = dayData;
+            }
+        }
+        if (todayCellElement) {
+            handleLandingDayClick(todayCellElement, today, todayDataPayload);
+        }
+    }
     
     function getSpecialDayClassification(dayData) {
         if (!dayData || !dayData.Aspects) return null;
@@ -297,7 +468,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleLandingDayClick(cell, date, dayData) {
-        if (selectedDayCell === cell) { navigateToDetailView(date); return; }
+        if (selectedDayCell === cell) {
+            navigateToDetailView(date);
+            return;
+        }
         if (selectedDayCell) selectedDayCell.classList.remove('selected');
         cell.classList.add('selected');
         selectedDayCell = cell;
@@ -330,26 +504,113 @@ document.addEventListener('DOMContentLoaded', () => {
             contentWrapper.appendChild(intenseDayRow);
         }
 
-        if (contentWrapper.hasChildNodes()) { const separatorTop = document.createElement('div'); separatorTop.className = 'details-separator'; contentWrapper.appendChild(separatorTop); hasContent = true; }
+        if (contentWrapper.hasChildNodes()) {
+            const separatorTop = document.createElement('div');
+            separatorTop.className = 'details-separator';
+            contentWrapper.appendChild(separatorTop);
+            hasContent = true;
+        }
         const specialEventsDiv = document.createElement('div');
         if (dayData.Eclipse) { const eventName = `Eclipse ${dayData.Eclipse.type} ${dayData.Eclipse.subtype}`; const eventIconPath = ICON_PATHS.events[eventName]; if (eventIconPath) specialEventsDiv.innerHTML += `<div class="special-event-row"><img src="${eventIconPath}" alt="${eventName}"><span>${eventName}</span></div>`; }
         else if (FASES_LUNARES_PRINCIPALES.includes(dayData.Moon_Phase)) { const eventName = dayData.Moon_Phase; const eventIconPath = ICON_PATHS.events[eventName]; if (eventIconPath) specialEventsDiv.innerHTML += `<div class="special-event-row"><img src="${eventIconPath}" alt="${eventName}"><span>${eventName}</span></div>`; }
-        if (specialEventsDiv.hasChildNodes()) { contentWrapper.appendChild(specialEventsDiv); hasContent = true; }
+        if (specialEventsDiv.hasChildNodes()) {
+            contentWrapper.appendChild(specialEventsDiv);
+            hasContent = true;
+        }
         
         const eventsContainer = document.createElement('div');
         addEventsToCell(eventsContainer, dayData);
-        if (eventsContainer.hasChildNodes()) { contentWrapper.appendChild(eventsContainer); hasContent = true; }
+        if (eventsContainer.hasChildNodes()) {
+            contentWrapper.appendChild(eventsContainer);
+            hasContent = true;
+        }
         
         if (hasContent) {
             landingDayDetails.appendChild(contentWrapper);
-            const separatorBottom = document.createElement('div'); separatorBottom.className = 'details-separator'; landingDayDetails.appendChild(separatorBottom);
-            const interpretationBtn = document.createElement('button');
-            interpretationBtn.textContent = 'Ver Interpretación';
-            interpretationBtn.classList.add('interpretation-btn');
-            interpretationBtn.onclick = () => navigateToDetailView(currentDetailDate);
-            landingDayDetails.appendChild(interpretationBtn);
-        } else {
-            landingDayDetails.innerHTML = '<p class="initial-prompt">No hay eventos.</p>';
+        }
+
+        // Crear el contenedor para los 3 nuevos botones
+        const actionsContainer = document.createElement('div');
+        actionsContainer.className = 'details-actions-container';
+
+        // **CORRECCIÓN #3: MOSTRAR DETALLES DE EVENTOS PERSONALES**
+        const personalEvents = getPersonalEvents();
+        const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        const dayPersonalEvents = personalEvents[dateKey];
+
+        if (dayPersonalEvents && dayPersonalEvents.length > 0) {
+            // Añadir separador dorado ANTES de los eventos
+            const separator = document.createElement('div');
+            separator.className = 'personal-events-separator';
+            landingDayDetails.appendChild(separator);
+
+            const personalEventsContainer = document.createElement('div');
+            personalEventsContainer.className = 'personal-events-container';
+
+            // Usamos .forEach con el índice para la función de borrado
+            dayPersonalEvents.forEach((event, index) => {
+                const eventRow = document.createElement('div');
+                eventRow.className = 'personal-event-details-row';
+                
+                // Crear el botón de eliminar
+                const deleteBtn = document.createElement('span');
+                deleteBtn.className = 'delete-event-btn';
+                deleteBtn.innerHTML = '×'; // '×' (equis de multiplicar)
+                deleteBtn.title = 'Eliminar evento';
+                // ¡La lógica de borrado!
+                deleteBtn.onclick = () => deletePersonalEvent(date, index);
+
+                eventRow.innerHTML = `<img src="${event.icon}" alt="${event.name}"><span>${event.name}</span>`;
+                eventRow.appendChild(deleteBtn); // Añadir la 'X' al final de la fila
+                
+                personalEventsContainer.appendChild(eventRow);
+            });
+
+            landingDayDetails.appendChild(personalEventsContainer);
+            hasContent = true;
+        }
+        // **FIN DE CORRECCIÓN #3**
+
+        if (contentWrapper.hasChildNodes() || (dayPersonalEvents && dayPersonalEvents.length > 0)) {
+            const separatorBottom = document.createElement('div');
+            separatorBottom.className = 'details-separator';
+            landingDayDetails.appendChild(separatorBottom);
+        }
+        
+        // --- SECCIÓN DE BOTONES ---
+        // 1. Botón de Ver Interpretación (Izquierda)
+        const interpretationBtn = document.createElement('button');
+        interpretationBtn.className = 'details-action-btn';
+        interpretationBtn.innerHTML = `<img src="assets/icons/verinterpretacion.png" alt="Ver Interpretación"><span>ver interpretación</span>`;
+        interpretationBtn.onclick = () => navigateToDetailView(currentDetailDate);
+        interpretationBtn.title = "Ver Interpretación del Día";
+
+        // 2. Botón de Información (Centro)
+        const infoBtn = document.createElement('button');
+        infoBtn.className = 'details-action-btn';
+        infoBtn.innerHTML = `<img src="assets/icons/info.png" alt="Información Adicional"><span>info</span>`;
+        infoBtn.onclick = showExplanationModal;
+        infoBtn.title = "Información Adicional";
+
+        // 3. Botón de Añadir Evento (Derecha) - Corregido
+        const addEventBtn = document.createElement('button');
+        addEventBtn.className = 'details-action-btn';
+        addEventBtn.innerHTML = `<img src="assets/icons/mas.png" alt="Añadir Evento Personal"><span>agregar evento</span>`;
+        addEventBtn.onclick = () => openAddEventModal(currentDetailDate); // Corregido aquí
+        addEventBtn.title = "Añadir Evento Personal";
+
+        // Añadir los botones al contenedor
+        actionsContainer.appendChild(interpretationBtn);
+        actionsContainer.appendChild(infoBtn);
+        actionsContainer.appendChild(addEventBtn);
+
+        // Añadir el contenedor de botones a los detalles del día
+        landingDayDetails.appendChild(actionsContainer);
+        
+        if (!hasContent) {
+            landingDayDetails.innerHTML = '<p class="initial-prompt">No hay eventos para mostrar.</p>';
+            // Se vuelve a añadir el contenedor de acciones vacío para que los botones aparezcan incluso si no hay eventos
+            landingDayDetails.appendChild(actionsContainer);
         }
     }
 
@@ -387,29 +648,149 @@ document.addEventListener('DOMContentLoaded', () => {
     async function showAndScrollToSymbol(key) { await showSymbolModal(); const targetId = 'simbologia-' + key.replace(/\s+/g, '-').toLowerCase(); const targetElement = document.getElementById(targetId); if (targetElement) { targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' }); } }
     async function showAspectsModal(date) { const modal = document.getElementById('modal-aspects'); const modalContent = document.getElementById('modal-aspects-content'); modalContent.innerHTML = `<div class="loader">Cargando...</div>`; modal.style.display = 'flex'; modalBackBtn.style.display = 'flex'; const year = date.getFullYear(); const month = date.getMonth() + 1; const day = date.getDate(); const data = await getMonthlyData(year, month); let html = `<h1>✨Aspectos</h1>`; let specialEventsHtml = ''; if (data && data.astro[day]) { const dayData = data.astro[day]; let eventName = ''; let eventIconPath = ''; if (dayData.Eclipse) { eventName = `Eclipse ${dayData.Eclipse.type} ${dayData.Eclipse.subtype}`; eventIconPath = ICON_PATHS.events[eventName]; } else if (FASES_LUNARES_PRINCIPALES.includes(dayData.Moon_Phase)) { eventName = dayData.Moon_Phase; eventIconPath = ICON_PATHS.events[eventName]; } if (eventName && eventIconPath) { specialEventsHtml = `<div class="special-event-row"><img src="${eventIconPath}" alt="${eventName}"><span>${eventName}</span></div>`; } const eventsContainer = document.createElement('div'); eventsContainer.classList.add('astro-events'); addEventsToCell(eventsContainer, dayData); const regularAspectsHtml = eventsContainer.innerHTML; if (specialEventsHtml || regularAspectsHtml) { html += specialEventsHtml + regularAspectsHtml; } else { html += '<p>No hay aspectos mayores.</p>'; } } else { html += '<p>No hay aspectos mayores.</p>'; } modalContent.innerHTML = html; const closeModal = () => { modal.style.display = 'none'; modalBackBtn.style.display = 'none'; }; modal.querySelector('.close-button').onclick = closeModal; modalBackBtn.onclick = closeModal; modal.onclick = (e) => { if (e.target === modal) closeModal(); }; }
     function showInstallHelpModal() { const modal = document.getElementById('modal-install'); modal.style.display = 'flex'; modalBackBtn.style.display = 'flex'; const closeModal = () => { modal.style.display = 'none'; modalBackBtn.style.display = 'none'; }; modal.querySelector('.close-button').onclick = closeModal; modalBackBtn.onclick = closeModal; modal.onclick = (e) => { if (e.target === modal) { closeModal(); } }; }
+    async function showAboutModal() {
+        const modal = document.getElementById('modal-about');
+        const modalContent = document.getElementById('modal-about-content');
+        
+        modalContent.innerHTML = '<div class="loader">Cargando...</div>';
+        modal.style.display = 'flex';
+        modalBackBtn.style.display = 'flex';
+
+        const closeModal = () => {
+            modal.style.display = 'none';
+            modalBackBtn.style.display = 'none';
+        };
+
+        modal.querySelector('.close-button').onclick = closeModal;
+        modalBackBtn.onclick = closeModal;
+        modal.onclick = (e) => {
+            if (e.target === modal) closeModal();
+        };
+
+        try {
+            const res = await fetch('creditos.json');
+            if (!res.ok) throw new Error('No se pudo cargar el archivo de créditos.');
+            const data = await res.json();
+
+            // Construir el HTML dinámicamente
+            let html = `<h2>${data.introduccion}</h2>`;
+            html += `<p>${data.agradecimientos}</p>`;
+            html += `<h3>Créditos Gráficos</h3>`;
+            html += '<ul class="credits-list">';
+            data.creditosGraficos.forEach(credit => {
+                html += `<li>${credit.html}</li>`;
+            });
+            html += '</ul>';
+
+            modalContent.innerHTML = html;
+        } catch (error) {
+            console.error("Error al cargar creditos.json:", error);
+            modalContent.innerHTML = `<p>No se pudo cargar la información de créditos en este momento.</p>`;
+        }
+    }
+    function openAddEventModal(date) {
+        eventNameInput.value = '';
+        const eventTypeSelect = document.getElementById('event-type-select');
+        eventTypeSelect.innerHTML = '<option value="" disabled selected>-- Elige un tipo de evento --</option>'; // Opción por defecto
+
+        // Poblar la lista desplegable
+        for (const typeKey in PERSONAL_EVENT_TYPES) {
+            const typeInfo = PERSONAL_EVENT_TYPES[typeKey];
+            const option = document.createElement('option');
+            option.value = typeKey;
+            option.textContent = typeInfo.name;
+            eventTypeSelect.appendChild(option);
+        }
+        
+        eventDateInput.value = date.toISOString();
+        modalAddEvent.style.display = 'flex';
+        modalBackBtn.style.display = 'flex';
+
+        saveEventBtn.onclick = () => {
+            const selectedEventType = eventTypeSelect.value;
+            const eventName = eventNameInput.value.trim();
+
+            if (!selectedEventType) {
+                alert('Por favor, selecciona un tipo de evento.');
+                return;
+            }
+            if (!eventName) {
+                alert('Por favor, escribe un nombre para el evento.');
+                return;
+            }
+
+            const eventData = {
+                type: selectedEventType,
+                name: eventName,
+                icon: PERSONAL_EVENT_TYPES[selectedEventType].icon,
+            };
+            
+            addPersonalEvent(new Date(eventDateInput.value), eventData);
+            closeAddEventModal();
+            renderLandingView(landingDate);
+        };
+    }
+
+    function closeAddEventModal() {
+        modalAddEvent.style.display = 'none';
+        modalBackBtn.style.display = 'none';
+    }
+
+    function showExplanationModal() {
+        const modal = document.getElementById('modal-explanation');
+        modal.style.display = 'flex';
+        modalBackBtn.style.display = 'flex';
+
+        const closeModal = () => {
+            modal.style.display = 'none';
+            modalBackBtn.style.display = 'none';
+        };
+
+        modal.querySelector('.close-button').onclick = closeModal;
+        modalBackBtn.onclick = closeModal;
+        modal.onclick = (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        };
+    }
+
     function setDynamicHeight() { const vh = window.innerHeight; const mobileLanding = document.getElementById('mobile-landing-container'); if (mobileLanding) { mobileLanding.style.height = `${vh}px`; } }
     
     // =========================================================================
     // ==                           INICIALIZACIÓN                            ==
     // =========================================================================
     async function initializeApp() {
+        // 1. Asignar todos los listeners a sus botones.
+        // Esto asegura que estén listos antes de que se muestre nada.
         if(symbolBtn) symbolBtn.addEventListener('click', showSymbolModal);
         if(symbolBtnMobile) symbolBtnMobile.addEventListener('click', showSymbolModal);
         if(installHelpBtn) installHelpBtn.addEventListener('click', showInstallHelpModal);
+        if(landingAboutBtn) landingAboutBtn.addEventListener('click', showAboutModal); // Listener para "Acerca de"
+        
         if(backToLandingBtn) backToLandingBtn.addEventListener('click', () => {
             mobileContainer.style.display = 'none';
             backToLandingBtn.style.display = 'none';
             mobileLandingContainer.style.display = 'flex';
         });
+        
+        // Listeners para el modal de añadir evento
+        if(modalAddEvent) modalAddEvent.querySelector('.close-button').addEventListener('click', closeAddEventModal);
+        
+        // 2. Configurar la altura dinámica para móviles
         setDynamicHeight(); 
         window.addEventListener('resize', setDynamicHeight);
+
+        // 3. Decidir qué vista (móvil o escritorio) mostrar.
+        // Este bloque ya no está duplicado.
         if (window.innerWidth <= 768 && mobileLandingContainer) {
             await initMobileLandingView();
-            initMobileView(); // Se puede inicializar para que esté listo
+            initMobileView();
         } else {
             initDesktopView();
         }
-        
     }
+
+    // 4. Llamar a la función principal para que todo empiece.
     initializeApp();
 });

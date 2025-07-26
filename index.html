@@ -41,6 +41,7 @@
                         <a href="#" id="landing-symbol-btn">🔮 Simbología</a>
                         <a href="#" id="landing-info-btn">📲 Instalar</a>
                         <a href="#" id="landing-download-btn">📥 Descargar</a>
+                        <a href="#" id="landing-about-btn">❤️ Acerca de...</a>
                     </div>
                 </div>
             </div>
@@ -136,18 +137,61 @@
             </div>
         </div>
     </div>
+    <div id="modal-about" class="modal">
+        <div class="modal-content">
+            <span class="close-button">❌</span>
+            <div id="modal-about-content">
+                <!-- El contenido se cargará aquí desde el JSON -->
+            </div>
+        </div>
+    </div>
+
+    <button id="modal-back-btn" title="Volver">❮</button>
+
+    <!-- ===== NUEVO MODAL PARA LA EXPLICACIÓN ===== -->
+    <div id="modal-explanation" class="modal">
+        <div class="modal-content">
+            <span class="close-button">❌</span>
+            <!-- La imagen se mostrará aquí -->
+            <img src="assets/icons/explicacion.png" alt="Explicación de eventos" style="width: 100%; height: auto; border-radius: 8px;">
+        </div>
+    </div>
+
+    <!-- ===== NUEVO MODAL PARA AÑADIR EVENTOS PERSONALES ===== -->
+    <div id="modal-add-event" class="modal">
+        <div class="modal-content">
+            <span class="close-button">❌</span>
+            <!-- Título SIN icono y centrado por defecto -->
+            <h2>Añadir Evento</h2>
+            <p class="event-modal-subtitle">Elige un tipo de evento, asígnale un nombre y guárdalo en tu calendario.</p>
+            
+            <select id="event-type-select"></select>
+
+            <input type="text" id="event-name-input" placeholder="Nombre del evento (max 20 caracteres)" maxlength="20">
+            <input type="hidden" id="event-date-input">
+
+            <div class="event-modal-actions">
+                <!-- Botón de guardar con icono Y TEXTO -->
+                <button id="save-event-btn" class="btn-event-modal primary-icon-btn" title="Guardar Evento">
+                    <img src="assets/aspects/guardar.png" alt="Guardar">
+                    <span>guardar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <button id="modal-back-btn" title="Volver">❮</button>
 
     <!-- ===== SCRIPTS FINALES ===== -->
     <script src="script.js" defer></script>
     <script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js') // <-- Asegúrate de que esté así
-            .then(registration => console.log('Service Worker registrado:', registration.scope))
-            .catch(error => console.log('Fallo en registro de SW:', error));
-        });
-    }
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(registration => console.log('Service Worker registrado:', registration.scope))
+                    .catch(error => console.log('Fallo en registro de SW:', error));
+            });
+        }
     </script>
 </body>
 </html>

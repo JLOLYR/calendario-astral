@@ -156,22 +156,22 @@ body {
     }
 
     /* 2. MOSTRAR LA VISTA DE ATERRIZAJE (LANDING) */
-#mobile-landing-container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    
-    /* ALTURA DE RESPALDO: Usamos 100% para que intente llenar su contenedor padre (el body) */
-    height: 100%; 
-    
-    position: fixed; /* Lo fijamos a la ventana para asegurar el tamaño */
-    top: 0;
-    left: 0;
+    #mobile-landing-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        
+        /* ALTURA DE RESPALDO: Usamos 100% para que intente llenar su contenedor padre (el body) */
+        height: 100%; 
+        
+        position: fixed; /* Lo fijamos a la ventana para asegurar el tamaño */
+        top: 0;
+        left: 0;
 
-    overflow: hidden; 
-    box-sizing: border-box;
-    background-color: var(--color-fondo-pagina);
-}
+        overflow: hidden; 
+        box-sizing: border-box;
+        background-color: var(--color-fondo-pagina);
+    }
     
     /* VISTA DE DETALLE DIARIA (OCULTA HASTA QUE SE LLAME POR JS) */
     #mobile-view-container {
@@ -387,11 +387,16 @@ body {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
         gap: 1px;
-        flex-grow: 1;
-        /* CORRECCIÓN: Añadimos padding vertical y quitamos el borde superior */
-        padding: 8px 5px; 
+
+        /* --- CAMBIOS CLAVE AQUÍ --- */
+        /* 1. Usamos 'flex' para controlar el crecimiento y encogimiento de forma robusta. */
+        flex: 1 1 0;
+        /* 2. ¡La magia! Permite el scroll vertical SÓLO dentro de este elemento si es necesario. */
+        overflow-y: auto; 
+        
+        padding: 8px 5px 20px 5px; /* 3. Añadimos más padding abajo para que haya espacio al final del scroll. */
         background-color: #f1f1f1;
-        border-top: none; /* Quitamos el borde para que el padding haga el trabajo */
+        border-top: none;
         border-bottom: 1px solid #e0e0e0;
     }
     .landing-day-cell { 
@@ -453,7 +458,7 @@ body {
         background-color: transparent; /* <-- Esta es la línea clave */
     }
 
-    #landing-day-details { flex-shrink: 0; padding: 15px; height: 40vh; overflow-y: auto; background-color: rgb(255, 255, 255); width: 100%; box-sizing: border-box; }
+    #landing-day-details { flex-shrink: 0; padding: 15px; height: 33vh; overflow-y: auto; background-color: rgb(255, 255, 255); width: 100%; box-sizing: border-box; }
     .initial-prompt { color: #888888; text-align: center; padding-top: 20px; }
     .day-details-header { 
         margin-bottom: 15px; 
@@ -511,6 +516,52 @@ body {
         color: var(--color-boton-texto); /* El texto se vuelve blanco */
     }
     
+    /* ESTILOS PARA LA NUEVA BARRA DE BOTONES DE ACCIÓN */
+    .details-actions-container {
+        display: flex;
+        justify-content: space-around; /* Asegura un espaciado equilibrado */
+        align-items: center;
+        width: 100%;
+        padding: 10px 0; /* Espaciado vertical */
+    }
+
+    .details-action-btn {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        padding:8px;
+        /* Quitamos el borde redondo para que se adapte al contenido */
+        border-radius: 8px;
+        display: flex;
+        /* Ordena el icono y el texto en una columna vertical */
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: background-color 0.2s, transform 0.2s;
+        /* Espacio entre el icono y el texto */
+        gap: 4px;
+    }
+
+    .details-action-btn span {
+        font-size: 1em; /* Texto pequeño y discreto */
+        color: var(--color-texto-principal);
+        font-weight: 500;
+        white-space: nowrap; /* Evita que el texto se parta en dos líneas */
+    }
+
+    .details-action-btn img {
+        width: 35px; /* Tamaño de los iconos */
+        height: 35px;
+    }
+
+    .details-action-btn:hover {
+        background-color: rgba(212, 178, 131, 0.15); /* Brillo dorado sutil */
+    }
+
+    .details-action-btn:active {
+        transform: scale(0.92); /* Efecto de clic */
+    }
+
     /* --- ESTILOS DE LA VISTA DE DETALLE DIARIA --- */
     .mobile-header { padding-bottom: 10px; border-bottom: 2px solid var(--color-borde-calendario); flex-shrink: 0; }
     .mobile-nav { display: flex; justify-content: space-between; align-items: center; gap: 5px; }
@@ -680,6 +731,171 @@ body {
     #modal-back-btn:hover { /* <-- Y también aquí */
         transform: scale(1.1);
     }
+
+    /* --- ESTILOS PARA EL MODAL DE AÑADIR EVENTO --- */
+    .event-modal-subtitle {
+        text-align: center;
+        font-size: 0.9em;
+        opacity: 0.7;
+        margin-top: -10px;
+        margin-bottom: 25px;
+    }
+
+
+    #event-name-input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        box-sizing: border-box;
+        font-size: 1em;
+        margin-bottom: 25px;
+        text-align: center;
+    }
+    #event-name-input:focus {
+        border-color: var(--color-borde-calendario);
+        outline: none;
+        box-shadow: 0 0 5px rgba(212, 178, 131, 0.5);
+    }
+
+    .event-modal-actions {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+    }
+    .btn-event-modal {
+        flex-grow: 1;
+        padding: 12px;
+        font-size: 1em;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    .btn-event-modal.primary {
+        background-color: var(--color-boton-fondo);
+        color: var(--color-boton-texto);
+    }
+    .btn-event-modal.secondary {
+        background-color: #e0e0e0;
+        color: #333;
+    }
+
+
+    /* --- ESTILOS PARA EVENTOS PERSONALES VISIBLES --- */
+
+    /* Icono pequeño en la grilla del calendario mensual */
+    .personal-event-icon-grid {
+        position: absolute;
+        top: 1px;
+        right: 1px; /* <- Cambio clave */
+        /* Se elimina 'left' y 'transform' */
+        width: 18px;
+        height: 18px;
+        z-index: 4;
+    }
+
+    /* Fila del evento en el panel de detalles del día */
+    .personal-event-details-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 0; /* Un poco menos de padding vertical */
+    }
+
+    /* NUEVAS REGLAS */
+    .personal-events-container {
+        width: 100%;
+        margin-bottom: 10px; /* Espacio antes del separador inferior */
+    }
+    .personal-events-separator {
+        width: 90%;
+        height: 1px;
+        background-color: var(--color-borde-calendario); /* Línea dorada */
+        margin: 0 auto 10px auto; /* Centrada y con espacio abajo */
+    }
+    .delete-event-btn {
+        margin-left: auto; /* ¡Magia! Empuja el botón al extremo derecho */
+        cursor: pointer;
+        font-size: 50em; /* Tamaño de la 'X' */
+        color: var(--color-texto-domingo); /* Rojo de advertencia */
+        padding: 5px;
+    }
+
+    .personal-event-details-row img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .personal-event-details-row span {
+        font-weight: bold;
+        font-size: 1.1em;
+    }
+
+
+
+    /* Hacer la 'X' de cerrar más grande */
+    .modal .close-button {
+        font-size: 26px; /* Aumenta el tamaño */
+        top: 22px; /* Ajuste para que se vea bien */
+        right: 25px;
+    }
+
+    /* ---- 2. LISTA DESPLEGABLE MÁS ELEGANTE ---- */
+    #event-type-select {
+        width: 100%;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        background-color: white;
+        font-size: 1em; /* <- TAMAÑO DE LETRA REDUCIDO */
+        /* FUENTE ESTILO IPHONE (fuente del sistema de Apple) */
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23887a68%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.4-5.4-13z%22/%3E%3C/svg%3E');
+        background-repeat: no-repeat;
+        background-position: right 15px top 50%;
+        background-size: 10px auto;
+        margin-bottom: 20px;
+    }
+
+    /* ---- 3. NUEVO BOTÓN DE GUARDAR Y SIN EL DE CANCELAR ---- */
+    .event-modal-actions {
+        justify-content: center; /* Centra el único botón que queda */
+        margin-top: 15px; /* Espacio antes del botón */
+    }
+
+    /* Elimina la regla del botón de cancelar */
+    .btn-event-modal.secondary { display: none; }
+
+    /* Nuevo estilo para el botón de guardar con icono */
+    .btn-event-modal.primary-icon-btn {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        display: flex; /* Permite organizar el icono y el texto */
+        flex-direction: column; /* Pone el texto debajo del icono */
+        align-items: center; /* Centra todo horizontalmente */
+        gap: 6px; /* Espacio entre el icono y el texto */
+        transition: all 0.2s ease-in-out;
+    }
+    .btn-event-modal.primary-icon-btn img {
+        width: 45px; /* <- TAMAÑO REDUCIDO */
+        height: 45px;
+        display: block;
+    }
+    .btn-event-modal.primary-icon-btn span {
+        color: var(--color-boton-fondo); /* Usa el color del tema */
+        font-weight: bold;
+        font-size: 0.8em;
+        text-transform: uppercase; /* Le da un estilo más de "acción" */
+    }
+    .btn-event-modal.primary-icon-btn:hover {
+        background-color: rgba(136, 122, 104, 0.15); /* Brillo sutil al pasar el cursor */
+        transform: scale(1.08);
+    }
 }
 
 /*
@@ -740,3 +956,41 @@ body {
     /* Por ahora, los puntos no necesitan un efecto de escala, se manejan con el punto */
 }
 
+/* ESTILOS PARA EL MODAL "ACERCA DE" */
+#modal-about-content h2 {
+    text-align: center;
+    font-family: 'Linux Libertine', serif;
+    font-size: 1.6em;
+    color: var(--color-boton-fondo);
+    margin-bottom: 20px;
+}
+#modal-about-content p {
+    text-align: center;
+    font-size: 0.95em;
+    line-height: 1.5;
+    margin-bottom: 30px;
+}
+#modal-about-content h3 {
+    text-align: center;
+    border-bottom: 1px solid var(--color-borde-calendario);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    font-size: 1.2em;
+}
+.credits-list {
+    list-style: none;
+    padding: 0;
+    font-size: 0.9em;
+}
+.credits-list li {
+    margin-bottom: 12px;
+}
+.credits-list a {
+    color: var(--color-texto-principal);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.credits-list a:hover {
+    color: var(--color-borde-calendario); /* Se pone dorado al pasar el ratón */
+    text-decoration: underline;
+}
