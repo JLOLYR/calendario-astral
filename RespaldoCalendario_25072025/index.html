@@ -141,13 +141,13 @@
     <!-- ===== SCRIPTS FINALES ===== -->
     <script src="script.js" defer></script>
     <script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js') // <-- Asegúrate de que esté así
-            .then(registration => console.log('Service Worker registrado:', registration.scope))
-            .catch(error => console.log('Fallo en registro de SW:', error));
-        });
-    }
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(registration => console.log('Service Worker registrado:', registration.scope))
+                    .catch(error => console.log('Fallo en registro de SW:', error));
+            });
+        }
     </script>
 </body>
 </html>
