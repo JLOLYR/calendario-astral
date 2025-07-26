@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const PERSONAL_EVENT_TYPES = {
         cumpleanos: { name: '🎂 Cumpleaños', icon: 'assets/aspects/cumpleanos.gif' },
-        reunion:    { name: '👥 Reunión',    icon: 'assets/aspects/reunion.gif' },
+        reunion:    { name: '🕒 Reunión',    icon: 'assets/aspects/reunion.gif' },
         contrato:   { name: '✍️ Contrato',   icon: 'assets/aspects/firma.gif' },
         examen:     { name: '📝 Examen',     icon: 'assets/aspects/prueba.gif' },
         cita:       { name: '❤️ Cita',       icon: 'assets/aspects/cita.gif' },
