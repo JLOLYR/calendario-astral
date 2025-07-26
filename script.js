@@ -58,12 +58,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const landingInfoBtn = document.getElementById('landing-info-btn');
     const landingDownloadBtn = document.getElementById('landing-download-btn');
     const landingTodayBtn = document.getElementById('landing-today-btn');
+    const modalBackBtn = document.getElementById('modal-back-btn');
     const installHelpBtn = document.getElementById('install-help-btn');
     const enableNotificationsBtn = document.getElementById('enable-notifications-btn');
     const modalAddEvent = document.getElementById('modal-add-event');
+    const eventTypeSelector = document.getElementById('event-type-selector');
     const eventNameInput = document.getElementById('event-name-input');
     const eventDateInput = document.getElementById('event-date-input');
     const saveEventBtn = document.getElementById('save-event-btn');
+    const cancelEventBtn = document.getElementById('cancel-event-btn');
     const landingAboutBtn = document.getElementById('landing-about-btn');
 
     // --- Estado de la aplicación ---
@@ -80,25 +83,207 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==                     FUNCIONES AUXILIARES Y COMPARTIDAS              ==
     // =========================================================================
     const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
-    const countEvents = (data) => { let count = 0; if (!data) return 0; if (data.Sign_Changes) { count += data.Sign_Changes.filter(c => c.planet !== 'Moon').length; } if (data.Retrograde_Changes) count += data.Retrograde_Changes.length; if (data.Aspects) { const processed = new Set(); for (const p1 in data.Aspects) { for (const p2 in data.Aspects[p1]) { const key = [p1, p2].sort().join('-'); if (processed.has(key)) continue; processed.add(key); count++; } } } return count; };
+
+    const countEvents = (data) => {
+        let count = 0;
+        if (!data) return 0;
+        if (data.Sign_Changes) {
+            count += data.Sign_Changes.filter(c => c.planet !== 'Moon').length;
+        }
+        if (data.Retrograde_Changes) count += data.Retrograde_Changes.length;
+        if (data.Aspects) {
+            const processed = new Set();
+            for (const p1 in data.Aspects) {
+                for (const p2 in data.Aspects[p1]) {
+                    const key = [p1, p2].sort().join('-');
+                    if (processed.has(key)) continue;
+                    processed.add(key);
+                    count++;
+                }
+            }
+        }
+        return count;
+    };
+    
     const isHoliday = (date, festivosDelMes) => festivosDelMes.includes(date.getDate());
-    const downloadCalendarImage = () => { let elementToCapture; let fileName; if (window.getComputedStyle(mobileLandingContainer).display === 'flex') { elementToCapture = landingCalendarGrid; const currentMonthName = NOMBRES_MESES[landingDate.getMonth()]; const currentYear = landingDate.getFullYear(); fileName = `Calendario-Astral-Movil-${currentMonthName}-${currentYear}.png`; } else { elementToCapture = calendarContainer; const currentMonthName = NOMBRES_MESES[selectedMonth - 1]; fileName = `Calendario-Astral-${currentMonthName}-${selectedYear}.png`; } const options = { backgroundColor: "#fdfaf5", scale: 2 }; html2canvas(elementToCapture, options).then(canvas => { const link = document.createElement('a'); link.download = fileName; link.href = canvas.toDataURL('image/png'); link.click(); }); };
-    const createEventRow = (items, aspectType = null) => { const row = document.createElement('div'); row.classList.add('event-row'); if (aspectType && ASPECT_COLORS[aspectType]) { const dot = document.createElement('span'); dot.classList.add('aspect-dot', ASPECT_COLORS[aspectType]); row.appendChild(dot); } items.forEach(item => { if (item.type === 'text') { const span = document.createElement('span'); span.textContent = item.value; span.classList.add('event-arrow'); row.appendChild(span); } else { const path = ICON_PATHS[item.category]?.[item.name]; if (path) { const img = document.createElement('img'); img.src = path; img.alt = item.name; img.dataset.symbolName = item.name; img.style.cursor = 'pointer'; img.addEventListener('click', (event) => { event.stopPropagation(); const symbolName = event.target.dataset.symbolName; if (symbolName) showAndScrollToSymbol(symbolName); }); img.classList.add(item.isSmall ? 'sign-icon-small' : `${item.category}-icon`); row.appendChild(img); } } }); return row; };
-    const addEventsToCell = (container, dayData) => { if (!dayData) return; if (dayData.Moon) { const showsArrow = dayData.Moon.includes('CHANGE'); const moonSign = dayData.Moon.replace('CHANGE ', ''); let eventItems = showsArrow ? [{ category: 'planets', name: 'Moon' }, { type: 'text', value: '→' }, { category: 'signs', name: moonSign }] : [{ category: 'planets', name: 'Moon' }, { category: 'signs', name: moonSign }]; container.appendChild(createEventRow(eventItems)); } if (dayData.Retrograde_Changes?.length > 0) { dayData.Retrograde_Changes.forEach(change => { let eventItems = []; if (change.status === 'retrograde') eventItems = [{ category: 'planets', name: change.planet }, { type: 'text', value: '→' }, { category: 'aspects', name: 'Retrograde' }]; else if (change.status === 'direct') eventItems = [{ category: 'aspects', name: 'Retrograde' }, { type: 'text', value: '→' }, { category: 'planets', name: change.planet }]; if (eventItems.length > 0) container.appendChild(createEventRow(eventItems)); }); } if (dayData.Sign_Changes?.length > 0) { dayData.Sign_Changes.forEach(change => { if (change.planet === 'Moon') return; const eventItems = [{ category: 'planets', name: change.planet }, { type: 'text', value: '→' }, { category: 'signs', name: change.to }]; container.appendChild(createEventRow(eventItems)); }); } if (dayData.Aspects) { const processed = new Set(); for (const p1 in dayData.Aspects) { for (const p2 in dayData.Aspects[p1]) { const aspectData = dayData.Aspects[p1][p2]; const key = [p1, p2].sort().join('-'); if (processed.has(key)) continue; processed.add(key); container.appendChild(createEventRow([{ category: 'planets', name: p1 }, { category: 'signs', name: aspectData.planet1_sign, isSmall: true }, { category: 'aspects', name: aspectData.type }, { category: 'planets', name: p2 }, { category: 'signs', name: aspectData.planet2_sign, isSmall: true }], aspectData.type)); } } } };
-    function getPersonalEvents() { const events = localStorage.getItem('personalCalendarEvents'); return events ? JSON.parse(events) : {}; }
-    function savePersonalEvents(events) { localStorage.setItem('personalCalendarEvents', JSON.stringify(events)); }
-    function addPersonalEvent(date, eventData) { const allEvents = getPersonalEvents(); const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`; if (!allEvents[dateKey]) { allEvents[dateKey] = []; } allEvents[dateKey].push(eventData); savePersonalEvents(allEvents); }
-    function deletePersonalEvent(date, eventIndex) { const allEvents = getPersonalEvents(); const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`; if (allEvents[dateKey] && allEvents[dateKey][eventIndex]) { allEvents[dateKey].splice(eventIndex, 1); if (allEvents[dateKey].length === 0) { delete allEvents[dateKey]; } savePersonalEvents(allEvents); renderLandingView(landingDate); } }
+
+    const downloadCalendarImage = () => {
+        let elementToCapture;
+        let fileName;
+        if (window.getComputedStyle(mobileLandingContainer).display === 'flex') {
+            elementToCapture = landingCalendarGrid;
+            const currentMonthName = NOMBRES_MESES[landingDate.getMonth()];
+            const currentYear = landingDate.getFullYear();
+            fileName = `Calendario-Astral-Movil-${currentMonthName}-${currentYear}.png`;
+        } else {
+            elementToCapture = calendarContainer;
+            const currentMonthName = NOMBRES_MESES[selectedMonth - 1];
+            fileName = `Calendario-Astral-${currentMonthName}-${selectedYear}.png`;
+        }
+        const options = { backgroundColor: "#fdfaf5", scale: 2 };
+        html2canvas(elementToCapture, options).then(canvas => {
+            const link = document.createElement('a');
+            link.download = fileName;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+    };
+    
+    const createEventRow = (items, aspectType = null) => {
+        const row = document.createElement('div');
+        row.classList.add('event-row');
+        if (aspectType && ASPECT_COLORS[aspectType]) {
+            const dot = document.createElement('span');
+            dot.classList.add('aspect-dot', ASPECT_COLORS[aspectType]);
+            row.appendChild(dot);
+        }
+        items.forEach(item => {
+            if (item.type === 'text') {
+                const span = document.createElement('span');
+                span.textContent = item.value;
+                span.classList.add('event-arrow');
+                row.appendChild(span);
+            } else {
+                const path = ICON_PATHS[item.category]?.[item.name];
+                if (path) {
+                    const img = document.createElement('img');
+                    img.src = path;
+                    img.alt = item.name;
+                    img.dataset.symbolName = item.name;
+                    img.style.cursor = 'pointer';
+                    img.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        const symbolName = event.target.dataset.symbolName;
+                        if (symbolName) showAndScrollToSymbol(symbolName);
+                    });
+                    img.classList.add(item.isSmall ? 'sign-icon-small' : `${item.category}-icon`);
+                    row.appendChild(img);
+                }
+            }
+        });
+        return row;
+    };
+
+    const addEventsToCell = (container, dayData) => {
+        if (!dayData) return;
+        if (dayData.Moon) {
+            const showsArrow = dayData.Moon.includes('CHANGE');
+            const moonSign = dayData.Moon.replace('CHANGE ', '');
+            let eventItems = showsArrow ? [{ category: 'planets', name: 'Moon' }, { type: 'text', value: '→' }, { category: 'signs', name: moonSign }] : [{ category: 'planets', name: 'Moon' }, { category: 'signs', name: moonSign }];
+            container.appendChild(createEventRow(eventItems));
+        }
+        if (dayData.Retrograde_Changes?.length > 0) {
+            dayData.Retrograde_Changes.forEach(change => {
+                let eventItems = [];
+                if (change.status === 'retrograde') eventItems = [{ category: 'planets', name: change.planet }, { type: 'text', value: '→' }, { category: 'aspects', name: 'Retrograde' }];
+                else if (change.status === 'direct') eventItems = [{ category: 'aspects', name: 'Retrograde' }, { type: 'text', value: '→' }, { category: 'planets', name: change.planet }];
+                if (eventItems.length > 0) container.appendChild(createEventRow(eventItems));
+            });
+        }
+        if (dayData.Sign_Changes?.length > 0) {
+            dayData.Sign_Changes.forEach(change => {
+                if (change.planet === 'Moon') return;
+                const eventItems = [{ category: 'planets', name: change.planet }, { type: 'text', value: '→' }, { category: 'signs', name: change.to }];
+                container.appendChild(createEventRow(eventItems));
+            });
+        }
+        if (dayData.Aspects) {
+            const processed = new Set();
+            for (const p1 in dayData.Aspects) {
+                for (const p2 in dayData.Aspects[p1]) {
+                    const aspectData = dayData.Aspects[p1][p2];
+                    const key = [p1, p2].sort().join('-');
+                    if (processed.has(key)) continue;
+                    processed.add(key);
+                    container.appendChild(createEventRow([{ category: 'planets', name: p1 }, { category: 'signs', name: aspectData.planet1_sign, isSmall: true }, { category: 'aspects', name: aspectData.type }, { category: 'planets', name: p2 }, { category: 'signs', name: aspectData.planet2_sign, isSmall: true }], aspectData.type));
+                }
+            }
+        }
+    };
+    
+    // FUNCIONES PARA MANEJAR EVENTOS PERSONALES (localStorage)
+    function getPersonalEvents() {
+        const events = localStorage.getItem('personalCalendarEvents');
+        return events ? JSON.parse(events) : {};
+    }
+
+    function savePersonalEvents(events) {
+        localStorage.setItem('personalCalendarEvents', JSON.stringify(events));
+    }
+
+    function addPersonalEvent(date, eventData) {
+        const allEvents = getPersonalEvents();
+        const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        
+        if (!allEvents[dateKey]) {
+            allEvents[dateKey] = [];
+        }
+        
+        allEvents[dateKey].push(eventData);
+        savePersonalEvents(allEvents);
+    }
+    
+    function deletePersonalEvent(date, eventIndex) {
+
+        const allEvents = getPersonalEvents();
+        const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        
+        if (allEvents[dateKey] && allEvents[dateKey][eventIndex]) {
+            // Elimina el evento del array de ese día
+            allEvents[dateKey].splice(eventIndex, 1);
+
+            // Si ya no quedan eventos ese día, elimina la entrada del día completo
+            if (allEvents[dateKey].length === 0) {
+                delete allEvents[dateKey];
+            }
+
+            savePersonalEvents(allEvents);
+            renderLandingView(landingDate); // Refresca la vista para mostrar los cambios
+        }
+    }
+
 
     // =========================================================================
     // ==                         LÓGICA DE DATOS                             ==
     // =========================================================================
-    async function getMonthlyData(year, month) { const cacheKey = `${year}-${month}`; if (dataCache[cacheKey]) return dataCache[cacheKey]; const yearStr = year.toString(); const monthStr = month.toString().padStart(2, '0'); try { const [astroRes, festivosRes, textoRes] = await Promise.all([ fetch(`Calendar/${yearStr}/astro_data_${yearStr}_${monthStr}.json`).then(res => res.ok ? res.json() : null), fetch(`Calendar/holidays.json`).then(res => res.ok ? res.json() : {}), fetch(`Calendar/${yearStr}/texto_${yearStr}_${monthStr}.json`).then(res => res.ok ? res.json() : null) ]); if (!astroRes) { console.warn(`No se encontraron datos astrales para ${monthStr}/${yearStr}`); return null; } const result = { astro: astroRes?.[year]?.[month] || {}, textos: textoRes?.[year]?.[month] || {}, festivos: festivosRes?.[year]?.[month] || [] }; dataCache[cacheKey] = result; return result; } catch (error) { console.error(`Error cargando datos para ${monthStr}/${yearStr}:`, error); return null; } }
+    async function getMonthlyData(year, month) {
+        const cacheKey = `${year}-${month}`;
+        if (dataCache[cacheKey]) return dataCache[cacheKey];
+        const yearStr = year.toString();
+        const monthStr = month.toString().padStart(2, '0');
+        try {
+            const [astroRes, festivosRes, textoRes] = await Promise.all([
+                fetch(`Calendar/${yearStr}/astro_data_${yearStr}_${monthStr}.json`).then(res => res.ok ? res.json() : null),
+                fetch(`Calendar/holidays.json`).then(res => res.ok ? res.json() : {}),
+                fetch(`Calendar/${yearStr}/texto_${yearStr}_${monthStr}.json`).then(res => res.ok ? res.json() : null)
+            ]);
+            if (!astroRes) { console.warn(`No se encontraron datos astrales para ${monthStr}/${yearStr}`); return null; }
+            const result = { astro: astroRes?.[year]?.[month] || {}, textos: textoRes?.[year]?.[month] || {}, festivos: festivosRes?.[year]?.[month] || [] };
+            dataCache[cacheKey] = result;
+            return result;
+        } catch (error) {
+            console.error(`Error cargando datos para ${monthStr}/${yearStr}:`, error);
+            return null;
+        }
+    }
 
     // =========================================================================
     // ==                    LÓGICA VISTA ESCRITORIO (GRID)                   ==
     // =========================================================================
-    function initDesktopView() { if (!calendarContainer) return; const now = new Date(); selectedYear = now.getFullYear(); selectedMonth = now.getMonth() + 1; fillControls(); updateCalendar(); prevMonthBtn.addEventListener('click', () => changeMonth(-1)); nextMonthBtn.addEventListener('click', () => changeMonth(1)); selectMonth.addEventListener('change', () => { selectedMonth = parseInt(selectMonth.value); updateCalendar(); }); selectYear.addEventListener('change', () => { selectedYear = parseInt(selectYear.value); updateCalendar(); }); printBtn.addEventListener('click', () => window.print()); downloadBtn.addEventListener('click', downloadCalendarImage); }
+    function initDesktopView() {
+        if (!calendarContainer) return;
+        const now = new Date();
+        selectedYear = now.getFullYear();
+        selectedMonth = now.getMonth() + 1;
+        fillControls();
+        updateCalendar();
+        prevMonthBtn.addEventListener('click', () => changeMonth(-1));
+        nextMonthBtn.addEventListener('click', () => changeMonth(1));
+        selectMonth.addEventListener('change', () => { selectedMonth = parseInt(selectMonth.value); updateCalendar(); });
+        selectYear.addEventListener('change', () => { selectedYear = parseInt(selectYear.value); updateCalendar(); });
+        printBtn.addEventListener('click', () => window.print());
+        downloadBtn.addEventListener('click', downloadCalendarImage);
+    }
     function fillControls() { selectMonth.innerHTML = NOMBRES_MESES.map((mes, idx) => `<option value="${idx + 1}">${mes}</option>`).join(''); selectMonth.value = selectedMonth; let yearOptions = ''; for (let y = MIN_YEAR; y <= MAX_YEAR; y++) { yearOptions += `<option value="${y}">${y}</option>`; } selectYear.innerHTML = yearOptions; selectYear.value = selectedYear; }
     function changeMonth(direction) { selectedMonth += direction; if (selectedMonth < 1) { selectedMonth = 12; selectedYear--; } else if (selectedMonth > 12) { selectedMonth = 1; selectedYear++; } if (selectedYear < MIN_YEAR) selectedYear = MIN_YEAR; if (selectedYear > MAX_YEAR) selectedYear = MAX_YEAR; fillControls(); updateCalendar(); }
     async function updateCalendar() { const data = await getMonthlyData(selectedYear, selectedMonth); if (!data) { calendarContainer.innerHTML = `<p>No hay datos disponibles.</p>`; return; } calendarTitle.textContent = `Calendario Astral - ${NOMBRES_MESES[selectedMonth - 1]} ${selectedYear}`; buildCalendar(data.astro, selectedYear, selectedMonth, data.festivos); }
@@ -107,18 +292,349 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // ==              VISTA ATERRIZAJE MÓVIL (LANDING)                     ==
     // =========================================================================
-    function initMobileLandingView() { if (!mobileLandingContainer) return; renderLandingView(landingDate); let touchStartX = 0, touchStartY = 0; mobileLandingContainer.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].clientX; touchStartY = e.changedTouches[0].clientY; }, { passive: true }); mobileLandingContainer.addEventListener('touchend', e => { const touchEndX = e.changedTouches[0].clientX, touchEndY = e.changedTouches[0].clientY; const deltaX = touchEndX - touchStartX, deltaY = touchEndY - touchStartY; if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) { changeLandingMonth(deltaX < 0 ? 1 : -1); } }); landingMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); landingMenuDropdown.style.display = landingMenuDropdown.style.display === 'none' ? 'block' : 'none'; }); landingSymbolBtn.addEventListener('click', showSymbolModal); landingInfoBtn.addEventListener('click', showInstallHelpModal); landingDownloadBtn.addEventListener('click', downloadCalendarImage); landingTodayBtn.addEventListener('click', () => { landingDate = new Date(); renderLandingView(landingDate); }); document.addEventListener('click', () => { landingMenuDropdown.style.display = 'none'; }); return renderLandingView(landingDate); }
+    function initMobileLandingView() {
+        if (!mobileLandingContainer) return;
+        renderLandingView(landingDate);
+        let touchStartX = 0, touchStartY = 0;
+        mobileLandingContainer.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].clientX; touchStartY = e.changedTouches[0].clientY; }, { passive: true });
+        mobileLandingContainer.addEventListener('touchend', e => {
+            const touchEndX = e.changedTouches[0].clientX, touchEndY = e.changedTouches[0].clientY;
+            const deltaX = touchEndX - touchStartX, deltaY = touchEndY - touchStartY;
+            if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
+                changeLandingMonth(deltaX < 0 ? 1 : -1);
+            }
+        });
+        landingMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); landingMenuDropdown.style.display = landingMenuDropdown.style.display === 'none' ? 'block' : 'none'; });
+        landingSymbolBtn.addEventListener('click', showSymbolModal);
+        landingInfoBtn.addEventListener('click', showInstallHelpModal);
+        landingDownloadBtn.addEventListener('click', downloadCalendarImage);
+        landingTodayBtn.addEventListener('click', () => { landingDate = new Date(); renderLandingView(landingDate); });
+        document.addEventListener('click', () => { landingMenuDropdown.style.display = 'none'; });
+        return renderLandingView(landingDate);
+    }
+
     function changeLandingMonth(direction) { landingDate.setMonth(landingDate.getMonth() + direction); renderLandingView(landingDate); }
-    async function renderLandingView(date) { const personalEvents = getPersonalEvents(); const year = date.getFullYear(); const month = date.getMonth() + 1; const today = new Date(); const todayDate = today.getDate(); const todayMonth = today.getMonth() + 1; const todayYear = today.getFullYear(); let todayCellElement = null; let todayDataPayload = {}; landingMonthYear.textContent = `${NOMBRES_MESES[month - 1]} ${year}`; landingCalendarGrid.innerHTML = '<div class="loader">Cargando...</div>'; landingDayDetails.innerHTML = '<p class="initial-prompt">Toca un día.</p>'; if (selectedDayCell) { selectedDayCell.classList.remove('selected'); selectedDayCell = null; } const data = await getMonthlyData(year, month); landingCalendarGrid.innerHTML = ''; if (!data) { landingCalendarGrid.innerHTML = `<p class="loader">No hay datos.</p>`; return; } const firstDayOfMonth = new Date(year, month - 1, 1).getDay(); const emptyCells = (firstDayOfMonth === 0) ? 6 : firstDayOfMonth - 1; for (let i = 0; i < emptyCells; i++) { const emptyCell = document.createElement('div'); emptyCell.classList.add('landing-day-cell', 'empty'); landingCalendarGrid.appendChild(emptyCell); } const daysInMonth = new Date(year, month, 0).getDate(); for (let dayNum = 1; dayNum <= daysInMonth; dayNum++) { const dayCell = document.createElement('div'); dayCell.classList.add('landing-day-cell'); const dateText = document.createElement('span'); dateText.classList.add('date-text'); dateText.textContent = dayNum; const selectionCircle = document.createElement('div'); selectionCircle.classList.add('selection-circle'); dayCell.appendChild(selectionCircle); dayCell.appendChild(dateText); const dayData = data.astro[String(dayNum)] || {}; const festivos = data.festivos || []; let specialEventIconPath = ''; let specialEventClasses = 'event-day-marker'; if (dayData.Eclipse) { specialEventIconPath = 'assets/aspects/eclipse.gif'; } else if (dayData.Moon_Phase === 'Luna Nueva') { specialEventIconPath = 'assets/aspects/luna_nueva.gif'; specialEventClasses += ' moon-event-marker'; } else if (dayData.Moon_Phase === 'Luna Llena') { specialEventIconPath = 'assets/aspects/luna_llena.gif'; specialEventClasses += ' moon-event-marker'; } if (specialEventIconPath) { const eventIcon = document.createElement('img'); eventIcon.src = specialEventIconPath; eventIcon.className = specialEventClasses; dayCell.appendChild(eventIcon); } const aspectColors = getAspectColors(dayData); if (aspectColors.length > 0) { const dotsContainer = document.createElement('div'); dotsContainer.classList.add('dots-container'); aspectColors.forEach(colorClass => { const dot = document.createElement('div'); dot.classList.add('event-dot', colorClass); dotsContainer.appendChild(dot); }); dayCell.appendChild(dotsContainer); } if (new Date(year, month - 1, dayNum).getDay() === 0 || festivos.includes(dayNum)) { dayCell.classList.add('holiday'); } const dateKey = `${year}-${String(month).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`; const dayPersonalEvents = personalEvents[dateKey]; if (dayPersonalEvents && dayPersonalEvents.length > 0) { const eventIcon = document.createElement('img'); eventIcon.src = dayPersonalEvents[0].icon; eventIcon.className = 'personal-event-icon-grid'; eventIcon.title = dayPersonalEvents[0].name; dayCell.appendChild(eventIcon); } else if (countEvents(dayData) >= 3) { const warningIcon = document.createElement('img'); warningIcon.src = ICON_PATHS.alerts.Warning; warningIcon.className = 'intense-day-marker'; dayCell.appendChild(warningIcon); } dayCell.addEventListener('click', () => handleLandingDayClick(dayCell, new Date(year, month - 1, dayNum), dayData)); landingCalendarGrid.appendChild(dayCell); if (dayNum === todayDate && month === todayMonth && year === todayYear) { todayCellElement = dayCell; todayDataPayload = dayData; } } if (todayCellElement) { handleLandingDayClick(todayCellElement, today, todayDataPayload); } }
-    function getSpecialDayClassification(dayData) { if (!dayData || !dayData.Aspects) return null; for (const p1 in dayData.Aspects) { for (const p2 in dayData.Aspects[p1]) { const aspectType = dayData.Aspects[p1][p2].type; if ((p1 === 'Saturn' && p2 === 'Mars') || (p1 === 'Mars' && p2 === 'Saturn')) { if (['Conjunction', 'Opposition', 'Square'].includes(aspectType)) return { title: 'Día de Mala Suerte', iconPath: ICON_PATHS.special_days['Día de Mala Suerte'], colorClass: 'day-bad-luck' }; } if ((p1 === 'Sun' && p2 === 'Venus') || (p1 === 'Venus' && p2 === 'Sun')) { if (['Conjunction', 'Trine', 'Sextile'].includes(aspectType)) return { title: 'Día Amoroso', iconPath: ICON_PATHS.special_days['Día Amoroso'], colorClass: 'day-love' }; } if ((p1 === 'Jupiter' && (p2 === 'Sun' || p2 === 'Venus')) || (p2 === 'Jupiter' && (p1 === 'Sun' || p1 === 'Venus'))) { if (['Conjunction', 'Trine', 'Sextile'].includes(aspectType)) return { title: 'Día Suertudo', iconPath: ICON_PATHS.special_days['Día Suertudo'], colorClass: 'day-lucky' }; } } } return null; }
-    function getGeneralDayClassification(dayData) { if (!dayData) return null; const ICON_GIF_PATHS = { tension: 'assets/aspects/tension.gif', friction: 'assets/aspects/friccion.gif', harmonic: 'assets/aspects/armonico.gif', creative: 'assets/aspects/creativo.gif', change: 'assets/aspects/cambio.gif', revelation: 'assets/aspects/revelacion.gif' }; const aspectCounts = { Trine: 0, Square: 0, Opposition: 0, Sextile: 0 }; if (dayData.Aspects) { const processed = new Set(); for (const p1 in dayData.Aspects) { for (const p2 in dayData.Aspects[p1]) { const key = [p1, p2].sort().join('-'); if (processed.has(key)) continue; processed.add(key); const aspectType = dayData.Aspects[p1][p2].type; if (aspectCounts.hasOwnProperty(aspectType)) aspectCounts[aspectType]++; } } } const slowPlanets = ['Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto', 'North Node', 'South Node']; if (dayData.Aspects?.Sun) { for (const planet in dayData.Aspects.Sun) { if (slowPlanets.includes(planet) && dayData.Aspects.Sun[planet].type === 'Conjunction') return { title: 'Día de Revelación', iconPath: ICON_GIF_PATHS.revelation, colorClass: 'day-revelation' }; } } if (aspectCounts.Square >= 2 && aspectCounts.Opposition >= 1) return { title: 'Día de Tensión', iconPath: ICON_GIF_PATHS.tension, colorClass: 'day-tension' }; if (aspectCounts.Square >= 2 || aspectCounts.Opposition >= 2) return { title: 'Día de Fricción', iconPath: ICON_GIF_PATHS.friction, colorClass: 'day-friction' }; if (aspectCounts.Trine >= 2 && aspectCounts.Square <= 1) return { title: 'Día Armónico', iconPath: ICON_GIF_PATHS.harmonic, colorClass: 'day-harmonic' }; if (aspectCounts.Sextile >= 2 || (aspectCounts.Sextile >= 1 && aspectCounts.Trine >= 1)) return { title: 'Día Creativo', iconPath: ICON_GIF_PATHS.creative, colorClass: 'day-creative' }; const hasPlanetChange = dayData.Sign_Changes?.some(change => change.planet !== 'Moon'); if (hasPlanetChange) return { title: 'Día de Cambio', iconPath: ICON_GIF_PATHS.change, colorClass: 'day-change' }; return null; }
-    function handleLandingDayClick(cell, date, dayData) { if (selectedDayCell === cell) { navigateToDetailView(date); return; } if (selectedDayCell) selectedDayCell.classList.remove('selected'); cell.classList.add('selected'); selectedDayCell = cell; landingDayDetails.innerHTML = ''; currentDetailDate = date; let hasContent = false; const contentWrapper = document.createElement('div'); const specialClassification = getSpecialDayClassification(dayData); if (specialClassification) { const specialDayRow = document.createElement('div'); specialDayRow.classList.add('special-day-row', specialClassification.colorClass, 'clickable-title'); specialDayRow.innerHTML = `<img src="${specialClassification.iconPath}" alt="${specialClassification.title}"><span>${specialClassification.title}</span><img src="${specialClassification.iconPath}" alt="${specialClassification.title}">`; specialDayRow.onclick = () => showAndScrollToSymbol(specialClassification.title); contentWrapper.appendChild(specialDayRow); } const generalClassification = getGeneralDayClassification(dayData); if (generalClassification) { const generalDayRow = document.createElement('div'); generalDayRow.classList.add('special-day-row', generalClassification.colorClass, 'clickable-title'); generalDayRow.innerHTML = `<img src="${generalClassification.iconPath}" alt="${generalClassification.title}"><span>${generalClassification.title}</span><img src="${generalClassification.iconPath}" alt="${generalClassification.title}">`; generalDayRow.onclick = () => showAndScrollToSymbol(generalClassification.title); contentWrapper.appendChild(generalDayRow); } else if (!specialClassification && countEvents(dayData) >= 3) { const warningIconPath = ICON_PATHS.alerts.Warning; const intenseDayRow = document.createElement('div'); intenseDayRow.classList.add('special-day-row', 'day-intense'); intenseDayRow.innerHTML = `<img src="${warningIconPath}" alt="Alerta"><span>DÍA INTENSO</span><img src="${warningIconPath}" alt="Alerta">`; contentWrapper.appendChild(intenseDayRow); } if (contentWrapper.hasChildNodes()) { const separatorTop = document.createElement('div'); separatorTop.className = 'details-separator'; contentWrapper.appendChild(separatorTop); hasContent = true; } const specialEventsDiv = document.createElement('div'); if (dayData.Eclipse) { const eventName = `Eclipse ${dayData.Eclipse.type} ${dayData.Eclipse.subtype}`; const eventIconPath = ICON_PATHS.events[eventName]; if (eventIconPath) specialEventsDiv.innerHTML += `<div class="special-event-row"><img src="${eventIconPath}" alt="${eventName}"><span>${eventName}</span></div>`; } else if (FASES_LUNARES_PRINCIPALES.includes(dayData.Moon_Phase)) { const eventName = dayData.Moon_Phase; const eventIconPath = ICON_PATHS.events[eventName]; if (eventIconPath) specialEventsDiv.innerHTML += `<div class="special-event-row"><img src="${eventIconPath}" alt="${eventName}"><span>${eventName}</span></div>`; } if (specialEventsDiv.hasChildNodes()) { contentWrapper.appendChild(specialEventsDiv); hasContent = true; } const eventsContainer = document.createElement('div'); addEventsToCell(eventsContainer, dayData); if (eventsContainer.hasChildNodes()) { contentWrapper.appendChild(eventsContainer); hasContent = true; } if (hasContent) { landingDayDetails.appendChild(contentWrapper); } const actionsContainer = document.createElement('div'); actionsContainer.className = 'details-actions-container'; const personalEvents = getPersonalEvents(); const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`; const dayPersonalEvents = personalEvents[dateKey]; if (dayPersonalEvents && dayPersonalEvents.length > 0) { const separator = document.createElement('div'); separator.className = 'personal-events-separator'; landingDayDetails.appendChild(separator); const personalEventsContainer = document.createElement('div'); personalEventsContainer.className = 'personal-events-container'; dayPersonalEvents.forEach((event, index) => { const eventRow = document.createElement('div'); eventRow.className = 'personal-event-details-row'; const deleteBtn = document.createElement('span'); deleteBtn.className = 'delete-event-btn'; deleteBtn.innerHTML = '×'; deleteBtn.title = 'Eliminar evento'; deleteBtn.onclick = () => deletePersonalEvent(date, index); eventRow.innerHTML = `<img src="${event.icon}" alt="${event.name}"><span>${event.name}</span>`; eventRow.appendChild(deleteBtn); personalEventsContainer.appendChild(eventRow); }); landingDayDetails.appendChild(personalEventsContainer); hasContent = true; } if (contentWrapper.hasChildNodes() || (dayPersonalEvents && dayPersonalEvents.length > 0)) { const separatorBottom = document.createElement('div'); separatorBottom.className = 'details-separator'; landingDayDetails.appendChild(separatorBottom); } const interpretationBtn = document.createElement('button'); interpretationBtn.className = 'details-action-btn'; interpretationBtn.innerHTML = `<img src="assets/icons/verinterpretacion.png" alt="Ver Interpretación"><span>interpretación</span>`; interpretationBtn.onclick = () => navigateToDetailView(currentDetailDate); interpretationBtn.title = "Ver Interpretación del Día"; const infoBtn = document.createElement('button'); infoBtn.className = 'details-action-btn'; infoBtn.innerHTML = `<img src="assets/icons/info.png" alt="Información Adicional"><span>info</span>`; infoBtn.onclick = showExplanationModal; infoBtn.title = "Información Adicional"; const addEventBtn = document.createElement('button'); addEventBtn.className = 'details-action-btn'; addEventBtn.innerHTML = `<img src="assets/icons/mas.png" alt="Añadir Evento Personal"><span>agregar evento</span>`; addEventBtn.onclick = () => openAddEventModal(currentDetailDate); addEventBtn.title = "Añadir Evento Personal"; actionsContainer.appendChild(interpretationBtn); actionsContainer.appendChild(infoBtn); actionsContainer.appendChild(addEventBtn); landingDayDetails.appendChild(actionsContainer); if (!hasContent) { landingDayDetails.innerHTML = '<p class="initial-prompt">No hay eventos para mostrar.</p>'; landingDayDetails.appendChild(actionsContainer); } }
+    
+    async function renderLandingView(date) {
+        const personalEvents = getPersonalEvents(); // **CORRECCIÓN #1**
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const today = new Date();
+        const todayDate = today.getDate();
+        const todayMonth = today.getMonth() + 1;
+        const todayYear = today.getFullYear();
+        let todayCellElement = null;
+        let todayDataPayload = {};
+        landingMonthYear.textContent = `${NOMBRES_MESES[month - 1]} ${year}`;
+        landingCalendarGrid.innerHTML = '<div class="loader">Cargando...</div>';
+        landingDayDetails.innerHTML = '<p class="initial-prompt">Toca un día.</p>';
+        if (selectedDayCell) {
+            selectedDayCell.classList.remove('selected');
+            selectedDayCell = null;
+        }
+        const data = await getMonthlyData(year, month);
+        landingCalendarGrid.innerHTML = '';
+        if (!data) {
+            landingCalendarGrid.innerHTML = `<p class="loader">No hay datos.</p>`;
+            return;
+        }
+        const firstDayOfMonth = new Date(year, month - 1, 1).getDay();
+        const emptyCells = (firstDayOfMonth === 0) ? 6 : firstDayOfMonth - 1;
+        for (let i = 0; i < emptyCells; i++) {
+            const emptyCell = document.createElement('div');
+            emptyCell.classList.add('landing-day-cell', 'empty');
+            landingCalendarGrid.appendChild(emptyCell);
+        }
+        const daysInMonth = new Date(year, month, 0).getDate();
+        for (let dayNum = 1; dayNum <= daysInMonth; dayNum++) {
+            const dayCell = document.createElement('div');
+            dayCell.classList.add('landing-day-cell');
+            const dateText = document.createElement('span');
+            dateText.classList.add('date-text');
+            dateText.textContent = dayNum;
+            const selectionCircle = document.createElement('div');
+            selectionCircle.classList.add('selection-circle');
+            dayCell.appendChild(selectionCircle);
+            dayCell.appendChild(dateText);
+            const dayData = data.astro[String(dayNum)] || {};
+            const festivos = data.festivos || [];
+            let specialEventIconPath = '';
+            let specialEventClasses = 'event-day-marker';
+            if (dayData.Eclipse) {
+                specialEventIconPath = 'assets/aspects/eclipse.gif';
+            } else if (dayData.Moon_Phase === 'Luna Nueva') {
+                specialEventIconPath = 'assets/aspects/luna_nueva.gif';
+                specialEventClasses += ' moon-event-marker';
+            } else if (dayData.Moon_Phase === 'Luna Llena') {
+                specialEventIconPath = 'assets/aspects/luna_llena.gif';
+                specialEventClasses += ' moon-event-marker';
+            }
+            if (specialEventIconPath) {
+                const eventIcon = document.createElement('img');
+                eventIcon.src = specialEventIconPath;
+                eventIcon.className = specialEventClasses;
+                dayCell.appendChild(eventIcon);
+            }
+            if (countEvents(dayData) >= 3) {
+                const warningIcon = document.createElement('img');
+                warningIcon.src = ICON_PATHS.alerts.Warning;
+                warningIcon.className = 'intense-day-marker';
+                dayCell.appendChild(warningIcon);
+            }
+            const aspectColors = getAspectColors(dayData);
+            if (aspectColors.length > 0) {
+                const dotsContainer = document.createElement('div');
+                dotsContainer.classList.add('dots-container');
+                aspectColors.forEach(colorClass => {
+                    const dot = document.createElement('div');
+                    dot.classList.add('event-dot', colorClass);
+                    dotsContainer.appendChild(dot);
+                });
+                dayCell.appendChild(dotsContainer);
+            }
+            if (new Date(year, month - 1, dayNum).getDay() === 0 || festivos.includes(dayNum)) {
+                dayCell.classList.add('holiday');
+            }
+
+            // **CORRECCIÓN #2: MOSTRAR ICONO PERSONAL**
+            const dateKey = `${year}-${String(month).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
+            const dayPersonalEvents = personalEvents[dateKey];
+
+            // Lógica de prioridad: el evento personal tiene más importancia que el warning.
+            if (dayPersonalEvents && dayPersonalEvents.length > 0) {
+                // Si hay un evento personal, mostrar su icono.
+                const eventIcon = document.createElement('img');
+                eventIcon.src = dayPersonalEvents[0].icon;
+                eventIcon.className = 'personal-event-icon-grid'; // Usa el estilo de la esquina derecha
+                eventIcon.title = dayPersonalEvents[0].name;
+                dayCell.appendChild(eventIcon);
+            } else if (countEvents(dayData) >= 3) {
+                // Si NO hay evento personal PERO el día es intenso, mostrar el warning.
+                const warningIcon = document.createElement('img');
+                warningIcon.src = ICON_PATHS.alerts.Warning;
+                warningIcon.className = 'intense-day-marker'; // Este ya estaba posicionado a la derecha
+                dayCell.appendChild(warningIcon);
+            }
+            // **FIN DE CORRECCIÓN #2**
+
+            dayCell.addEventListener('click', () => handleLandingDayClick(dayCell, new Date(year, month - 1, dayNum), dayData));
+            landingCalendarGrid.appendChild(dayCell);
+            if (dayNum === todayDate && month === todayMonth && year === todayYear) {
+                todayCellElement = dayCell;
+                todayDataPayload = dayData;
+            }
+        }
+        if (todayCellElement) {
+            handleLandingDayClick(todayCellElement, today, todayDataPayload);
+        }
+    }
+    
+    function getSpecialDayClassification(dayData) {
+        if (!dayData || !dayData.Aspects) return null;
+        for (const p1 in dayData.Aspects) {
+            for (const p2 in dayData.Aspects[p1]) {
+                const aspectType = dayData.Aspects[p1][p2].type;
+                if ((p1 === 'Saturn' && p2 === 'Mars') || (p1 === 'Mars' && p2 === 'Saturn')) {
+                    if (['Conjunction', 'Opposition', 'Square'].includes(aspectType)) return { title: 'Día de Mala Suerte', iconPath: ICON_PATHS.special_days['Día de Mala Suerte'], colorClass: 'day-bad-luck' };
+                }
+                if ((p1 === 'Sun' && p2 === 'Venus') || (p1 === 'Venus' && p2 === 'Sun')) {
+                    if (['Conjunction', 'Trine', 'Sextile'].includes(aspectType)) return { title: 'Día Amoroso', iconPath: ICON_PATHS.special_days['Día Amoroso'], colorClass: 'day-love' };
+                }
+                if ((p1 === 'Jupiter' && (p2 === 'Sun' || p2 === 'Venus')) || (p2 === 'Jupiter' && (p1 === 'Sun' || p1 === 'Venus'))) {
+                    if (['Conjunction', 'Trine', 'Sextile'].includes(aspectType)) return { title: 'Día Suertudo', iconPath: ICON_PATHS.special_days['Día Suertudo'], colorClass: 'day-lucky' };
+                }
+            }
+        }
+        return null;
+    }
+
+    function getGeneralDayClassification(dayData) {
+        if (!dayData) return null;
+        const ICON_GIF_PATHS = { tension: 'assets/aspects/tension.gif', friction: 'assets/aspects/friccion.gif', harmonic: 'assets/aspects/armonico.gif', creative: 'assets/aspects/creativo.gif', change: 'assets/aspects/cambio.gif', revelation: 'assets/aspects/revelacion.gif' };
+        const aspectCounts = { Trine: 0, Square: 0, Opposition: 0, Sextile: 0 };
+        if (dayData.Aspects) {
+            const processed = new Set();
+            for (const p1 in dayData.Aspects) { for (const p2 in dayData.Aspects[p1]) { const key = [p1, p2].sort().join('-'); if (processed.has(key)) continue; processed.add(key); const aspectType = dayData.Aspects[p1][p2].type; if (aspectCounts.hasOwnProperty(aspectType)) aspectCounts[aspectType]++; } }
+        }
+        const slowPlanets = ['Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto', 'North Node', 'South Node'];
+        if (dayData.Aspects?.Sun) { for (const planet in dayData.Aspects.Sun) { if (slowPlanets.includes(planet) && dayData.Aspects.Sun[planet].type === 'Conjunction') return { title: 'Día de Revelación', iconPath: ICON_GIF_PATHS.revelation, colorClass: 'day-revelation' }; } }
+        if (aspectCounts.Square >= 2 && aspectCounts.Opposition >= 1) return { title: 'Día de Tensión', iconPath: ICON_GIF_PATHS.tension, colorClass: 'day-tension' };
+        if (aspectCounts.Square >= 2 || aspectCounts.Opposition >= 2) return { title: 'Día de Fricción', iconPath: ICON_GIF_PATHS.friction, colorClass: 'day-friction' };
+        if (aspectCounts.Trine >= 2 && aspectCounts.Square <= 1) return { title: 'Día Armónico', iconPath: ICON_GIF_PATHS.harmonic, colorClass: 'day-harmonic' };
+        if (aspectCounts.Sextile >= 2 || (aspectCounts.Sextile >= 1 && aspectCounts.Trine >= 1)) return { title: 'Día Creativo', iconPath: ICON_GIF_PATHS.creative, colorClass: 'day-creative' };
+        const hasPlanetChange = dayData.Sign_Changes?.some(change => change.planet !== 'Moon');
+        if (hasPlanetChange) return { title: 'Día de Cambio', iconPath: ICON_GIF_PATHS.change, colorClass: 'day-change' };
+        return null;
+    }
+
+    function handleLandingDayClick(cell, date, dayData) {
+        if (selectedDayCell === cell) {
+            navigateToDetailView(date);
+            return;
+        }
+        if (selectedDayCell) selectedDayCell.classList.remove('selected');
+        cell.classList.add('selected');
+        selectedDayCell = cell;
+        landingDayDetails.innerHTML = '';
+        currentDetailDate = date;
+        let hasContent = false;
+        const contentWrapper = document.createElement('div');
+
+        const specialClassification = getSpecialDayClassification(dayData);
+        if (specialClassification) {
+            const specialDayRow = document.createElement('div');
+            specialDayRow.classList.add('special-day-row', specialClassification.colorClass, 'clickable-title');
+            specialDayRow.innerHTML = `<img src="${specialClassification.iconPath}" alt="${specialClassification.title}"><span>${specialClassification.title}</span><img src="${specialClassification.iconPath}" alt="${specialClassification.title}">`;
+            specialDayRow.onclick = () => showAndScrollToSymbol(specialClassification.title);
+            contentWrapper.appendChild(specialDayRow);
+        }
+
+        const generalClassification = getGeneralDayClassification(dayData);
+        if (generalClassification) {
+            const generalDayRow = document.createElement('div');
+            generalDayRow.classList.add('special-day-row', generalClassification.colorClass, 'clickable-title');
+            generalDayRow.innerHTML = `<img src="${generalClassification.iconPath}" alt="${generalClassification.title}"><span>${generalClassification.title}</span><img src="${generalClassification.iconPath}" alt="${generalClassification.title}">`;
+            generalDayRow.onclick = () => showAndScrollToSymbol(generalClassification.title);
+            contentWrapper.appendChild(generalDayRow);
+        } else if (!specialClassification && countEvents(dayData) >= 3) {
+            const warningIconPath = ICON_PATHS.alerts.Warning;
+            const intenseDayRow = document.createElement('div');
+            intenseDayRow.classList.add('special-day-row', 'day-intense');
+            intenseDayRow.innerHTML = `<img src="${warningIconPath}" alt="Alerta"><span>DÍA INTENSO</span><img src="${warningIconPath}" alt="Alerta">`;
+            contentWrapper.appendChild(intenseDayRow);
+        }
+
+        if (contentWrapper.hasChildNodes()) {
+            const separatorTop = document.createElement('div');
+            separatorTop.className = 'details-separator';
+            contentWrapper.appendChild(separatorTop);
+            hasContent = true;
+        }
+        const specialEventsDiv = document.createElement('div');
+        if (dayData.Eclipse) { const eventName = `Eclipse ${dayData.Eclipse.type} ${dayData.Eclipse.subtype}`; const eventIconPath = ICON_PATHS.events[eventName]; if (eventIconPath) specialEventsDiv.innerHTML += `<div class="special-event-row"><img src="${eventIconPath}" alt="${eventName}"><span>${eventName}</span></div>`; }
+        else if (FASES_LUNARES_PRINCIPALES.includes(dayData.Moon_Phase)) { const eventName = dayData.Moon_Phase; const eventIconPath = ICON_PATHS.events[eventName]; if (eventIconPath) specialEventsDiv.innerHTML += `<div class="special-event-row"><img src="${eventIconPath}" alt="${eventName}"><span>${eventName}</span></div>`; }
+        if (specialEventsDiv.hasChildNodes()) {
+            contentWrapper.appendChild(specialEventsDiv);
+            hasContent = true;
+        }
+        
+        const eventsContainer = document.createElement('div');
+        addEventsToCell(eventsContainer, dayData);
+        if (eventsContainer.hasChildNodes()) {
+            contentWrapper.appendChild(eventsContainer);
+            hasContent = true;
+        }
+        
+        if (hasContent) {
+            landingDayDetails.appendChild(contentWrapper);
+        }
+
+        // Crear el contenedor para los 3 nuevos botones
+        const actionsContainer = document.createElement('div');
+        actionsContainer.className = 'details-actions-container';
+
+        // **CORRECCIÓN #3: MOSTRAR DETALLES DE EVENTOS PERSONALES**
+        const personalEvents = getPersonalEvents();
+        const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        const dayPersonalEvents = personalEvents[dateKey];
+
+        if (dayPersonalEvents && dayPersonalEvents.length > 0) {
+            // Añadir separador dorado ANTES de los eventos
+            const separator = document.createElement('div');
+            separator.className = 'personal-events-separator';
+            landingDayDetails.appendChild(separator);
+
+            const personalEventsContainer = document.createElement('div');
+            personalEventsContainer.className = 'personal-events-container';
+
+            // Usamos .forEach con el índice para la función de borrado
+            dayPersonalEvents.forEach((event, index) => {
+                const eventRow = document.createElement('div');
+                eventRow.className = 'personal-event-details-row';
+                
+                // Crear el botón de eliminar
+                const deleteBtn = document.createElement('span');
+                deleteBtn.className = 'delete-event-btn';
+                deleteBtn.innerHTML = '×'; // '×' (equis de multiplicar)
+                deleteBtn.title = 'Eliminar evento';
+                // ¡La lógica de borrado!
+                deleteBtn.onclick = () => deletePersonalEvent(date, index);
+
+                eventRow.innerHTML = `<img src="${event.icon}" alt="${event.name}"><span>${event.name}</span>`;
+                eventRow.appendChild(deleteBtn); // Añadir la 'X' al final de la fila
+                
+                personalEventsContainer.appendChild(eventRow);
+            });
+
+            landingDayDetails.appendChild(personalEventsContainer);
+            hasContent = true;
+        }
+        // **FIN DE CORRECCIÓN #3**
+
+        if (contentWrapper.hasChildNodes() || (dayPersonalEvents && dayPersonalEvents.length > 0)) {
+            const separatorBottom = document.createElement('div');
+            separatorBottom.className = 'details-separator';
+            landingDayDetails.appendChild(separatorBottom);
+        }
+        
+        // --- SECCIÓN DE BOTONES ---
+        // 1. Botón de Ver Interpretación (Izquierda)
+        const interpretationBtn = document.createElement('button');
+        interpretationBtn.className = 'details-action-btn';
+        interpretationBtn.innerHTML = `<img src="assets/icons/verinterpretacion.png" alt="Ver Interpretación"><span>ver interpretación</span>`;
+        interpretationBtn.onclick = () => navigateToDetailView(currentDetailDate);
+        interpretationBtn.title = "Ver Interpretación del Día";
+
+        // 2. Botón de Información (Centro)
+        const infoBtn = document.createElement('button');
+        infoBtn.className = 'details-action-btn';
+        infoBtn.innerHTML = `<img src="assets/icons/info.png" alt="Información Adicional"><span>info</span>`;
+        infoBtn.onclick = showExplanationModal;
+        infoBtn.title = "Información Adicional";
+
+        // 3. Botón de Añadir Evento (Derecha) - Corregido
+        const addEventBtn = document.createElement('button');
+        addEventBtn.className = 'details-action-btn';
+        addEventBtn.innerHTML = `<img src="assets/icons/mas.png" alt="Añadir Evento Personal"><span>agregar evento</span>`;
+        addEventBtn.onclick = () => openAddEventModal(currentDetailDate); // Corregido aquí
+        addEventBtn.title = "Añadir Evento Personal";
+
+        // Añadir los botones al contenedor
+        actionsContainer.appendChild(interpretationBtn);
+        actionsContainer.appendChild(infoBtn);
+        actionsContainer.appendChild(addEventBtn);
+
+        // Añadir el contenedor de botones a los detalles del día
+        landingDayDetails.appendChild(actionsContainer);
+        
+        if (!hasContent) {
+            landingDayDetails.innerHTML = '<p class="initial-prompt">No hay eventos para mostrar.</p>';
+            // Se vuelve a añadir el contenedor de acciones vacío para que los botones aparezcan incluso si no hay eventos
+            landingDayDetails.appendChild(actionsContainer);
+        }
+    }
+
     function navigateToDetailView(date) { mobileLandingContainer.style.display = 'none'; mobileContainer.style.display = 'flex'; backToLandingBtn.style.display = 'flex'; mobileDate = date; renderMobileView(date); }
     
     // =========================================================================
     // ==                      LÓGICA VISTA MÓVIL (DIARIA)                    ==
     // =========================================================================
-    function initMobileView() { if (!mobileContainer) return; renderMobileView(mobileDate); prevDayMobileBtn.addEventListener('click', () => changeMobileDay(-1)); nextDayMobileBtn.addEventListener('click', () => changeMobileDay(1)); goToTodayBtn.addEventListener('click', () => { mobileDate = new Date(); renderMobileView(mobileDate); }); showAspectsBtn.addEventListener('click', () => showAspectsModal(mobileDate)); let touchStartX = 0; mobileContainer.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true }); mobileContainer.addEventListener('touchend', e => { const touchEndX = e.changedTouches[0].screenX; const swipeThreshold = 50; if (touchStartX - touchEndX > swipeThreshold) changeMobileDay(1); else if (touchEndX - touchStartX > swipeThreshold) changeMobileDay(-1); }); }
+    function initMobileView() {
+        if (!mobileContainer) return;
+        renderMobileView(mobileDate);
+        prevDayMobileBtn.addEventListener('click', () => changeMobileDay(-1));
+        nextDayMobileBtn.addEventListener('click', () => changeMobileDay(1));
+        goToTodayBtn.addEventListener('click', () => { mobileDate = new Date(); renderMobileView(mobileDate); });
+        showAspectsBtn.addEventListener('click', () => showAspectsModal(mobileDate));
+        let touchStartX = 0;
+        mobileContainer.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+        mobileContainer.addEventListener('touchend', e => {
+            const touchEndX = e.changedTouches[0].screenX;
+            const swipeThreshold = 50;
+            if (touchStartX - touchEndX > swipeThreshold) changeMobileDay(1);
+            else if (touchEndX - touchStartX > swipeThreshold) changeMobileDay(-1);
+        });
+    }
     function changeMobileDay(direction) { mobileDate.setDate(mobileDate.getDate() + direction); renderMobileView(mobileDate); }
     async function renderMobileView(date) { mobileDayContent.innerHTML = `<div class="loader">Cargando...</div>`; const year = date.getFullYear(); const month = date.getMonth() + 1; const day = date.getDate(); const data = await getMonthlyData(year, month); if (!data) { mobileDayContent.innerHTML = `<p>No hay datos.</p>`; return; } const dayAstroData = data.astro[day] || {}; const dayTextData = data.textos[day] || {}; mobileDayContent.innerHTML = generateDayContentHTML(date, dayAstroData, dayTextData, data.festivos); }
     function getAspectColors(dayData) { const colors = []; if (!dayData || !dayData.Aspects) return colors; const processed = new Set(); for (const p1 in dayData.Aspects) { for (const p2 in dayData.Aspects[p1]) { const key = [p1, p2].sort().join('-'); if (processed.has(key)) continue; processed.add(key); const aspectType = dayData.Aspects[p1][p2].type; if (ASPECT_COLORS[aspectType]) { colors.push(ASPECT_COLORS[aspectType]); } } } return colors; }
@@ -127,30 +643,36 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==                     FUNCIONES COMPARTIDAS Y MODALES                 ==
     // =========================================================================
     function generateDayContentHTML(date, astro, textos, festivos) { const dayNum = date.getDate(); const esDomingo = date.getDay() === 0; const esFestivo = isHoliday(date, festivos); const eventCount = countEvents(astro); const nombreDia = capitalize(date.toLocaleDateString('es-ES', { weekday: 'long' })); const nombreMes = capitalize(date.toLocaleDateString('es-ES', { month: 'long' })); let html = `<h1 style="color: ${esFestivo || esDomingo ? 'var(--color-texto-domingo)' : 'inherit'}">${nombreDia} ${dayNum} de ${nombreMes} ${date.getFullYear()}</h1>`; if (eventCount >= 3) html += `<p style="text-align: center; color: red; font-weight: bold;"><img class="header-icon" src="assets/aspects/warning.gif" title="Día intenso"> DÍA INTENSO <img class="header-icon" src="assets/aspects/warning.gif" title="Día intenso"></p>`; if (textos && Object.keys(textos).length > 0) { if (textos.introduccion_diaria) html += `<h2>🌞 Introducción</h2><p>${textos.introduccion_diaria}</p>`; if (textos.interpretacion_aspectos?.length > 0) { html += '<h2>🔮 Interpretación</h2>'; textos.interpretacion_aspectos.forEach(t => html += `<p>${t}</p>`); } if (textos.eventos_especiales?.length > 0) { html += '<h2>✨ Eventos</h2>'; textos.eventos_especiales.forEach(t => html += `<p>${t}</p>`); } if (textos.consejo_del_dia) html += `<h2>💡 Consejo</h2><p>${textos.consejo_del_dia}</p>`; } else { html += '<p>Sin interpretaciones disponibles.</p>'; } return html; }
-    async function showDayDetailsModal(year, month, dayNum) { const modal = document.getElementById('modal-detail'); const modalTextos = document.getElementById('modal-textos'); const data = await getMonthlyData(year, month); const date = new Date(year, month - 1, dayNum); let contentHtml = ''; if (data) { const astro = data.astro[dayNum] || {}; const textos = data.textos[dayNum] || {}; contentHtml = generateDayContentHTML(date, astro, textos, data.festivos); } else { contentHtml = `<p>Error al cargar.</p>`; } modalTextos.innerHTML = contentHtml; modal.style.display = 'flex'; backToLandingBtn.style.display = 'flex'; const closeModal = () => { modal.style.display = 'none'; backToLandingBtn.style.display = 'none'; }; modal.querySelector('.close-button').onclick = closeModal; backToLandingBtn.onclick = closeModal; modal.onclick = (e) => { if (e.target === modal) closeModal(); }; }
-    async function showSymbolModal() { const modal = document.getElementById('modal-symbol'); const modalContent = document.getElementById('modal-symbol-content'); try { const res = await fetch('Calendar/Simbologia.json'); if (!res.ok) throw new Error('Archivo no encontrado'); const data = await res.json(); let mainHtml = `<h1 style="text-align:center;">Simbología</h1>`; for (const seccion in data) { mainHtml += `<h2 style="margin-top: 20px;">✨${capitalize(seccion)}✨</h2>`; const grupo = data[seccion]; for (const key in grupo) { const item = grupo[key]; const entryId = 'simbologia-' + key.replace(/\s+/g, '-').toLowerCase(); let iconHtml = ''; if (item.gif) { iconHtml = `<img src="${item.gif}" alt="${key}" style="height: 28px; width: 28px; object-fit: contain; vertical-align: middle; margin-right: 6px;">`; } else { let iconPath = ICON_PATHS.signs[key] || ICON_PATHS.planets[key] || ICON_PATHS.aspects[key] || ''; if (iconPath) { iconHtml = `<img src="${iconPath}" alt="${key}" style="height: 28px; width: 28px; object-fit: contain; vertical-align: middle; margin-right: 6px;">`; } } mainHtml += `<div id="${entryId}" style="margin-bottom: 1rem;">`; mainHtml += `${iconHtml}<strong>${item.nombre || key}</strong><br>`; if (item.lema) { mainHtml += `<small style="font-weight:bold;">${item.lema}</small><br>`; } else if (item.condicion) { mainHtml += `<small style="font-weight:bold; color: #555;">Condición: ${item.condicion}</small><br>`; } mainHtml += `<span>${item.descripcion}</span></div>`; } } modalContent.innerHTML = mainHtml; modal.style.display = 'flex'; backToLandingBtn.style.display = 'flex'; const closeModal = () => { modal.style.display = 'none'; backToLandingBtn.style.display = 'none'; }; modal.querySelector('.close-button').onclick = closeModal; backToLandingBtn.onclick = closeModal; modal.onclick = (e) => { if (e.target === modal) closeModal(); }; } catch (error) { console.error("Error al cargar Simbologia.json:", error); modalContent.innerHTML = `<p>Error al cargar la simbología.</p>`; } }
+    async function showDayDetailsModal(year, month, dayNum) { const modal = document.getElementById('modal-detail'); const modalTextos = document.getElementById('modal-textos'); const data = await getMonthlyData(year, month); const date = new Date(year, month - 1, dayNum); let contentHtml = ''; if (data) { const astro = data.astro[dayNum] || {}; const textos = data.textos[dayNum] || {}; contentHtml = generateDayContentHTML(date, astro, textos, data.festivos); } else { contentHtml = `<p>Error al cargar.</p>`; } modalTextos.innerHTML = contentHtml; modal.style.display = 'flex'; modalBackBtn.style.display = 'flex'; const closeModal = () => { modal.style.display = 'none'; modalBackBtn.style.display = 'none'; }; modal.querySelector('.close-button').onclick = closeModal; modalBackBtn.onclick = closeModal; modal.onclick = (e) => { if (e.target === modal) closeModal(); }; }
+    async function showSymbolModal() { const modal = document.getElementById('modal-symbol'); const modalContent = document.getElementById('modal-symbol-content'); try { const res = await fetch('Calendar/Simbologia.json'); if (!res.ok) throw new Error('Archivo no encontrado'); const data = await res.json(); let mainHtml = `<h1 style="text-align:center;">Simbología</h1>`; for (const seccion in data) { mainHtml += `<h2 style="margin-top: 20px;">✨${capitalize(seccion)}✨</h2>`; const grupo = data[seccion]; for (const key in grupo) { const item = grupo[key]; const entryId = 'simbologia-' + key.replace(/\s+/g, '-').toLowerCase(); let iconHtml = ''; if (item.gif) { iconHtml = `<img src="${item.gif}" alt="${key}" style="height: 28px; width: 28px; object-fit: contain; vertical-align: middle; margin-right: 6px;">`; } else { let iconPath = ICON_PATHS.signs[key] || ICON_PATHS.planets[key] || ICON_PATHS.aspects[key] || ''; if (iconPath) { iconHtml = `<img src="${iconPath}" alt="${key}" style="height: 28px; width: 28px; object-fit: contain; vertical-align: middle; margin-right: 6px;">`; } } mainHtml += `<div id="${entryId}" style="margin-bottom: 1rem;">`; mainHtml += `${iconHtml}<strong>${item.nombre || key}</strong><br>`; if (item.lema) { mainHtml += `<small style="font-weight:bold;">${item.lema}</small><br>`; } else if (item.condicion) { mainHtml += `<small style="font-weight:bold; color: #555;">Condición: ${item.condicion}</small><br>`; } mainHtml += `<span>${item.descripcion}</span></div>`; } } modalContent.innerHTML = mainHtml; modal.style.display = 'flex'; modalBackBtn.style.display = 'flex'; const closeModal = () => { modal.style.display = 'none'; modalBackBtn.style.display = 'none'; }; modal.querySelector('.close-button').onclick = closeModal; modalBackBtn.onclick = closeModal; modal.onclick = (e) => { if (e.target === modal) closeModal(); }; } catch (error) { console.error("Error al cargar Simbologia.json:", error); modalContent.innerHTML = `<p>Error al cargar la simbología.</p>`; } }
     async function showAndScrollToSymbol(key) { await showSymbolModal(); const targetId = 'simbologia-' + key.replace(/\s+/g, '-').toLowerCase(); const targetElement = document.getElementById(targetId); if (targetElement) { targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' }); } }
-    async function showAspectsModal(date) { const modal = document.getElementById('modal-aspects'); const modalContent = document.getElementById('modal-aspects-content'); modalContent.innerHTML = `<div class="loader">Cargando...</div>`; modal.style.display = 'flex'; backToLandingBtn.style.display = 'flex'; const year = date.getFullYear(); const month = date.getMonth() + 1; const day = date.getDate(); const data = await getMonthlyData(year, month); let html = `<h1>✨Aspectos</h1>`; let specialEventsHtml = ''; if (data && data.astro[day]) { const dayData = data.astro[day]; let eventName = ''; let eventIconPath = ''; if (dayData.Eclipse) { eventName = `Eclipse ${dayData.Eclipse.type} ${dayData.Eclipse.subtype}`; eventIconPath = ICON_PATHS.events[eventName]; } else if (FASES_LUNARES_PRINCIPALES.includes(dayData.Moon_Phase)) { eventName = dayData.Moon_Phase; eventIconPath = ICON_PATHS.events[eventName]; } if (eventName && eventIconPath) { specialEventsHtml = `<div class="special-event-row"><img src="${eventIconPath}" alt="${eventName}"><span>${eventName}</span></div>`; } const eventsContainer = document.createElement('div'); eventsContainer.classList.add('astro-events'); addEventsToCell(eventsContainer, dayData); const regularAspectsHtml = eventsContainer.innerHTML; if (specialEventsHtml || regularAspectsHtml) { html += specialEventsHtml + regularAspectsHtml; } else { html += '<p>No hay aspectos mayores.</p>'; } } else { html += '<p>No hay aspectos mayores.</p>'; } modalContent.innerHTML = html; const closeModal = () => { modal.style.display = 'none'; backToLandingBtn.style.display = 'none'; }; modal.querySelector('.close-button').onclick = closeModal; backToLandingBtn.onclick = closeModal; modal.onclick = (e) => { if (e.target === modal) closeModal(); }; }
-    function showInstallHelpModal() { const modal = document.getElementById('modal-install'); modal.style.display = 'flex'; backToLandingBtn.style.display = 'flex'; const closeModal = () => { modal.style.display = 'none'; backToLandingBtn.style.display = 'none'; }; modal.querySelector('.close-button').onclick = closeModal; backToLandingBtn.onclick = closeModal; modal.onclick = (e) => { if (e.target === modal) { closeModal(); } }; }
+    async function showAspectsModal(date) { const modal = document.getElementById('modal-aspects'); const modalContent = document.getElementById('modal-aspects-content'); modalContent.innerHTML = `<div class="loader">Cargando...</div>`; modal.style.display = 'flex'; modalBackBtn.style.display = 'flex'; const year = date.getFullYear(); const month = date.getMonth() + 1; const day = date.getDate(); const data = await getMonthlyData(year, month); let html = `<h1>✨Aspectos</h1>`; let specialEventsHtml = ''; if (data && data.astro[day]) { const dayData = data.astro[day]; let eventName = ''; let eventIconPath = ''; if (dayData.Eclipse) { eventName = `Eclipse ${dayData.Eclipse.type} ${dayData.Eclipse.subtype}`; eventIconPath = ICON_PATHS.events[eventName]; } else if (FASES_LUNARES_PRINCIPALES.includes(dayData.Moon_Phase)) { eventName = dayData.Moon_Phase; eventIconPath = ICON_PATHS.events[eventName]; } if (eventName && eventIconPath) { specialEventsHtml = `<div class="special-event-row"><img src="${eventIconPath}" alt="${eventName}"><span>${eventName}</span></div>`; } const eventsContainer = document.createElement('div'); eventsContainer.classList.add('astro-events'); addEventsToCell(eventsContainer, dayData); const regularAspectsHtml = eventsContainer.innerHTML; if (specialEventsHtml || regularAspectsHtml) { html += specialEventsHtml + regularAspectsHtml; } else { html += '<p>No hay aspectos mayores.</p>'; } } else { html += '<p>No hay aspectos mayores.</p>'; } modalContent.innerHTML = html; const closeModal = () => { modal.style.display = 'none'; modalBackBtn.style.display = 'none'; }; modal.querySelector('.close-button').onclick = closeModal; modalBackBtn.onclick = closeModal; modal.onclick = (e) => { if (e.target === modal) closeModal(); }; }
+    function showInstallHelpModal() { const modal = document.getElementById('modal-install'); modal.style.display = 'flex'; modalBackBtn.style.display = 'flex'; const closeModal = () => { modal.style.display = 'none'; modalBackBtn.style.display = 'none'; }; modal.querySelector('.close-button').onclick = closeModal; modalBackBtn.onclick = closeModal; modal.onclick = (e) => { if (e.target === modal) { closeModal(); } }; }
     async function showAboutModal() {
         const modal = document.getElementById('modal-about');
         const modalContent = document.getElementById('modal-about-content');
+        
         modalContent.innerHTML = '<div class="loader">Cargando...</div>';
         modal.style.display = 'flex';
-        backToLandingBtn.style.display = 'flex';
+        modalBackBtn.style.display = 'flex';
+
         const closeModal = () => {
             modal.style.display = 'none';
-            backToLandingBtn.style.display = 'none';
+            modalBackBtn.style.display = 'none';
         };
+
         modal.querySelector('.close-button').onclick = closeModal;
-        backToLandingBtn.onclick = closeModal;
+        modalBackBtn.onclick = closeModal;
         modal.onclick = (e) => {
             if (e.target === modal) closeModal();
         };
+
         try {
             const res = await fetch('creditos.json');
             if (!res.ok) throw new Error('No se pudo cargar el archivo de créditos.');
             const data = await res.json();
+
+            // Construir el HTML dinámicamente
             let html = `<h2>${data.introduccion}</h2>`;
             html += `<p>${data.agradecimientos}</p>`;
             html += `<h3>Créditos Gráficos</h3>`;
@@ -159,6 +681,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 html += `<li>${credit.html}</li>`;
             });
             html += '</ul>';
+
             modalContent.innerHTML = html;
         } catch (error) {
             console.error("Error al cargar creditos.json:", error);
@@ -168,7 +691,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function openAddEventModal(date) {
         eventNameInput.value = '';
         const eventTypeSelect = document.getElementById('event-type-select');
-        eventTypeSelect.innerHTML = '<option value="" disabled selected>-- Elige un tipo de evento --</option>';
+        eventTypeSelect.innerHTML = '<option value="" disabled selected>-- Elige un tipo de evento --</option>'; // Opción por defecto
+
+        // Poblar la lista desplegable
         for (const typeKey in PERSONAL_EVENT_TYPES) {
             const typeInfo = PERSONAL_EVENT_TYPES[typeKey];
             const option = document.createElement('option');
@@ -176,12 +701,15 @@ document.addEventListener('DOMContentLoaded', () => {
             option.textContent = typeInfo.name;
             eventTypeSelect.appendChild(option);
         }
+        
         eventDateInput.value = date.toISOString();
         modalAddEvent.style.display = 'flex';
-        backToLandingBtn.style.display = 'flex'; // CORRECCIÓN
+        modalBackBtn.style.display = 'flex';
+
         saveEventBtn.onclick = () => {
             const selectedEventType = eventTypeSelect.value;
             const eventName = eventNameInput.value.trim();
+
             if (!selectedEventType) {
                 alert('Por favor, selecciona un tipo de evento.');
                 return;
@@ -190,34 +718,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Por favor, escribe un nombre para el evento.');
                 return;
             }
+
             const eventData = {
                 type: selectedEventType,
                 name: eventName,
                 icon: PERSONAL_EVENT_TYPES[selectedEventType].icon,
             };
+            
             addPersonalEvent(new Date(eventDateInput.value), eventData);
             closeAddEventModal();
             renderLandingView(landingDate);
         };
-        // ASIGNACIÓN DEL EVENTO ONCLICK AL BOTÓN DE VOLVER
-        backToLandingBtn.onclick = closeAddEventModal; // CORRECCIÓN
     }
 
     function closeAddEventModal() {
         modalAddEvent.style.display = 'none';
-        backToLandingBtn.style.display = 'none'; // CORRECCIÓN
+        modalBackBtn.style.display = 'none';
     }
 
     function showExplanationModal() {
         const modal = document.getElementById('modal-explanation');
         modal.style.display = 'flex';
-        backToLandingBtn.style.display = 'flex';
+        modalBackBtn.style.display = 'flex';
+
         const closeModal = () => {
             modal.style.display = 'none';
-            backToLandingBtn.style.display = 'none';
+            modalBackBtn.style.display = 'none';
         };
+
         modal.querySelector('.close-button').onclick = closeModal;
-        backToLandingBtn.onclick = closeModal;
+        modalBackBtn.onclick = closeModal;
         modal.onclick = (e) => {
             if (e.target === modal) {
                 closeModal();
@@ -231,10 +761,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==                           INICIALIZACIÓN                            ==
     // =========================================================================
     async function initializeApp() {
+        // 1. Asignar todos los listeners a sus botones.
+        // Esto asegura que estén listos antes de que se muestre nada.
         if(symbolBtn) symbolBtn.addEventListener('click', showSymbolModal);
         if(symbolBtnMobile) symbolBtnMobile.addEventListener('click', showSymbolModal);
         if(installHelpBtn) installHelpBtn.addEventListener('click', showInstallHelpModal);
-        if(landingAboutBtn) landingAboutBtn.addEventListener('click', showAboutModal);
+        if(landingAboutBtn) landingAboutBtn.addEventListener('click', showAboutModal); // Listener para "Acerca de"
         
         if(backToLandingBtn) backToLandingBtn.addEventListener('click', () => {
             mobileContainer.style.display = 'none';
@@ -242,11 +774,15 @@ document.addEventListener('DOMContentLoaded', () => {
             mobileLandingContainer.style.display = 'flex';
         });
         
+        // Listeners para el modal de añadir evento
         if(modalAddEvent) modalAddEvent.querySelector('.close-button').addEventListener('click', closeAddEventModal);
         
+        // 2. Configurar la altura dinámica para móviles
         setDynamicHeight(); 
         window.addEventListener('resize', setDynamicHeight);
 
+        // 3. Decidir qué vista (móvil o escritorio) mostrar.
+        // Este bloque ya no está duplicado.
         if (window.innerWidth <= 768 && mobileLandingContainer) {
             await initMobileLandingView();
             initMobileView();
@@ -254,5 +790,7 @@ document.addEventListener('DOMContentLoaded', () => {
             initDesktopView();
         }
     }
+
+    // 4. Llamar a la función principal para que todo empiece.
     initializeApp();
 });
