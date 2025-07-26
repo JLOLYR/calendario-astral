@@ -659,7 +659,7 @@ body {
     border-radius: 50%;
     border: 1px solid white;
     cursor: pointer;
-    z-index: 998; /* Asegúrate de que este z-index es correcto */
+    z-index: 1001; /* Asegúrate de que este z-index es correcto */
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     display: none;
     transition: transform 0.2s;
@@ -687,10 +687,6 @@ body {
         line-height: 1;
     }
 
-    #back-to-landing-btn:hover,
-    #modal-back-btn:hover {
-        transform: scale(1.1);
-    }
     
     /* Modal de instalación en móvil */
     .install-instructions-container { flex-direction: column; }
