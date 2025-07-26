@@ -1,9 +1,9 @@
-// Incrementamos la versión para forzar la actualización
-const CACHE_NAME = 'calendario-astral-cache-v5'; 
+// ¡MUY IMPORTANTE! Incrementa la versión para que el navegador instale esta nueva lógica.
+const CACHE_NAME = 'calendario-astral-cache-v6'; 
 
 // Lista de archivos a cachear con rutas RELATIVAS
 const URLS_TO_CACHE = [
-  './', // Representa la raíz del directorio (muy importante)
+  './', // Representa la raíz del directorio
   './index.html',
   './style.css',
   './script.js',
@@ -18,26 +18,27 @@ const URLS_TO_CACHE = [
   'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'
 ];
 
-// Evento de instalación
+// Evento de instalación (se mantiene igual, ya estaba bien)
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
         console.log('Cache abierto, añadiendo archivos del App Shell.');
-        return cache.addAll(URLS_TO_CACHE);
+        // Usamos { cache: 'reload' } para asegurarnos de que estamos cacheando la versión más nueva de la red.
+        const requests = URLS_TO_CACHE.map(url => new Request(url, { cache: 'reload' }));
+        return cache.addAll(requests);
       })
       .then(() => {
         console.log('Todos los archivos fueron cacheados exitosamente.');
         return self.skipWaiting();
       })
       .catch(error => {
-        // Este log es crucial para depurar si algo vuelve a fallar.
         console.error('Fallo en cache.addAll:', error);
       })
   );
 });
 
-// Evento de activación
+// Evento de activación (se mantiene igual, ya estaba bien)
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
@@ -53,34 +54,54 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Evento fetch
+// === Evento fetch REESCRITO Y MEJORADO ===
 self.addEventListener('fetch', event => {
+  const { request } = event;
+
+  // ESTRATEGIA 1: Network First para los archivos de datos JSON.
+  // Esto asegura que el usuario siempre tenga la información más actualizada.
+  if (request.url.includes('.json') && !request.url.includes('manifest.json')) {
+    event.respondWith(
+      fetch(request)
+        .then(networkResponse => {
+          // Si la respuesta de la red es buena, la clonamos, la guardamos en la caché y la devolvemos.
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(request, responseToCache);
+          });
+          return networkResponse;
+        })
+        .catch(() => {
+          // Si la red falla (está offline), intentamos servir desde la caché.
+          console.log('Red falló para JSON, intentando desde la caché...');
+          return caches.match(request);
+        })
+    );
+    return; // Salimos para no ejecutar la siguiente estrategia.
+  }
+
+  // ESTRATEGIA 2: Cache First para todo lo demás (App Shell, CSS, JS, Fuentes, Imágenes).
+  // Es la más rápida para los archivos que no cambian a menudo.
   event.respondWith(
-    caches.match(event.request)
-      .then(response => {
+    caches.match(request)
+      .then(cachedResponse => {
         // Si la respuesta está en el caché, la retornamos.
-        if (response) {
-          return response;
+        if (cachedResponse) {
+          return cachedResponse;
         }
         // Si no, la buscamos en la red.
-        return fetch(event.request).then(
-          networkResponse => {
-            // No cacheamos peticiones de extensiones o fallidas
-            if (!networkResponse || networkResponse.status !== 200 || !['basic', 'cors'].includes(networkResponse.type)) {
+        return fetch(request).then(networkResponse => {
+          // No cacheamos peticiones de extensiones de Chrome
+          if (request.url.startsWith('chrome-extension://')) {
               return networkResponse;
-            }
-            const responseToCache = networkResponse.clone();
-            caches.open(CACHE_NAME).then(cache => {
-                // Solo cachea peticiones GET válidas
-                if(event.request.method === 'GET') {
-                    cache.put(event.request, responseToCache);
-                }
-            });
-            return networkResponse;
           }
-        ).catch(error => {
-            console.error('Fetch falló; probablemente sin conexión:', error);
-            // Podrías devolver una página de fallback aquí si quisieras
+
+          // Clonamos, guardamos en caché y devolvemos la respuesta de red.
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then(cache => {
+              cache.put(request, responseToCache);
+          });
+          return networkResponse;
         });
       })
   );
