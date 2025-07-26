@@ -402,17 +402,14 @@ body {
     .landing-week-headers span:last-child { color: var(--color-texto-domingo); }
 
     #landing-calendar-grid {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
+        display: grid;       
+        grid-template-columns: repeat(7, calc((100% - 6px) / 7));
         gap: 1px;
-
         /* --- CAMBIOS CLAVE AQUÍ --- */
         /* 1. Usamos 'flex' para controlar el crecimiento y encogimiento de forma robusta. */
         flex: 1 1 0;
         /* 2. ¡La magia! Permite el scroll vertical SÓLO dentro de este elemento si es necesario. */
         overflow-y: auto;
-        overflow-x: hidden; 
-        
         padding: 8px 5px 20px 5px; /* 3. Añadimos más padding abajo para que haya espacio al final del scroll. */
         background-color: #f1f1f1;
         border-top: none;

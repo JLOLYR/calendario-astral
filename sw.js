@@ -1,5 +1,5 @@
 // ¡MUY IMPORTANTE! Incrementa la versión para que el navegador instale esta nueva lógica.
-const CACHE_NAME = 'calendario-astral-cache-v6'; 
+const CACHE_NAME = 'calendario-astral-cache-v7'; 
 
 // Lista de archivos a cachear con rutas RELATIVAS
 const URLS_TO_CACHE = [
