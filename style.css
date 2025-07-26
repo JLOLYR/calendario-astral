@@ -174,7 +174,7 @@ body {
         width: 100%;
         
         /* ALTURA DE RESPALDO: Usamos 100% para que intente llenar su contenedor padre (el body) */
-        height: 100%; 
+        height: 100vh;
         
         position: fixed; /* Lo fijamos a la ventana para asegurar el tamaño */
         top: 0;
