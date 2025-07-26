@@ -3,6 +3,12 @@
 ==           GUÍA DE COLORES Y FUENTES GLOBALES           ==
 ============================================================
 */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 :root {
     --color-fondo-pagina: #fdfaf5;
     --color-fondo-celda-vacia: rgba(209, 215, 224, 0.5);
@@ -411,7 +417,6 @@ body {
         background-color: #f1f1f1;
         border-top: none;
         border-bottom: 1px solid #e0e0e0;
-        min-width: 0;
     }
     .landing-day-cell { 
         display: flex; 
