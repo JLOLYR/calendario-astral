@@ -393,11 +393,12 @@ body {
         grid-template-columns: repeat(7, 1fr);
         text-align: center;
         /* CORRECCIÓN: Unificamos el padding lateral a 5px */
-        padding: 10px 5px 5px 5px; 
+        padding: 10px 5px 10px 5px; 
         font-size: 0.7em;
         font-weight: 600;
         color: #8e8e93;
         flex-shrink: 0;
+        border-bottom: 1px solid var(--color-borde-calendario);
     }
     .landing-week-headers span:last-child { color: var(--color-texto-domingo); }
 
@@ -407,7 +408,7 @@ body {
         gap: 1px;
         /* --- CAMBIOS CLAVE AQUÍ --- */
         /* 1. Usamos 'flex' para controlar el crecimiento y encogimiento de forma robusta. */
-        flex: 1 1 0;
+        flex-shrink: 0;
         /* 2. ¡La magia! Permite el scroll vertical SÓLO dentro de este elemento si es necesario. */
         overflow-y: auto;
         padding: 8px 5px 20px 5px; /* 3. Añadimos más padding abajo para que haya espacio al final del scroll. */
@@ -477,7 +478,7 @@ body {
         background-color: transparent; /* <-- Esta es la línea clave */
     }
 
-    #landing-day-details { flex-shrink: 0; padding: 15px; height: 33vh; overflow-y: auto; background-color: rgb(255, 255, 255); width: 100%; box-sizing: border-box; }
+    #landing-day-details { flex: 1;; padding: 15px; display: flex; height: 33vh; flex-direction: column; overflow-y: auto; background-color: rgb(255, 255, 255); width: 100%; box-sizing: border-box; }
     .initial-prompt { color: #888888; text-align: center; padding-top: 20px; }
     .day-details-header { 
         margin-bottom: 15px; 
@@ -541,7 +542,11 @@ body {
         justify-content: space-around; /* Asegura un espaciado equilibrado */
         align-items: center;
         width: 100%;
-        padding: 10px 0; /* Espaciado vertical */
+        padding: 15px; /* Espaciado vertical */
+        margin-top: 20px; 
+        margin-top: auto;
+        border-top: 1px solid var(--color-borde-calendario);
+        flex-shrink: 0;
     }
 
     .details-action-btn {
@@ -821,7 +826,10 @@ body {
     /* NUEVAS REGLAS */
     .personal-events-container {
         width: 100%;
-        margin-bottom: 10px; /* Espacio antes del separador inferior */
+        margin-top: 15px;      /* Espacio entre los aspectos y la nueva línea */
+        padding-top: 15px;     /* Espacio entre la nueva línea y el primer evento */
+        margin-bottom: 10px;
+        border-top: 1px solid var(--color-borde-calendario); /* <- LA LÍNEA SEPARADORA */
     }
     .personal-events-separator {
         width: 90%;
