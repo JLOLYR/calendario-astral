@@ -7,16 +7,14 @@
     
     <!-- PWA & Theme -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1a237e"> <!-- Color para la nueva UI móvil -->
+    <meta name="theme-color" content="#1a237e">
     <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192x192.png">
     <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
 
-    <!-- FUENTES CORREGIDAS -->
+    <!-- FUENTES -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Fuente #1: Inter (para la nueva UI móvil) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Fuente #2: Linux Libertine (para la vista de escritorio) -->
     <link href="https://fonts.googleapis.com/css2?family=Linux+Libertine:wght@400;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="style.css">
@@ -24,20 +22,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
-    <!-- ===== VISTA DE ATERRIZAJE MÓVIL (CORREGIDA) ===== -->
+    <!-- ===== VISTA DE ATERRIZAJE MÓVIL ===== -->
     <div id="mobile-landing-container">
         <div class="landing-header">
             <h2 id="landing-month-year"></h2>
             <div class="header-actions">
-                <!-- Solo UN botón "Hoy" -->
                 <button id="landing-today-btn" class="btn-today">Hoy</button>
-                
                 <div class="landing-menu-container">
                     <button id="landing-menu-btn">⋮</button>
                     <div id="landing-menu-dropdown" style="display: none;">
-                        <!-- Botón para activar notificaciones, limpio y funcional -->
                         <button id="enable-notifications-btn" class="menu-button">🔔 Activar Avisos</button>
-                        
                         <a href="#" id="landing-symbol-btn">🔮 Simbología</a>
                         <a href="#" id="landing-info-btn">📲 Instalar</a>
                         <a href="#" id="landing-download-btn">📥 Descargar</a>
@@ -86,7 +80,6 @@
         <div id="mobile-day-content">
             <div class="loader">Cargando...</div>
         </div>
-        <button id="back-to-landing-btn" title="Volver al mes"></button>
     </div>
 
     <!-- ===== MODALES ===== -->
@@ -140,38 +133,42 @@
     <div id="modal-about" class="modal">
         <div class="modal-content">
             <span class="close-button">❌</span>
-            <div id="modal-about-content">
-                <!-- El contenido se cargará aquí desde el JSON -->
+            <div id="modal-about-content"></div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL PARA LA EXPLICACIÓN ===== -->
+    <div id="modal-explanation" class="modal">
+        <div class="modal-content">
+            <span class="close-button">❌</span>
+            <img src="assets/icons/explicacion.png" alt="Explicación de eventos" style="width: 100%; height: auto; border-radius: 8px;">
+        </div>
+    </div>
+
+    <!-- ===== MODAL PARA SELECCIONAR TIPO DE EVENTO (PASO 1) ===== -->
+    <div id="modal-select-event-type" class="modal">
+        <div class="modal-content">
+            <span class="close-button">❌</span>
+            <h2>Elige un tipo de evento</h2>
+            <div id="event-type-grid">
+                <!-- Los 9 iconos se generarán aquí con JavaScript -->
             </div>
         </div>
     </div>
 
-    <button id="modal-back-btn" title="Volver">❮</button>
-
-    <!-- ===== NUEVO MODAL PARA LA EXPLICACIÓN ===== -->
-    <div id="modal-explanation" class="modal">
-        <div class="modal-content">
-            <span class="close-button">❌</span>
-            <!-- La imagen se mostrará aquí -->
-            <img src="assets/aspects/info_.png" alt="Explicación de eventos" style="width: 100%; height: auto; border-radius: 8px;">
-        </div>
-    </div>
-
-    <!-- ===== NUEVO MODAL PARA AÑADIR EVENTOS PERSONALES ===== -->
+    <!-- ===== MODAL PARA AÑADIR DETALLES DEL EVENTO (PASO 2) ===== -->
     <div id="modal-add-event" class="modal">
         <div class="modal-content">
             <span class="close-button">❌</span>
-            <!-- Título SIN icono y centrado por defecto -->
-            <h2>Añadir Evento</h2>
-            <p class="event-modal-subtitle">Elige un tipo de evento, asígnale un nombre y guárdalo en tu calendario.</p>
+            <div id="selected-event-header"></div>
             
-            <select id="event-type-select"></select>
-
             <input type="text" id="event-name-input" placeholder="Nombre del evento (max 20 caracteres)" maxlength="20">
+            <select id="event-time-select"></select>
+
             <input type="hidden" id="event-date-input">
+            <input type="hidden" id="event-type-input">
 
             <div class="event-modal-actions">
-                <!-- Botón de guardar con icono Y TEXTO -->
                 <button id="save-event-btn" class="btn-event-modal primary-icon-btn" title="Guardar Evento">
                     <img src="assets/aspects/guardar.png" alt="Guardar">
                     <span>guardar</span>
@@ -179,8 +176,9 @@
             </div>
         </div>
     </div>
-
-    <button id="modal-back-btn" title="Volver"></button>
+    
+    <!-- Botón flotante unificado para volver/cerrar -->
+    <button id="back-to-landing-btn" title="Volver al mes"></button>
 
     <!-- ===== SCRIPTS FINALES ===== -->
     <script src="script.js" defer></script>

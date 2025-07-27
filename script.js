@@ -28,6 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
         cita:       { name: '❤️ Cita',       icon: 'assets/aspects/cita.gif' },
         medico:     { name: '⚕️ Médico',      icon: 'assets/aspects/medico.gif' },
         viaje:      { name: '✈️ Viaje',       icon: 'assets/aspects/viaje.gif' },
+        fiesta:     { name: '🕺 Fiesta',     icon: 'assets/aspects/boladisco.gif' },
+        evento:     { name: '✨ Otro Evento',  icon: 'assets/aspects/evento.gif' }
     };
     
     // --- Elementos del DOM ---
@@ -78,6 +80,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const MIN_YEAR = 2020;
     const MAX_YEAR = 2030;
     const dataCache = {};
+
+    // =========================================================================
+    // ==             *** GESTOR CENTRAL DE MODALES ***                       ==
+    // =========================================================================
+
+    // Función para CERRAR cualquier modal que esté activo
+    function closeActiveModal() {
+        if (activeModal) {
+            activeModal.style.display = 'none';
+            // Solo oculta el botón flotante si no estamos en la vista de detalle
+            if (mobileContainer.style.display !== 'flex') {
+                backToLandingBtn.style.display = 'none';
+            }
+            activeModal = null;
+        }
+    }
+
+    // Función para ABRIR un modal y configurar su cierre
+    function openModal(modal) {
+        if (!modal) return; // Seguridad para evitar errores
+        activeModal = modal;
+        modal.style.display = 'flex';
+        backToLandingBtn.style.display = 'flex'; // Siempre muestra el botón flotante
+        
+        // Configura la 'X' y el fondo para que usen el cierre centralizado
+        modal.querySelector('.close-button').onclick = closeActiveModal;
+        modal.onclick = (e) => {
+            if (e.target === modal) closeActiveModal();
+        };
+    }
 
     // =========================================================================
     // ==                     FUNCIONES AUXILIARES Y COMPARTIDAS              ==
@@ -552,16 +584,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 const eventRow = document.createElement('div');
                 eventRow.className = 'personal-event-details-row';
                 
-                // Crear el botón de eliminar
                 const deleteBtn = document.createElement('span');
                 deleteBtn.className = 'delete-event-btn';
-                deleteBtn.innerHTML = '×'; // '×' (equis de multiplicar)
+                deleteBtn.innerHTML = '×';
                 deleteBtn.title = 'Eliminar evento';
-                // ¡La lógica de borrado!
                 deleteBtn.onclick = () => deletePersonalEvent(date, index);
 
-                eventRow.innerHTML = `<img src="${event.icon}" alt="${event.name}"><span>${event.name}</span>`;
-                eventRow.appendChild(deleteBtn); // Añadir la 'X' al final de la fila
+                // *** LÓGICA MEJORADA ***
+                // Si la hora existe y no es "Todo el día", crea un prefijo "HH:MM "
+                const timePrefix = (event.time && event.time !== 'Todo el día') ? `${event.time} ` : '';
+                
+                // Inserta el prefijo ANTES del nombre del evento
+                eventRow.innerHTML = `<img src="${event.icon}" alt="${event.name}"><span>${timePrefix}${event.name}</span>`;
+                eventRow.appendChild(deleteBtn);
                 
                 personalEventsContainer.appendChild(eventRow);
             });
@@ -581,7 +616,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 1. Botón de Ver Interpretación (Izquierda)
         const interpretationBtn = document.createElement('button');
         interpretationBtn.className = 'details-action-btn';
-        interpretationBtn.innerHTML = `<img src="assets/icons/verinterpretacion.png" alt="Ver Interpretación"><span>ver interpretación</span>`;
+        interpretationBtn.innerHTML = `<img src="assets/icons/verinterpretacion.png" alt="Ver Interpretación"><span>interpretación</span>`;
         interpretationBtn.onclick = () => navigateToDetailView(currentDetailDate);
         interpretationBtn.title = "Ver Interpretación del Día";
 
@@ -596,7 +631,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const addEventBtn = document.createElement('button');
         addEventBtn.className = 'details-action-btn';
         addEventBtn.innerHTML = `<img src="assets/icons/mas.png" alt="Añadir Evento Personal"><span>agregar evento</span>`;
-        addEventBtn.onclick = () => openAddEventModal(currentDetailDate); // Corregido aquí
+        addEventBtn.onclick = () => openEventTypeSelectorModal(currentDetailDate);
         addEventBtn.title = "Añadir Evento Personal";
 
         // Añadir los botones al contenedor
@@ -644,7 +679,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     function generateDayContentHTML(date, astro, textos, festivos) { const dayNum = date.getDate(); const esDomingo = date.getDay() === 0; const esFestivo = isHoliday(date, festivos); const eventCount = countEvents(astro); const nombreDia = capitalize(date.toLocaleDateString('es-ES', { weekday: 'long' })); const nombreMes = capitalize(date.toLocaleDateString('es-ES', { month: 'long' })); let html = `<h1 style="color: ${esFestivo || esDomingo ? 'var(--color-texto-domingo)' : 'inherit'}">${nombreDia} ${dayNum} de ${nombreMes} ${date.getFullYear()}</h1>`; if (eventCount >= 3) html += `<p style="text-align: center; color: red; font-weight: bold;"><img class="header-icon" src="assets/aspects/warning.gif" title="Día intenso"> DÍA INTENSO <img class="header-icon" src="assets/aspects/warning.gif" title="Día intenso"></p>`; if (textos && Object.keys(textos).length > 0) { if (textos.introduccion_diaria) html += `<h2>🌞 Introducción</h2><p>${textos.introduccion_diaria}</p>`; if (textos.interpretacion_aspectos?.length > 0) { html += '<h2>🔮 Interpretación</h2>'; textos.interpretacion_aspectos.forEach(t => html += `<p>${t}</p>`); } if (textos.eventos_especiales?.length > 0) { html += '<h2>✨ Eventos</h2>'; textos.eventos_especiales.forEach(t => html += `<p>${t}</p>`); } if (textos.consejo_del_dia) html += `<h2>💡 Consejo</h2><p>${textos.consejo_del_dia}</p>`; } else { html += '<p>Sin interpretaciones disponibles.</p>'; } return html; }
     async function showDayDetailsModal(year, month, dayNum) { const modal = document.getElementById('modal-detail'); const modalTextos = document.getElementById('modal-textos'); const data = await getMonthlyData(year, month); const date = new Date(year, month - 1, dayNum); let contentHtml = ''; if (data) { const astro = data.astro[dayNum] || {}; const textos = data.textos[dayNum] || {}; contentHtml = generateDayContentHTML(date, astro, textos, data.festivos); } else { contentHtml = `<p>Error al cargar.</p>`; } modalTextos.innerHTML = contentHtml; modal.style.display = 'flex'; modalBackBtn.style.display = 'flex'; const closeModal = () => { modal.style.display = 'none'; modalBackBtn.style.display = 'none'; }; modal.querySelector('.close-button').onclick = closeModal; modalBackBtn.onclick = closeModal; modal.onclick = (e) => { if (e.target === modal) closeModal(); }; }
-    async function showSymbolModal() { const modal = document.getElementById('modal-symbol'); const modalContent = document.getElementById('modal-symbol-content'); try { const res = await fetch('Calendar/Simbologia.json'); if (!res.ok) throw new Error('Archivo no encontrado'); const data = await res.json(); let mainHtml = `<h1 style="text-align:center;">Simbología</h1>`; for (const seccion in data) { mainHtml += `<h2 style="margin-top: 20px;">✨${capitalize(seccion)}✨</h2>`; const grupo = data[seccion]; for (const key in grupo) { const item = grupo[key]; const entryId = 'simbologia-' + key.replace(/\s+/g, '-').toLowerCase(); let iconHtml = ''; if (item.gif) { iconHtml = `<img src="${item.gif}" alt="${key}" style="height: 28px; width: 28px; object-fit: contain; vertical-align: middle; margin-right: 6px;">`; } else { let iconPath = ICON_PATHS.signs[key] || ICON_PATHS.planets[key] || ICON_PATHS.aspects[key] || ''; if (iconPath) { iconHtml = `<img src="${iconPath}" alt="${key}" style="height: 28px; width: 28px; object-fit: contain; vertical-align: middle; margin-right: 6px;">`; } } mainHtml += `<div id="${entryId}" style="margin-bottom: 1rem;">`; mainHtml += `${iconHtml}<strong>${item.nombre || key}</strong><br>`; if (item.lema) { mainHtml += `<small style="font-weight:bold;">${item.lema}</small><br>`; } else if (item.condicion) { mainHtml += `<small style="font-weight:bold; color: #555;">Condición: ${item.condicion}</small><br>`; } mainHtml += `<span>${item.descripcion}</span></div>`; } } modalContent.innerHTML = mainHtml; modal.style.display = 'flex'; modalBackBtn.style.display = 'flex'; const closeModal = () => { modal.style.display = 'none'; modalBackBtn.style.display = 'none'; }; modal.querySelector('.close-button').onclick = closeModal; modalBackBtn.onclick = closeModal; modal.onclick = (e) => { if (e.target === modal) closeModal(); }; } catch (error) { console.error("Error al cargar Simbologia.json:", error); modalContent.innerHTML = `<p>Error al cargar la simbología.</p>`; } }
+
+    async function showSymbolModal() {
+        const modal = document.getElementById('modal-symbol');
+        const modalContent = document.getElementById('modal-symbol-content');
+        modalContent.innerHTML = '<div class="loader">Cargando...</div>';
+        openModal(modal); // <-- ¡LA CORRECCIÓN CLAVE!
+
+        try {
+            const res = await fetch('Calendar/Simbologia.json');
+            if (!res.ok) throw new Error('Archivo no encontrado');
+            const data = await res.json();
+            
+            // ... (El resto del código que construye el HTML de simbología se mantiene igual) ...
+            let mainHtml = `<h1 style="text-align:center;">Simbología</h1>`; for (const seccion in data) { mainHtml += `<h2 style="margin-top: 20px;">✨${capitalize(seccion)}✨</h2>`; const grupo = data[seccion]; for (const key in grupo) { const item = grupo[key]; const entryId = 'simbologia-' + key.replace(/\s+/g, '-').toLowerCase(); let iconHtml = ''; if (item.gif) { iconHtml = `<img src="${item.gif}" alt="${key}" style="height: 28px; width: 28px; object-fit: contain; vertical-align: middle; margin-right: 6px;">`; } else { let iconPath = ICON_PATHS.signs[key] || ICON_PATHS.planets[key] || ICON_PATHS.aspects[key] || ''; if (iconPath) { iconHtml = `<img src="${iconPath}" alt="${key}" style="height: 28px; width: 28px; object-fit: contain; vertical-align: middle; margin-right: 6px;">`; } } mainHtml += `<div id="${entryId}" style="margin-bottom: 1rem;">`; mainHtml += `${iconHtml}<strong>${item.nombre || key}</strong><br>`; if (item.lema) { mainHtml += `<small style="font-weight:bold;">${item.lema}</small><br>`; } else if (item.condicion) { mainHtml += `<small style="font-weight:bold; color: #555;">Condición: ${item.condicion}</small><br>`; } mainHtml += `<span>${item.descripcion}</span></div>`; } }
+            modalContent.innerHTML = mainHtml;
+
+        } catch (error) {
+            console.error("Error al cargar Simbologia.json:", error);
+            modalContent.innerHTML = `<p>Error al cargar la simbología.</p>`;
+        }
+    }
+
     async function showAndScrollToSymbol(key) { await showSymbolModal(); const targetId = 'simbologia-' + key.replace(/\s+/g, '-').toLowerCase(); const targetElement = document.getElementById(targetId); if (targetElement) { targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' }); } }
     async function showAspectsModal(date) { const modal = document.getElementById('modal-aspects'); const modalContent = document.getElementById('modal-aspects-content'); modalContent.innerHTML = `<div class="loader">Cargando...</div>`; modal.style.display = 'flex'; modalBackBtn.style.display = 'flex'; const year = date.getFullYear(); const month = date.getMonth() + 1; const day = date.getDate(); const data = await getMonthlyData(year, month); let html = `<h1>✨Aspectos</h1>`; let specialEventsHtml = ''; if (data && data.astro[day]) { const dayData = data.astro[day]; let eventName = ''; let eventIconPath = ''; if (dayData.Eclipse) { eventName = `Eclipse ${dayData.Eclipse.type} ${dayData.Eclipse.subtype}`; eventIconPath = ICON_PATHS.events[eventName]; } else if (FASES_LUNARES_PRINCIPALES.includes(dayData.Moon_Phase)) { eventName = dayData.Moon_Phase; eventIconPath = ICON_PATHS.events[eventName]; } if (eventName && eventIconPath) { specialEventsHtml = `<div class="special-event-row"><img src="${eventIconPath}" alt="${eventName}"><span>${eventName}</span></div>`; } const eventsContainer = document.createElement('div'); eventsContainer.classList.add('astro-events'); addEventsToCell(eventsContainer, dayData); const regularAspectsHtml = eventsContainer.innerHTML; if (specialEventsHtml || regularAspectsHtml) { html += specialEventsHtml + regularAspectsHtml; } else { html += '<p>No hay aspectos mayores.</p>'; } } else { html += '<p>No hay aspectos mayores.</p>'; } modalContent.innerHTML = html; const closeModal = () => { modal.style.display = 'none'; modalBackBtn.style.display = 'none'; }; modal.querySelector('.close-button').onclick = closeModal; modalBackBtn.onclick = closeModal; modal.onclick = (e) => { if (e.target === modal) closeModal(); }; }
     function showInstallHelpModal() { const modal = document.getElementById('modal-install'); modal.style.display = 'flex'; modalBackBtn.style.display = 'flex'; const closeModal = () => { modal.style.display = 'none'; modalBackBtn.style.display = 'none'; }; modal.querySelector('.close-button').onclick = closeModal; modalBackBtn.onclick = closeModal; modal.onclick = (e) => { if (e.target === modal) { closeModal(); } }; }
@@ -688,48 +744,83 @@ document.addEventListener('DOMContentLoaded', () => {
             modalContent.innerHTML = `<p>No se pudo cargar la información de créditos en este momento.</p>`;
         }
     }
-    function openAddEventModal(date) {
-        eventNameInput.value = '';
-        const eventTypeSelect = document.getElementById('event-type-select');
-        eventTypeSelect.innerHTML = '<option value="" disabled selected>-- Elige un tipo de evento --</option>'; // Opción por defecto
 
-        // Poblar la lista desplegable
+    function openEventTypeSelectorModal(date) {
+        const modal = document.getElementById('modal-select-event-type');
+        const grid = document.getElementById('event-type-grid');
+        grid.innerHTML = ''; // Limpia la grilla
+
         for (const typeKey in PERSONAL_EVENT_TYPES) {
             const typeInfo = PERSONAL_EVENT_TYPES[typeKey];
-            const option = document.createElement('option');
-            option.value = typeKey;
-            option.textContent = typeInfo.name;
-            eventTypeSelect.appendChild(option);
+            const optionBtn = document.createElement('button');
+            optionBtn.className = 'event-type-option';
+            optionBtn.innerHTML = `
+                <img src="${typeInfo.icon}" alt="${typeInfo.name}">
+                <span>${typeInfo.name.substring(2)}</span>
+            `;
+            optionBtn.onclick = () => {
+                closeActiveModal(); // Cierra este modal de selección
+                openEventDetailsModal(date, typeKey); // Abre el segundo modal con los detalles
+            };
+            grid.appendChild(optionBtn);
         }
-        
+        openModal(modal);
+    }
+
+    // 2. Abre el SEGUNDO modal (para añadir nombre y hora)
+    function openEventDetailsModal(date, eventType) {
+        const typeInfo = PERSONAL_EVENT_TYPES[eventType];
+        const header = document.getElementById('selected-event-header');
+        const timeSelect = document.getElementById('event-time-select');
+        const eventTypeInput = document.getElementById('event-type-input');
+
+        // Muestra el icono y nombre del evento seleccionado
+        header.innerHTML = `
+            <img src="${typeInfo.icon}" alt="${typeInfo.name}">
+            <span>${typeInfo.name.substring(2)}</span>
+        `;
+
+        // Limpia y rellena el selector de hora
+        timeSelect.innerHTML = '';
+        const allDayOption = document.createElement('option');
+        allDayOption.value = 'Todo el día';
+        allDayOption.textContent = 'Todo el día';
+        timeSelect.appendChild(allDayOption);
+
+        for (let i = 0; i < 24; i++) {
+            const hour = String(i).padStart(2, '0');
+            const option = document.createElement('option');
+            option.value = `${hour}:00`;
+            option.textContent = `${hour}:00`;
+            timeSelect.appendChild(option);
+        }
+
+        // Limpia el input del nombre y guarda datos necesarios
+        eventNameInput.value = '';
         eventDateInput.value = date.toISOString();
-        modalAddEvent.style.display = 'flex';
-        modalBackBtn.style.display = 'flex';
+        eventTypeInput.value = eventType;
 
+        // Lógica del botón guardar
         saveEventBtn.onclick = () => {
-            const selectedEventType = eventTypeSelect.value;
             const eventName = eventNameInput.value.trim();
-
-            if (!selectedEventType) {
-                alert('Por favor, selecciona un tipo de evento.');
-                return;
-            }
             if (!eventName) {
                 alert('Por favor, escribe un nombre para el evento.');
                 return;
             }
-
             const eventData = {
-                type: selectedEventType,
+                type: eventTypeInput.value,
                 name: eventName,
-                icon: PERSONAL_EVENT_TYPES[selectedEventType].icon,
+                icon: PERSONAL_EVENT_TYPES[eventTypeInput.value].icon,
+                time: timeSelect.value // Guarda la hora seleccionada
             };
-            
             addPersonalEvent(new Date(eventDateInput.value), eventData);
-            closeAddEventModal();
+            closeActiveModal();
             renderLandingView(landingDate);
         };
+
+        openModal(modalAddEvent);
     }
+
 
     function closeAddEventModal() {
         modalAddEvent.style.display = 'none';
