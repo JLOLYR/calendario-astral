@@ -1,32 +1,70 @@
 {
-  "introduccion": "Agradecimiento y creditos para la comunidad",
-  "agradecimientos": "Este proyecto fue posible gracias al increíble trabajo de artistas y desarrolladores que comparten su talento con el mundo. A continuación, damos crédito a los creadores de los recursos gráficos que hacen esta aplicación más hermosa.",
-  "creditosGraficos": [
-    { "html": "<a href=\"https://www.flaticon.es/iconos-animados-gratis/salud-mental\" target=\"_blank\" rel=\"noopener noreferrer\">Salud mental iconos animados creados por Freepik - Flaticon</a>" },
-    { "html": "<a href=\"https://www.flaticon.es/iconos-gratis/fuego\" target=\"_blank\" rel=\"noopener noreferrer\">Fuego iconos creados por juicy_fish - Flaticon</a>" },
-    { "html": "<a href=\"https://www.flaticon.es/iconos-gratis/fuego\" target=\"_blank\" rel=\"noopener noreferrer\">Fuego iconos creados por DinosoftLabs - Flaticon</a>" },
-    { "html": "<a href=\"https://www.flaticon.es/iconos-gratis/transformacion\" target=\"_blank\" rel=\"noopener noreferrer\">Transformación iconos creados por zero_wing - Flaticon</a>" },
-    { "html": "<a href=\"https://www.flaticon.es/iconos-gratis/transformacion\" target=\"_blank\" rel=\"noopener noreferrer\">Transformación iconos creados por Maan Icons - Flaticon</a>" },
-    { "html": "<a href=\"https://www.flaticon.es/iconos-animados-gratis/senal-de-neon\" target=\"_blank\" rel=\"noopener noreferrer\">Señal de neón iconos animados creados por Freepik - Flaticon</a>" },
-    { "html": "<a href=\"https://www.flaticon.es/iconos-animados-gratis/trueno\" target=\"_blank\" rel=\"noopener noreferrer\">Trueno iconos animados creados por Freepik - Flaticon</a>" },
-    { "html": "<a href=\"https://www.flaticon.es/iconos-animados-gratis/nota-musical\" target=\"_blank\" rel=\"noopener noreferrer\">Nota musical iconos animados creados por Freepik - Flaticon</a>" },
-    { "html": "<a href=\"https://www.flaticon.es/iconos-animados-gratis/volcan\" target=\"_blank\" rel=\"noopener noreferrer\">Volcán iconos animados creados por Freepik - Flaticon</a>" },
-    { "html": "<a href=\"https://www.flaticon.es/iconos-animados-gratis/peligro\" target=\"_blank\" rel=\"noopener noreferrer\">Peligro iconos animados creados por Freepik - Flaticon</a>" },
-    { "html": "<a href=\"https://www.flaticon.es/iconos-animados-gratis/astronomia\" target=\"_blank\" rel=\"noopener noreferrer\">Astronomía iconos animados creados por Freepik - Flaticon</a>" },
-    { "html": "<a href=\"https://www.flaticon.es/iconos-gratis/calendario\" target=\"_blank\" rel=\"noopener noreferrer\">Calendario iconos creados por Anggara - Flaticon</a>" },
-    { "html": "<a href=\"https://www.flaticon.es/iconos-animados-gratis/corazon\" target=\"_blank\" rel=\"noopener noreferrer\">Corazón iconos animados creados por Freepik - Flaticon</a>" },
-    { "html": "<a href=\"https://www.flaticon.es/iconos-animados-gratis/eclipse\" target=\"_blank\" rel=\"noopener noreferrer\">Eclipse iconos animados creados por Freepik - Flaticon</a>" },
-    { "html": "<a href=\"https://www.flaticon.es/iconos-animados-gratis/cumpleanos\" target=\"_blank\" rel=\"noopener noreferrer\">Cumpleaños iconos animados creados por Freepik - Flaticon</a>" },
-    { "html": "<a href=\"https://www.flaticon.es/iconos-animados-gratis/hora-y-fecha\" target=\"_blank\" rel=\"noopener noreferrer\">Hora y fecha iconos animados creados por Freepik - Flaticon</a>" },
-    { "html": "<a href=\"https://www.flaticon.es/iconos-animados-gratis/politica\" target=\"_blank\" rel=\"noopener noreferrer\">Política iconos animados creados por Freepik - Flaticon</a>" },
-    { "html": "<a href=\"https://www.flaticon.es/iconos-animados-gratis/papel\" target=\"_blank\" rel=\"noopener noreferrer\">Papel iconos animados creados por Freepik - Flaticon</a>" },
-    { "html": "<a href=\"https://www.flaticon.es/iconos-animados-gratis/pareja\" target=\"_blank\" rel=\"noopener noreferrer\">Pareja iconos animados creados por Freepik - Flaticon</a>" },
-    { "html": "<a href=\"https://www.flaticon.es/iconos-animados-gratis/viaje\" target=\"_blank\" rel=\"noopener noreferrer\">Viaje iconos animados creados por Freepik - Flaticon</a>" },
-    { "html": "<a href=\"https://www.flaticon.es/iconos-gratis/info\" target=\"_blank\" rel=\"noopener noreferrer\">Info iconos creados por Freepik - Flaticon</a>" },
-    { "html": "<a href=\"https://www.flaticon.es/iconos-gratis/mas\" target=\"_blank\" rel=\"noopener noreferrer\">Más iconos creados por kliwir art - Flaticon</a>" },
-    { "html": "<a href=\"https://www.flaticon.es/iconos-gratis/libro\" target=\"_blank\" rel=\"noopener noreferrer\">Libro iconos creados por Freepik - Flaticon</a>" },
-    { "html": "<a href=\"https://www.flaticon.es/iconos-animados-gratis/avion\" target=\"_blank\" rel=\"noopener noreferrer\">Avión iconos animados creados por Freepik - Flaticon</a>" },
-    { "html": "<a href=\"https://www.flaticon.es/iconos-animados-gratis/salud\" target=\"_blank\" rel=\"noopener noreferrer\">Salud iconos animados creados por Freepik - Flaticon</a>" },
-    { "html": "<a href=\"https://www.flaticon.es/iconos-gratis/salvar\" target=\"_blank\" rel=\"noopener noreferrer\">Salvar iconos creados por Yuju - Flaticon</a>" }
-  ]
+  "tituloModal": "Calendario Astral App",
+  "botones": [
+    {
+      "tipo": "link",
+      "icono": "assets/aspects/calendario.gif",
+      "titulo": "Conoce tu Carta Astral",
+      "subtitulo": "Solicítala en mauriciopuerta.tv",
+      "url": "https://mauriciopuerta.tv/"
+    },
+    {
+      "tipo": "link",
+      "icono": "assets/icons/LogoApp.png",
+      "titulo": "Encuentra tu Pareja Astral",
+      "subtitulo": "Descubre la app en parejastral.com",
+      "url": "https://parejastral.com/"
+    },
+    {
+      "tipo": "interno",
+      "icono": "assets/aspects/gracias.gif",
+      "titulo": "Introducción",
+      "subtitulo": "Agradecimientos y propósito.",
+      "claveContenido": "intro"
+    },
+    {
+      "tipo": "interno",
+      "icono": "assets/aspects/apoyo.gif",
+      "titulo": "Créditos Gráficos",
+      "subtitulo": "Artistas que hicieron esto posible.",
+      "claveContenido": "creditos"
+    }
+  ],
+  "contenidoInterno": {
+    "intro": {
+      "titulo": "Creditos",
+      "texto": "Este proyecto fue posible gracias al trabajo de artistas y desarrolladores que comparten su talento con el mundo. Agradecemos su contribución para hacer esta aplicación más hermosa."
+    },
+    "creditos": {
+      "titulo": "Créditos Gráficos",
+      "lista": [
+        "<a href='https://www.flaticon.es/iconos-animados-gratis/salud-mental' target='_blank' rel='noopener noreferrer'>Salud mental iconos animados creados por Freepik - Flaticon</a>",
+        "<a href='https://www.flaticon.es/iconos-gratis/fuego' target='_blank' rel='noopener noreferrer'>Fuego iconos creados por juicy_fish - Flaticon</a>",
+        "<a href='https://www.flaticon.es/iconos-gratis/fuego' target='_blank' rel='noopener noreferrer'>Fuego iconos creados por DinosoftLabs - Flaticon</a>",
+        "<a href='https://www.flaticon.es/iconos-gratis/transformacion' target='_blank' rel='noopener noreferrer'>Transformación iconos creados por zero_wing - Flaticon</a>",
+        "<a href='https://www.flaticon.es/iconos-gratis/transformacion' target='_blank' rel='noopener noreferrer'>Transformación iconos creados por Maan Icons - Flaticon</a>",
+        "<a href='https://www.flaticon.es/iconos-animados-gratis/senal-de-neon' target='_blank' rel='noopener noreferrer'>Señal de neón iconos animados creados por Freepik - Flaticon</a>",
+        "<a href='https://www.flaticon.es/iconos-animados-gratis/trueno' target='_blank' rel='noopener noreferrer'>Trueno iconos animados creados por Freepik - Flaticon</a>",
+        "<a href='https://www.flaticon.es/iconos-animados-gratis/nota-musical' target='_blank' rel='noopener noreferrer'>Nota musical iconos animados creados por Freepik - Flaticon</a>",
+        "<a href='https://www.flaticon.es/iconos-animados-gratis/volcan' target='_blank' rel='noopener noreferrer'>Volcán iconos animados creados por Freepik - Flaticon</a>",
+        "<a href='https://www.flaticon.es/iconos-animados-gratis/peligro' target='_blank' rel='noopener noreferrer'>Peligro iconos animados creados por Freepik - Flaticon</a>",
+        "<a href='https://www.flaticon.es/iconos-animados-gratis/astronomia' target='_blank' rel='noopener noreferrer'>Astronomía iconos animados creados por Freepik - Flaticon</a>",
+        "<a href='https://www.flaticon.es/iconos-gratis/calendario' target='_blank' rel='noopener noreferrer'>Calendario iconos creados por Anggara - Flaticon</a>",
+        "<a href='https://www.flaticon.es/iconos-animados-gratis/corazon' target='_blank' rel='noopener noreferrer'>Corazón iconos animados creados por Freepik - Flaticon</a>",
+        "<a href='https://www.flaticon.es/iconos-animados-gratis/eclipse' target='_blank' rel='noopener noreferrer'>Eclipse iconos animados creados por Freepik - Flaticon</a>",
+        "<a href='https://www.flaticon.es/iconos-animados-gratis/cumpleanos' target='_blank' rel='noopener noreferrer'>Cumpleaños iconos animados creados por Freepik - Flaticon</a>",
+        "<a href='https://www.flaticon.es/iconos-animados-gratis/hora-y-fecha' target='_blank' rel='noopener noreferrer'>Hora y fecha iconos animados creados por Freepik - Flaticon</a>",
+        "<a href='https://www.flaticon.es/iconos-animados-gratis/politica' target='_blank' rel='noopener noreferrer'>Política iconos animados creados por Freepik - Flaticon</a>",
+        "<a href='https://www.flaticon.es/iconos-animados-gratis/papel' target='_blank' rel='noopener noreferrer'>Papel iconos animados creados por Freepik - Flaticon</a>",
+        "<a href='https://www.flaticon.es/iconos-animados-gratis/pareja' target='_blank' rel='noopener noreferrer'>Pareja iconos animados creados por Freepik - Flaticon</a>",
+        "<a href='https://www.flaticon.es/iconos-animados-gratis/viaje' target='_blank' rel='noopener noreferrer'>Viaje iconos animados creados por Freepik - Flaticon</a>",
+        "<a href='https://www.flaticon.es/iconos-gratis/info' target='_blank' rel='noopener noreferrer'>Info iconos creados por Freepik - Flaticon</a>",
+        "<a href='https://www.flaticon.es/iconos-gratis/mas' target='_blank' rel='noopener noreferrer'>Más iconos creados por kliwir art - Flaticon</a>",
+        "<a href='https://www.flaticon.es/iconos-gratis/libro' target='_blank' rel='noopener noreferrer'>Libro iconos creados por Freepik - Flaticon</a>",
+        "<a href='https://www.flaticon.es/iconos-animados-gratis/avion' target='_blank' rel='noopener noreferrer'>Avión iconos animados creados por Freepik - Flaticon</a>",
+        "<a href='https://www.flaticon.es/iconos-animados-gratis/salud' target='_blank' rel='noopener noreferrer'>Salud iconos animados creados por Freepik - Flaticon</a>",
+        "<a href='https://www.flaticon.es/iconos-gratis/salvar' target='_blank' rel='noopener noreferrer'>Salvar iconos creados por Yuju - Flaticon</a>"
+      ]
+    }
+  }
 }

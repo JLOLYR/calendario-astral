@@ -35,7 +35,7 @@
                         <a href="#" id="landing-symbol-btn">🔮 Simbología</a>
                         <a href="#" id="landing-info-btn">📲 Instalar</a>
                         <a href="#" id="landing-download-btn">📥 Descargar</a>
-                        <a href="#" id="landing-about-btn">🙏 Acerca de...</a>
+                        <a href="#" id="landing-about-btn">❤️ Acerca de...</a>
                     </div>
                 </div>
             </div>
@@ -48,23 +48,6 @@
             <p class="initial-prompt">Toca un día para ver sus eventos.</p>
         </div>
     </div>
-    <!-- ===== NUEVA BARRA DE ACCIONES FIJA ===== -->
-    <!-- Se mantiene oculta por defecto y se muestra con JS -->
-    <div id="mobile-action-bar" style="display: none;">
-        <button id="action-interpret" class="action-item">
-            <img src="assets/icons/verinterpretacion.png" alt="Interpretación">
-            <span>interpretación</span>
-        </button>
-        <button id="action-info" class="action-item">
-            <img src="assets/icons/info.png" alt="Info">
-            <span>info</span>
-        </button>
-        <button id="action-add" class="action-item">
-            <img src="assets/icons/mas.png" alt="Añadir Evento">
-            <span>agregar evento</span>
-        </button>
-    </div>
-    
 
     <!-- ===== VISTA DE ESCRITORIO ===== -->
     <div id="calendar-header">
@@ -166,7 +149,7 @@
     <div id="modal-select-event-type" class="modal">
         <div class="modal-content">
             <span class="close-button">❌</span>
-            <h2>Agregar Evento</h2>
+            <h2>Elige un tipo de evento</h2>
             <div id="event-type-grid">
                 <!-- Los 9 iconos se generarán aquí con JavaScript -->
             </div>
@@ -179,8 +162,9 @@
             <span class="close-button">❌</span>
             <div id="selected-event-header"></div>
             
-            <input type="text" id="event-name-input" placeholder="Nombre evento" maxlength="30">
+            <input type="text" id="event-name-input" placeholder="Nombre del evento (max 20 caracteres)" maxlength="20">
             <select id="event-time-select"></select>
+
             <input type="hidden" id="event-date-input">
             <input type="hidden" id="event-type-input">
 
