@@ -43,8 +43,6 @@ const URLS_TO_CACHE = [
   './manifest.json',
   './assets/icons/icon-192x192.png',
   './assets/icons/icon-512x512.png',
-  './assets/aspects/Home.png',
-  './assets/aspects/Fondo_2.png',
   // ... (añade otros assets importantes si quieres)
 ];
 
