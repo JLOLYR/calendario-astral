@@ -726,7 +726,55 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function showAndScrollToSymbol(key) { await showSymbolModal(); const targetId = 'simbologia-' + key.replace(/\s+/g, '-').toLowerCase(); const targetElement = document.getElementById(targetId); if (targetElement) { targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' }); } }
-    async function showAspectsModal(date) { const modal = document.getElementById('modal-aspects'); const modalContent = document.getElementById('modal-aspects-content'); modalContent.innerHTML = `<div class="loader">Cargando...</div>`; modal.style.display = 'flex'; modalBackBtn.style.display = 'flex'; const year = date.getFullYear(); const month = date.getMonth() + 1; const day = date.getDate(); const data = await getMonthlyData(year, month); let html = `<h1>✨Aspectos</h1>`; let specialEventsHtml = ''; if (data && data.astro[day]) { const dayData = data.astro[day]; let eventName = ''; let eventIconPath = ''; if (dayData.Eclipse) { eventName = `Eclipse ${dayData.Eclipse.type} ${dayData.Eclipse.subtype}`; eventIconPath = ICON_PATHS.events[eventName]; } else if (FASES_LUNARES_PRINCIPALES.includes(dayData.Moon_Phase)) { eventName = dayData.Moon_Phase; eventIconPath = ICON_PATHS.events[eventName]; } if (eventName && eventIconPath) { specialEventsHtml = `<div class="special-event-row"><img src="${eventIconPath}" alt="${eventName}"><span>${eventName}</span></div>`; } const eventsContainer = document.createElement('div'); eventsContainer.classList.add('astro-events'); addEventsToCell(eventsContainer, dayData); const regularAspectsHtml = eventsContainer.innerHTML; if (specialEventsHtml || regularAspectsHtml) { html += specialEventsHtml + regularAspectsHtml; } else { html += '<p>No hay aspectos mayores.</p>'; } } else { html += '<p>No hay aspectos mayores.</p>'; } modalContent.innerHTML = html; const closeModal = () => { modal.style.display = 'none'; modalBackBtn.style.display = 'none'; }; modal.querySelector('.close-button').onclick = closeModal; modalBackBtn.onclick = closeModal; modal.onclick = (e) => { if (e.target === modal) closeModal(); }; }
+
+    async function showAspectsModal(date) {
+        const modal = document.getElementById('modal-aspects');
+        const modalContent = document.getElementById('modal-aspects-content');
+        
+        // Muestra el loader y abre el modal con el gestor central
+        modalContent.innerHTML = `<div class="loader">Cargando...</div>`;
+        openModal(modal); // ¡Esto se encarga de todo!
+
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        const data = await getMonthlyData(year, month);
+
+        let html = `<h1>✨Aspectos</h1>`;
+        let specialEventsHtml = '';
+
+        if (data && data.astro[day]) {
+            const dayData = data.astro[day];
+            let eventName = '';
+            let eventIconPath = '';
+            if (dayData.Eclipse) {
+                eventName = `Eclipse ${dayData.Eclipse.type} ${dayData.Eclipse.subtype}`;
+                eventIconPath = ICON_PATHS.events[eventName];
+            } else if (FASES_LUNARES_PRINCIPALES.includes(dayData.Moon_Phase)) {
+                eventName = dayData.Moon_Phase;
+                eventIconPath = ICON_PATHS.events[eventName];
+            }
+            if (eventName && eventIconPath) {
+                specialEventsHtml = `<div class="special-event-row"><img src="${eventIconPath}" alt="${eventName}"><span>${eventName}</span></div>`;
+            }
+            
+            const eventsContainer = document.createElement('div');
+            eventsContainer.classList.add('astro-events');
+            addEventsToCell(eventsContainer, dayData);
+            
+            const regularAspectsHtml = eventsContainer.innerHTML;
+            if (specialEventsHtml || regularAspectsHtml) {
+                html += specialEventsHtml + regularAspectsHtml;
+            } else {
+                html += '<p>No hay aspectos mayores.</p>';
+            }
+        } else {
+            html += '<p>No hay aspectos mayores.</p>';
+        }
+
+        modalContent.innerHTML = html;
+    }
+
     function showInstallHelpModal() {
         const modal = document.getElementById('modal-install');
         openModal(modal); // ¡Y ya está! Delega todo al gestor central.
