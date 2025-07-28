@@ -1,9 +1,13 @@
-// ¡MUY IMPORTANTE! Incrementa la versión para que el navegador instale esta nueva lógica.
-const CACHE_NAME = 'calendario-astral-cache-v7'; 
+// Importa las librerías de Firebase ANTES que cualquier otra cosa.
+importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js');
+importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js');
 
-// Lista de archivos a cachear con rutas RELATIVAS
+// ¡MUY IMPORTANTE! Incrementa la versión para forzar la instalación de esta nueva lógica.
+const CACHE_NAME = 'calendario-astral-cache-v8'; 
+
+// Lista de archivos a cachear
 const URLS_TO_CACHE = [
-  './', // Representa la raíz del directorio
+  './',
   './index.html',
   './style.css',
   './script.js',
@@ -12,19 +16,51 @@ const URLS_TO_CACHE = [
   './assets/icons/icon-512x512.png',
   './assets/aspects/Home.png',
   './assets/aspects/Fondo_2.png',
-  // URLs de terceros se mantienen igual
+  // URLs de terceros
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap',
   'https://fonts.googleapis.com/css2?family=Linux+Libertine:wght@400;700&display=swap',
   'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'
 ];
 
-// Evento de instalación (se mantiene igual, ya estaba bien)
+// --- INICIO: LÓGICA DE FIREBASE MESSAGING ---
+
+// Pega aquí tu configuración de Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyAEp97rBImklvm2M0e4yQ0XVO0OQ5LbENg",
+    authDomain: "calendario-astral-popup.firebaseapp.com",
+    projectId: "calendario-astral-popup",
+    storageBucket: "calendario-astral-popup.firebasestorage.app",
+    messagingSenderId: "1010299837934",
+    appId: "1:1010299837934:web:8ace892d1168d47964c2ff",
+    measurementId: "G-ZGW3BLK1W2"
+  };
+
+// Inicializa Firebase
+firebase.initializeApp(firebaseConfig);
+const messaging = firebase.messaging();
+
+// Manejador para cuando llega un mensaje con la app en segundo plano
+messaging.onBackgroundMessage((payload) => {
+  console.log('Mensaje de Firebase recibido en segundo plano: ', payload);
+
+  const notificationTitle = payload.notification.title;
+  const notificationOptions = {
+    body: payload.notification.body,
+    icon: './assets/icons/icon-192x192.png'
+  };
+
+  return self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+// --- FIN: LÓGICA DE FIREBASE MESSAGING ---
+
+
+// Evento de instalación
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
         console.log('Cache abierto, añadiendo archivos del App Shell.');
-        // Usamos { cache: 'reload' } para asegurarnos de que estamos cacheando la versión más nueva de la red.
         const requests = URLS_TO_CACHE.map(url => new Request(url, { cache: 'reload' }));
         return cache.addAll(requests);
       })
@@ -38,7 +74,7 @@ self.addEventListener('install', event => {
   );
 });
 
-// Evento de activación (se mantiene igual, ya estaba bien)
+// Evento de activación
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
@@ -54,49 +90,33 @@ self.addEventListener('activate', event => {
   );
 });
 
-// === Evento fetch REESCRITO Y MEJORADO ===
+// Evento fetch
 self.addEventListener('fetch', event => {
   const { request } = event;
-
-  // ESTRATEGIA 1: Network First para los archivos de datos JSON.
-  // Esto asegura que el usuario siempre tenga la información más actualizada.
   if (request.url.includes('.json') && !request.url.includes('manifest.json')) {
     event.respondWith(
       fetch(request)
         .then(networkResponse => {
-          // Si la respuesta de la red es buena, la clonamos, la guardamos en la caché y la devolvemos.
           const responseToCache = networkResponse.clone();
           caches.open(CACHE_NAME).then(cache => {
             cache.put(request, responseToCache);
           });
           return networkResponse;
         })
-        .catch(() => {
-          // Si la red falla (está offline), intentamos servir desde la caché.
-          console.log('Red falló para JSON, intentando desde la caché...');
-          return caches.match(request);
-        })
+        .catch(() => caches.match(request))
     );
-    return; // Salimos para no ejecutar la siguiente estrategia.
+    return;
   }
-
-  // ESTRATEGIA 2: Cache First para todo lo demás (App Shell, CSS, JS, Fuentes, Imágenes).
-  // Es la más rápida para los archivos que no cambian a menudo.
   event.respondWith(
     caches.match(request)
       .then(cachedResponse => {
-        // Si la respuesta está en el caché, la retornamos.
         if (cachedResponse) {
           return cachedResponse;
         }
-        // Si no, la buscamos en la red.
         return fetch(request).then(networkResponse => {
-          // No cacheamos peticiones de extensiones de Chrome
           if (request.url.startsWith('chrome-extension://')) {
               return networkResponse;
           }
-
-          // Clonamos, guardamos en caché y devolvemos la respuesta de red.
           const responseToCache = networkResponse.clone();
           caches.open(CACHE_NAME).then(cache => {
               cache.put(request, responseToCache);
