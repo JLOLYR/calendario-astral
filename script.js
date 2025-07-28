@@ -321,7 +321,11 @@ document.addEventListener('DOMContentLoaded', () => {
         messaging.requestPermission()
             .then(() => {
                 console.log('Permiso de notificación concedido.');
-                return messaging.getToken();
+                // *** CAMBIO CLAVE: Especificamos el Service Worker a usar ***
+                return messaging.getToken({
+                    vapidKey: 'BL13inDWrj2_yMTaw2vP3USSt2nDOe7qjadPtR9KWRTOFb8m4u5c_Zh7z4v8BKzhcTAVqIrIP3_tIQZGigAavdo', // ¡IMPORTANTE! Reemplaza esto
+                    serviceWorkerRegistration: navigator.serviceWorker.getRegistration('./firebase-messaging-sw-v2.js')
+                });
             })
             .then(token => {
                 if (token) {
