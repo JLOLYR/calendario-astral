@@ -196,6 +196,27 @@
     <!-- Botón flotante unificado para volver/cerrar -->
     <button id="back-to-landing-btn" title="Volver al mes"></button>
 
+        <!-- Scripts de Firebase (tienen que estar ANTES que tu script.js) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- Tu configuración personal de Firebase -->
+    <script>
+      // Pega aquí el bloque const firebaseConfig = { ... }; que copiaste
+    const firebaseConfig = {
+        apiKey: "AIzaSyAEp97rBImklvm2M0e4yQ0XVO0OQ5LbENg",
+        authDomain: "calendario-astral-popup.firebaseapp.com",
+        projectId: "calendario-astral-popup",
+        storageBucket: "calendario-astral-popup.firebasestorage.app",
+        messagingSenderId: "1010299837934",
+        appId: "1:1010299837934:web:ca3ae3dba96e7e9164c2ff",
+        measurementId: "G-757RN0CZZ3"
+    };
+      // Inicializar Firebase
+      firebase.initializeApp(firebaseConfig);
+    </script>
+
     <!-- ===== SCRIPTS FINALES ===== -->
     <script src="script.js" defer></script>
     <script>

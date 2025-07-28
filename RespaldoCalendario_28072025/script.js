@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    
     // =========================================================================
     // ==                      CONSTANTES Y VARIABLES GLOBALES                ==
     // =========================================================================
@@ -70,6 +71,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveEventBtn = document.getElementById('save-event-btn');
     const cancelEventBtn = document.getElementById('cancel-event-btn');
     const landingAboutBtn = document.getElementById('landing-about-btn');
+    const mobileActionBar = document.getElementById('mobile-action-bar');
+    const actionInterpretBtn = document.getElementById('action-interpret');
+    const actionInfoBtn = document.getElementById('action-info');
+    const actionAddBtn = document.getElementById('action-add');
 
     // --- Estado de la aplicación ---
     let selectedYear, selectedMonth;
@@ -77,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let landingDate = new Date();
     let selectedDayCell = null;
     let currentDetailDate = null;
+    let activeModal = null;
     const MIN_YEAR = 2020;
     const MAX_YEAR = 2030;
     const dataCache = {};
@@ -89,12 +95,23 @@ document.addEventListener('DOMContentLoaded', () => {
     function closeActiveModal() {
         if (activeModal) {
             activeModal.style.display = 'none';
-            // Solo oculta el botón flotante si no estamos en la vista de detalle
             if (mobileContainer.style.display !== 'flex') {
                 backToLandingBtn.style.display = 'none';
             }
             activeModal = null;
         }
+    }
+
+    function openModal(modal) {
+        if (!modal) return;
+        activeModal = modal;
+        modal.style.display = 'flex';
+        backToLandingBtn.style.display = 'flex';
+        
+        modal.querySelector('.close-button').onclick = closeActiveModal;
+        modal.onclick = (e) => {
+            if (e.target === modal) closeActiveModal();
+        };
     }
 
     // Función para ABRIR un modal y configurar su cierre
@@ -501,7 +518,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleLandingDayClick(cell, date, dayData) {
         if (selectedDayCell === cell) {
-            navigateToDetailView(date);
+            if (currentDetailDate) navigateToDetailView(currentDetailDate);
             return;
         }
         if (selectedDayCell) selectedDayCell.classList.remove('selected');
@@ -542,6 +559,7 @@ document.addEventListener('DOMContentLoaded', () => {
             contentWrapper.appendChild(separatorTop);
             hasContent = true;
         }
+
         const specialEventsDiv = document.createElement('div');
         if (dayData.Eclipse) { const eventName = `Eclipse ${dayData.Eclipse.type} ${dayData.Eclipse.subtype}`; const eventIconPath = ICON_PATHS.events[eventName]; if (eventIconPath) specialEventsDiv.innerHTML += `<div class="special-event-row"><img src="${eventIconPath}" alt="${eventName}"><span>${eventName}</span></div>`; }
         else if (FASES_LUNARES_PRINCIPALES.includes(dayData.Moon_Phase)) { const eventName = dayData.Moon_Phase; const eventIconPath = ICON_PATHS.events[eventName]; if (eventIconPath) specialEventsDiv.innerHTML += `<div class="special-event-row"><img src="${eventIconPath}" alt="${eventName}"><span>${eventName}</span></div>`; }
@@ -556,97 +574,35 @@ document.addEventListener('DOMContentLoaded', () => {
             contentWrapper.appendChild(eventsContainer);
             hasContent = true;
         }
-        
         if (hasContent) {
             landingDayDetails.appendChild(contentWrapper);
-        }
-
-        // Crear el contenedor para los 3 nuevos botones
-        const actionsContainer = document.createElement('div');
-        actionsContainer.className = 'details-actions-container';
-
-        // **CORRECCIÓN #3: MOSTRAR DETALLES DE EVENTOS PERSONALES**
-        const personalEvents = getPersonalEvents();
-        const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-        const dayPersonalEvents = personalEvents[dateKey];
-
-        if (dayPersonalEvents && dayPersonalEvents.length > 0) {
-            // Añadir separador dorado ANTES de los eventos
-            const separator = document.createElement('div');
-            separator.className = 'personal-events-separator';
-            landingDayDetails.appendChild(separator);
-
-            const personalEventsContainer = document.createElement('div');
-            personalEventsContainer.className = 'personal-events-container';
-
-            // Usamos .forEach con el índice para la función de borrado
-            dayPersonalEvents.forEach((event, index) => {
-                const eventRow = document.createElement('div');
-                eventRow.className = 'personal-event-details-row';
-                
-                const deleteBtn = document.createElement('span');
-                deleteBtn.className = 'delete-event-btn';
-                deleteBtn.innerHTML = '×';
-                deleteBtn.title = 'Eliminar evento';
-                deleteBtn.onclick = () => deletePersonalEvent(date, index);
-
-                // *** LÓGICA MEJORADA ***
-                // Si la hora existe y no es "Todo el día", crea un prefijo "HH:MM "
-                const timePrefix = (event.time && event.time !== 'Todo el día') ? `${event.time} ` : '';
-                
-                // Inserta el prefijo ANTES del nombre del evento
-                eventRow.innerHTML = `<img src="${event.icon}" alt="${event.name}"><span>${timePrefix}${event.name}</span>`;
-                eventRow.appendChild(deleteBtn);
-                
-                personalEventsContainer.appendChild(eventRow);
-            });
-
-            landingDayDetails.appendChild(personalEventsContainer);
-            hasContent = true;
-        }
-        // **FIN DE CORRECCIÓN #3**
-
-        if (contentWrapper.hasChildNodes() || (dayPersonalEvents && dayPersonalEvents.length > 0)) {
-            const separatorBottom = document.createElement('div');
-            separatorBottom.className = 'details-separator';
-            landingDayDetails.appendChild(separatorBottom);
-        }
-        
-        // --- SECCIÓN DE BOTONES ---
-        // 1. Botón de Ver Interpretación (Izquierda)
-        const interpretationBtn = document.createElement('button');
-        interpretationBtn.className = 'details-action-btn';
-        interpretationBtn.innerHTML = `<img src="assets/icons/verinterpretacion.png" alt="Ver Interpretación"><span>interpretación</span>`;
-        interpretationBtn.onclick = () => navigateToDetailView(currentDetailDate);
-        interpretationBtn.title = "Ver Interpretación del Día";
-
-        // 2. Botón de Información (Centro)
-        const infoBtn = document.createElement('button');
-        infoBtn.className = 'details-action-btn';
-        infoBtn.innerHTML = `<img src="assets/icons/info.png" alt="Información Adicional"><span>info</span>`;
-        infoBtn.onclick = showExplanationModal;
-        infoBtn.title = "Información Adicional";
-
-        // 3. Botón de Añadir Evento (Derecha) - Corregido
-        const addEventBtn = document.createElement('button');
-        addEventBtn.className = 'details-action-btn';
-        addEventBtn.innerHTML = `<img src="assets/icons/mas.png" alt="Añadir Evento Personal"><span>agregar evento</span>`;
-        addEventBtn.onclick = () => openEventTypeSelectorModal(currentDetailDate);
-        addEventBtn.title = "Añadir Evento Personal";
-
-        // Añadir los botones al contenedor
-        actionsContainer.appendChild(interpretationBtn);
-        actionsContainer.appendChild(infoBtn);
-        actionsContainer.appendChild(addEventBtn);
-
-        // Añadir el contenedor de botones a los detalles del día
-        landingDayDetails.appendChild(actionsContainer);
-        
-        if (!hasContent) {
+            const personalEvents = getPersonalEvents();
+            const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+            const dayPersonalEvents = personalEvents[dateKey];
+            if (dayPersonalEvents && dayPersonalEvents.length > 0) {
+                const personalEventsContainer = document.createElement('div');
+                personalEventsContainer.className = 'personal-events-container';
+                dayPersonalEvents.forEach((event, index) => {
+                    const eventRow = document.createElement('div');
+                    eventRow.className = 'personal-event-details-row';
+                    const deleteBtn = document.createElement('span');
+                    deleteBtn.className = 'delete-event-btn';
+                    deleteBtn.innerHTML = '×';
+                    deleteBtn.title = 'Eliminar evento';
+                    deleteBtn.onclick = () => deletePersonalEvent(date, index);
+                    const timePrefix = (event.time && event.time !== 'Todo el día') ? `${event.time} ` : '';
+                    eventRow.innerHTML = `<img src="${event.icon}" alt="${event.name}"><span>${timePrefix}${event.name}</span>`;
+                    eventRow.appendChild(deleteBtn);
+                    personalEventsContainer.appendChild(eventRow);
+                });
+                landingDayDetails.appendChild(personalEventsContainer);
+            }
+            mobileActionBar.style.display = 'flex'; // Muestra la barra de acciones
+        } else {
             landingDayDetails.innerHTML = '<p class="initial-prompt">No hay eventos para mostrar.</p>';
-            // Se vuelve a añadir el contenedor de acciones vacío para que los botones aparezcan incluso si no hay eventos
-            landingDayDetails.appendChild(actionsContainer);
+            mobileActionBar.style.display = 'none'; // Oculta la barra si no hay eventos
         }
+        
     }
 
     function navigateToDetailView(date) { mobileLandingContainer.style.display = 'none'; mobileContainer.style.display = 'flex'; backToLandingBtn.style.display = 'flex'; mobileDate = date; renderMobileView(date); }
@@ -678,47 +634,34 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==                     FUNCIONES COMPARTIDAS Y MODALES                 ==
     // =========================================================================
     function generateDayContentHTML(date, astro, textos, festivos) { const dayNum = date.getDate(); const esDomingo = date.getDay() === 0; const esFestivo = isHoliday(date, festivos); const eventCount = countEvents(astro); const nombreDia = capitalize(date.toLocaleDateString('es-ES', { weekday: 'long' })); const nombreMes = capitalize(date.toLocaleDateString('es-ES', { month: 'long' })); let html = `<h1 style="color: ${esFestivo || esDomingo ? 'var(--color-texto-domingo)' : 'inherit'}">${nombreDia} ${dayNum} de ${nombreMes} ${date.getFullYear()}</h1>`; if (eventCount >= 3) html += `<p style="text-align: center; color: red; font-weight: bold;"><img class="header-icon" src="assets/aspects/warning.gif" title="Día intenso"> DÍA INTENSO <img class="header-icon" src="assets/aspects/warning.gif" title="Día intenso"></p>`; if (textos && Object.keys(textos).length > 0) { if (textos.introduccion_diaria) html += `<h2>🌞 Introducción</h2><p>${textos.introduccion_diaria}</p>`; if (textos.interpretacion_aspectos?.length > 0) { html += '<h2>🔮 Interpretación</h2>'; textos.interpretacion_aspectos.forEach(t => html += `<p>${t}</p>`); } if (textos.eventos_especiales?.length > 0) { html += '<h2>✨ Eventos</h2>'; textos.eventos_especiales.forEach(t => html += `<p>${t}</p>`); } if (textos.consejo_del_dia) html += `<h2>💡 Consejo</h2><p>${textos.consejo_del_dia}</p>`; } else { html += '<p>Sin interpretaciones disponibles.</p>'; } return html; }
-    async function showDayDetailsModal(year, month, dayNum) { const modal = document.getElementById('modal-detail'); const modalTextos = document.getElementById('modal-textos'); const data = await getMonthlyData(year, month); const date = new Date(year, month - 1, dayNum); let contentHtml = ''; if (data) { const astro = data.astro[dayNum] || {}; const textos = data.textos[dayNum] || {}; contentHtml = generateDayContentHTML(date, astro, textos, data.festivos); } else { contentHtml = `<p>Error al cargar.</p>`; } modalTextos.innerHTML = contentHtml; modal.style.display = 'flex'; modalBackBtn.style.display = 'flex'; const closeModal = () => { modal.style.display = 'none'; modalBackBtn.style.display = 'none'; }; modal.querySelector('.close-button').onclick = closeModal; modalBackBtn.onclick = closeModal; modal.onclick = (e) => { if (e.target === modal) closeModal(); }; }
+
+    async function showDayDetailsModal(year, month, dayNum) {
+        const modal = document.getElementById('modal-detail');
+        const modalTextos = document.getElementById('modal-textos');
+        const data = await getMonthlyData(year, month);
+        const date = new Date(year, month - 1, dayNum);
+        let contentHtml = '';
+        if (data) {
+            const astro = data.astro[dayNum] || {};
+            const textos = data.textos[dayNum] || {};
+            contentHtml = generateDayContentHTML(date, astro, textos, data.festivos);
+        } else {
+            contentHtml = `<p>Error al cargar.</p>`;
+        }
+        modalTextos.innerHTML = contentHtml;
+        openModal(modal); // <-- Llama al gestor
+    }
 
     async function showSymbolModal() {
         const modal = document.getElementById('modal-symbol');
         const modalContent = document.getElementById('modal-symbol-content');
         modalContent.innerHTML = '<div class="loader">Cargando...</div>';
-        openModal(modal); // <-- ¡LA CORRECCIÓN CLAVE!
-
+        openModal(modal); // <-- Llama al gestor
         try {
             const res = await fetch('Calendar/Simbologia.json');
-            if (!res.ok) throw new Error('Archivo no encontrado');
-            const data = await res.json();
-            
-            let mainHtml = `<h1 style="text-align:center;">Simbología</h1>`;
-            for (const seccion in data) {
-                mainHtml += `<h2 style="margin-top: 20px;">✨${capitalize(seccion)}✨</h2>`;
-                const grupo = data[seccion];
-                for (const key in grupo) {
-                    const item = grupo[key];
-                    const entryId = 'simbologia-' + key.replace(/\s+/g, '-').toLowerCase();
-                    let iconHtml = '';
-                    if (item.gif) {
-                        iconHtml = `<img src="${item.gif}" alt="${key}" style="height: 28px; width: 28px; object-fit: contain; vertical-align: middle; margin-right: 6px;">`;
-                    } else {
-                        let iconPath = ICON_PATHS.signs[key] || ICON_PATHS.planets[key] || ICON_PATHS.aspects[key] || '';
-                        if (iconPath) {
-                            iconHtml = `<img src="${iconPath}" alt="${key}" style="height: 28px; width: 28px; object-fit: contain; vertical-align: middle; margin-right: 6px;">`;
-                        }
-                    }
-                    mainHtml += `<div id="${entryId}" style="margin-bottom: 1rem;">`;
-                    mainHtml += `${iconHtml}<strong>${item.nombre || key}</strong><br>`;
-                    if (item.lema) {
-                        mainHtml += `<small style="font-weight:bold;">${item.lema}</small><br>`;
-                    } else if (item.condicion) {
-                        mainHtml += `<small style="font-weight:bold; color: #555;">Condición: ${item.condicion}</small><br>`;
-                    }
-                    mainHtml += `<span>${item.descripcion}</span></div>`;
-                }
-            }
+            // ... (el resto de la función es igual, solo borramos la lógica de cierre)
+            if (!res.ok) throw new Error('Archivo no encontrado'); const data = await res.json(); let mainHtml = `<h1 style="text-align:center;">Simbología</h1>`; for (const seccion in data) { mainHtml += `<h2 style="margin-top: 20px;">✨${capitalize(seccion)}✨</h2>`; const grupo = data[seccion]; for (const key in grupo) { const item = grupo[key]; const entryId = 'simbologia-' + key.replace(/\s+/g, '-').toLowerCase(); let iconHtml = ''; if (item.gif) { iconHtml = `<img src="${item.gif}" alt="${key}" style="height: 28px; width: 28px; object-fit: contain; vertical-align: middle; margin-right: 6px;">`; } else { let iconPath = ICON_PATHS.signs[key] || ICON_PATHS.planets[key] || ICON_PATHS.aspects[key] || ''; if (iconPath) { iconHtml = `<img src="${iconPath}" alt="${key}" style="height: 28px; width: 28px; object-fit: contain; vertical-align: middle; margin-right: 6px;">`; } } mainHtml += `<div id="${entryId}" style="margin-bottom: 1rem;">`; mainHtml += `${iconHtml}<strong>${item.nombre || key}</strong><br>`; if (item.lema) { mainHtml += `<small style="font-weight:bold;">${item.lema}</small><br>`; } else if (item.condicion) { mainHtml += `<small style="font-weight:bold; color: #555;">Condición: ${item.condicion}</small><br>`; } mainHtml += `<span>${item.descripcion}</span></div>`; } }
             modalContent.innerHTML = mainHtml;
-
         } catch (error) {
             console.error("Error al cargar Simbologia.json:", error);
             modalContent.innerHTML = `<p>Error al cargar la simbología.</p>`;
@@ -776,34 +719,74 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showInstallHelpModal() {
-        const modal = document.getElementById('modal-install');
-        openModal(modal); // ¡Y ya está! Delega todo al gestor central.
+       const modal = document.getElementById('modal-install'); openModal(modal); // ¡Y ya está! Delega todo al gestor central.
     }
 
     async function showAboutModal() {
         const modal = document.getElementById('modal-about');
         const modalContent = document.getElementById('modal-about-content');
-        
-        // Muestra el estado de carga y abre el modal con el gestor central
         modalContent.innerHTML = '<div class="loader">Cargando...</div>';
-        openModal(modal); // Esto maneja el modal y el botón flotante correctamente
+        openModal(modal);
 
         try {
             const res = await fetch('creditos.json');
             if (!res.ok) throw new Error('No se pudo cargar el archivo de créditos.');
             const data = await res.json();
 
-            // Construir el HTML dinámicamente
-            let html = `<h2>${data.introduccion}</h2>`;
-            html += `<p>${data.agradecimientos}</p>`;
-            html += `<h3>Créditos Gráficos</h3>`;
-            html += '<ul class="credits-list">';
-            data.creditosGraficos.forEach(credit => {
-                html += `<li>${credit.html}</li>`;
-            });
-            html += '</ul>';
+            // Función interna para construir la vista de botones
+            const buildButtonsView = () => {
+                let html = `<h2>${data.tituloModal}</h2><div id="about-buttons-container">`;
+                data.botones.forEach(btnData => {
+                    html += `
+                        <button class="about-button" data-type="${btnData.tipo}" data-target="${btnData.url || btnData.claveContenido}">
+                            <div class="icon-container">
+                                <img src="${btnData.icono}" alt="">
+                            </div>
+                            <div class="text-container">
+                                <div class="title">${btnData.titulo}</div>
+                                <div class="subtitle">${btnData.subtitulo}</div>
+                            </div>
+                        </button>
+                    `;
+                });
+                html += '</div>';
+                modalContent.innerHTML = html;
 
-            modalContent.innerHTML = html;
+                // Añadir los listeners a los botones recién creados
+                modalContent.querySelectorAll('.about-button').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const type = button.dataset.type;
+                        const target = button.dataset.target;
+                        if (type === 'link') {
+                            window.open(target, '_blank');
+                        } else if (type === 'interno') {
+                            buildInternalContentView(target);
+                        }
+                    });
+                });
+            };
+
+            // Función interna para construir la vista de contenido (intro o créditos)
+            const buildInternalContentView = (contentKey) => {
+                const contentData = data.contenidoInterno[contentKey];
+                let html = `<div class="about-internal-content"><h3>${contentData.titulo}</h3>`;
+                if (contentData.texto) {
+                    html += `<p>${contentData.texto}</p>`;
+                }
+                if (contentData.lista) {
+                    html += '<ul class="credits-list">';
+                    contentData.lista.forEach(item => { html += `<li>${item}</li>`; });
+                    html += '</ul>';
+                }
+                html += `<button class="btn back-to-about-btn">← Volver</button></div>`;
+                modalContent.innerHTML = html;
+                
+                // Listener para el botón de volver
+                modalContent.querySelector('.back-to-about-btn').onclick = buildButtonsView;
+            };
+
+            // Iniciar construyendo la vista de botones
+            buildButtonsView();
 
         } catch (error) {
             console.error("Error al cargar creditos.json:", error);
@@ -951,13 +934,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if(symbolBtnMobile) symbolBtnMobile.addEventListener('click', showSymbolModal);
         if(installHelpBtn) installHelpBtn.addEventListener('click', showInstallHelpModal);
         if(landingAboutBtn) landingAboutBtn.addEventListener('click', showAboutModal);
+        if(landingInfoBtn) landingInfoBtn.addEventListener('click', showInstallHelpModal);
+        if (actionInterpretBtn) actionInterpretBtn.onclick = () => { if (currentDetailDate) navigateToDetailView(currentDetailDate); };
+        if (actionInfoBtn) actionInfoBtn.onclick = showExplanationModal;
+        if (actionAddBtn) actionAddBtn.onclick = () => { if (currentDetailDate) openEventTypeSelectorModal(currentDetailDate); };
 
-        // 2. *** LÓGICA CENTRAL Y DEFINITIVA PARA EL BOTÓN FLOTANTE ***
-        // Se asigna UNA SOLA VEZ y es inteligente.
+        // *** LÓGICA UNIFICADA Y DEFINITIVA PARA EL BOTÓN FLOTANTE ***
         if(backToLandingBtn) {
             backToLandingBtn.addEventListener('click', () => {
                 if (activeModal) {
-                    // PRIORIDAD 1: Si hay un modal abierto, SIEMPRE lo cierra.
+                    // PRIORIDAD 1: Si hay un modal activo, lo cierra.
                     closeActiveModal();
                 } else if (mobileContainer.style.display === 'flex') {
                     // PRIORIDAD 2: Si no hay modal pero estamos en la vista de detalle, vuelve al calendario.
@@ -967,15 +953,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
-
-        // 3. Listener para cerrar el modal de "Añadir Evento" con su propia 'X'
-        if(modalAddEvent) modalAddEvent.querySelector('.close-button').addEventListener('click', closeActiveModal);
         
-        // 4. Configurar la altura dinámica para móviles
         setDynamicHeight(); 
         window.addEventListener('resize', setDynamicHeight);
 
-        // 5. Decidir qué vista (móvil o escritorio) mostrar.
         if (window.innerWidth <= 768 && mobileLandingContainer) {
             await initMobileLandingView();
             initMobileView();

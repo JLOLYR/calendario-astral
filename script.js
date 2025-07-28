@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+    const db = firebase.firestore();
+    const messaging = firebase.messaging();
+    
     // =========================================================================
     // ==                      CONSTANTES Y VARIABLES GLOBALES                ==
     // =========================================================================
@@ -260,6 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function addPersonalEvent(date, eventData) {
+        // 1. Guardar en el almacenamiento local (como antes)
         const allEvents = getPersonalEvents();
         const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
         
@@ -269,8 +274,29 @@ document.addEventListener('DOMContentLoaded', () => {
         
         allEvents[dateKey].push(eventData);
         savePersonalEvents(allEvents);
+
+        // 2. NUEVO: Si el evento tiene hora, guardarlo en Firestore para el recordatorio
+        if (eventData.time && eventData.time !== 'Todo el día') {
+            messaging.getToken().then(token => {
+                if (token) {
+                    const [hour, minute] = eventData.time.split(':');
+                    const eventDate = new Date(date);
+                    eventDate.setHours(parseInt(hour), parseInt(minute), 0, 0);
+
+                    db.collection('personalEvents').add({
+                        userToken: token,
+                        eventName: eventData.name,
+                        eventTimestamp: firebase.firestore.Timestamp.fromDate(eventDate)
+                    }).then(() => {
+                        console.log('Evento personal con recordatorio guardado en Firestore.');
+                    });
+                }
+            }).catch(err => {
+                console.error('No se pudo obtener el token para guardar el evento, el recordatorio no se enviará.', err);
+            });
+        }
     }
-    
+        
     function deletePersonalEvent(date, eventIndex) {
 
         const allEvents = getPersonalEvents();
@@ -288,6 +314,33 @@ document.addEventListener('DOMContentLoaded', () => {
             savePersonalEvents(allEvents);
             renderLandingView(landingDate); // Refresca la vista para mostrar los cambios
         }
+    }
+
+    function requestNotificationPermission() {
+        console.log('Solicitando permiso para notificaciones...');
+        messaging.requestPermission()
+            .then(() => {
+                console.log('Permiso de notificación concedido.');
+                return messaging.getToken();
+            })
+            .then(token => {
+                if (token) {
+                    console.log('Token de FCM obtenido:', token);
+                    // Guardamos el token en nuestra base de datos Firestore
+                    return db.collection('fcmTokens').doc(token).set({
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } else {
+                    alert('No se pudo obtener el token de notificación. Por favor, revisa los permisos de tu navegador.');
+                }
+            })
+            .then(() => {
+                alert('¡Notificaciones activadas con éxito! Recibirás un aviso diario a las 9 AM.');
+            })
+            .catch(err => {
+                console.error('Error al activar las notificaciones: ', err);
+                alert('Hubo un error al activar las notificaciones. Es posible que las hayas bloqueado previamente.');
+            });
     }
 
 
@@ -929,6 +982,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     async function initializeApp() {
         // 1. Asignar todos los listeners a sus botones.
+        if(enableNotificationsBtn) enableNotificationsBtn.addEventListener('click', requestNotificationPermission);
         if(symbolBtn) symbolBtn.addEventListener('click', showSymbolModal);
         if(symbolBtnMobile) symbolBtnMobile.addEventListener('click', showSymbolModal);
         if(installHelpBtn) installHelpBtn.addEventListener('click', showInstallHelpModal);
