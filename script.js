@@ -321,10 +321,9 @@ document.addEventListener('DOMContentLoaded', () => {
         messaging.requestPermission()
             .then(() => {
                 console.log('Permiso de notificación concedido.');
-                // *** CORRECCIÓN CLAVE: Le pasamos SÓLO la VAPID key. ***
-                // Firebase encontrará automáticamente el Service Worker activo.
+                // Con un solo SW, Firebase lo encuentra solo. Solo pasamos la VAPID key.
                 return messaging.getToken({ 
-                    vapidKey: 'BL13inDWrj2_yMTaw2vP3USSt2nDOe7qjadPtR9KWRTOFb8m4u5c_Zh7z4v8BKzhcTAVqIrIP3_tIQZGigAavdo' // <-- PEGA TU VAPID KEY REAL AQUÍ
+                    vapidKey: 'BL13inDWrj2_yMTaw2vP3USSt2nDOe7qjadPtR9KWRTOFb8m4u5c_Zh7z4v8BKzhcTAVqIrIP3_tIQZGigAavdo'
                 });
             })
             .then(token => {
@@ -334,11 +333,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 } else {
-                    alert('No se pudo obtener el token de notificación. Por favor, revisa los permisos de tu navegador.');
+                    alert('No se pudo obtener el token de notificación.');
                 }
             })
             .then(() => {
-                alert('¡Notificaciones activadas con éxito! Recibirás un aviso diario a las 9 AM.');
+                alert('¡Notificaciones activadas con éxito!');
             })
             .catch(err => {
                 console.error('Error al activar las notificaciones: ', err);
