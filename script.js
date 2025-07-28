@@ -321,16 +321,15 @@ document.addEventListener('DOMContentLoaded', () => {
         messaging.requestPermission()
             .then(() => {
                 console.log('Permiso de notificación concedido.');
-                // *** CAMBIO CLAVE: Especificamos el Service Worker a usar ***
-                return messaging.getToken({
-                    vapidKey: 'BL13inDWrj2_yMTaw2vP3USSt2nDOe7qjadPtR9KWRTOFb8m4u5c_Zh7z4v8BKzhcTAVqIrIP3_tIQZGigAavdo', // ¡IMPORTANTE! Reemplaza esto
-                    serviceWorkerRegistration: navigator.serviceWorker.getRegistration('./firebase-messaging-sw-v2.js')
+                // *** CORRECCIÓN CLAVE: Le pasamos SÓLO la VAPID key. ***
+                // Firebase encontrará automáticamente el Service Worker activo.
+                return messaging.getToken({ 
+                    vapidKey: 'BL13inDWrj2_yMTaw2vP3USSt2nDOe7qjadPtR9KWRTOFb8m4u5c_Zh7z4v8BKzhcTAVqIrIP3_tIQZGigAavdo' // <-- PEGA TU VAPID KEY REAL AQUÍ
                 });
             })
             .then(token => {
                 if (token) {
                     console.log('Token de FCM obtenido:', token);
-                    // Guardamos el token en nuestra base de datos Firestore
                     return db.collection('fcmTokens').doc(token).set({
                         timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     });
