@@ -992,6 +992,64 @@ body {
         background-position: right 15px top 50%;
         background-size: 10px auto;
     }
+    /* ===== ESTILOS PARA LA NUEVA VENTANA DE INFORMACIÓN DINÁMICA ===== */
+
+    #modal-explanation .modal-content h2 {
+        text-align: center;
+        font-family: 'Linux Libertine', serif;
+        font-size: 1.6em;
+        color: var(--color-texto-principal);
+    }
+
+    #modal-explanation .modal-content p.intro {
+        text-align: center;
+        font-size: 0.9em;
+        opacity: 0.8;
+        margin-top: -10px;
+        margin-bottom: 25px;
+    }
+
+    .info-accordion-item {
+        border-bottom: 1px solid var(--color-borde-calendario);
+    }
+
+    .info-accordion-btn {
+        width: 100%;
+        background-color: transparent;
+        border: none;
+        padding: 18px 5px;
+        font-size: 1.1em;
+        text-align: left;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 500;
+    }
+
+    /* Indicador de flecha para el acordeón */
+    .info-accordion-btn::after {
+        content: '▼';
+        font-size: 0.6em;
+        color: var(--color-borde-calendario);
+        transition: transform 0.3s ease;
+    }
+
+    .info-accordion-btn.active::after {
+        transform: rotate(180deg);
+    }
+
+    .info-accordion-panel {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+        font-size: 0.95em;
+        line-height: 1.6;
+    }
+
+    .info-accordion-panel p {
+        padding: 0 5px 18px 5px;
+    }
 }
 
 /*

@@ -691,8 +691,32 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!res.ok) throw new Error('Archivo no encontrado');
             const data = await res.json();
             
-            // ... (El resto del código que construye el HTML de simbología se mantiene igual) ...
-            let mainHtml = `<h1 style="text-align:center;">Simbología</h1>`; for (const seccion in data) { mainHtml += `<h2 style="margin-top: 20px;">✨${capitalize(seccion)}✨</h2>`; const grupo = data[seccion]; for (const key in grupo) { const item = grupo[key]; const entryId = 'simbologia-' + key.replace(/\s+/g, '-').toLowerCase(); let iconHtml = ''; if (item.gif) { iconHtml = `<img src="${item.gif}" alt="${key}" style="height: 28px; width: 28px; object-fit: contain; vertical-align: middle; margin-right: 6px;">`; } else { let iconPath = ICON_PATHS.signs[key] || ICON_PATHS.planets[key] || ICON_PATHS.aspects[key] || ''; if (iconPath) { iconHtml = `<img src="${iconPath}" alt="${key}" style="height: 28px; width: 28px; object-fit: contain; vertical-align: middle; margin-right: 6px;">`; } } mainHtml += `<div id="${entryId}" style="margin-bottom: 1rem;">`; mainHtml += `${iconHtml}<strong>${item.nombre || key}</strong><br>`; if (item.lema) { mainHtml += `<small style="font-weight:bold;">${item.lema}</small><br>`; } else if (item.condicion) { mainHtml += `<small style="font-weight:bold; color: #555;">Condición: ${item.condicion}</small><br>`; } mainHtml += `<span>${item.descripcion}</span></div>`; } }
+            let mainHtml = `<h1 style="text-align:center;">Simbología</h1>`;
+            for (const seccion in data) {
+                mainHtml += `<h2 style="margin-top: 20px;">✨${capitalize(seccion)}✨</h2>`;
+                const grupo = data[seccion];
+                for (const key in grupo) {
+                    const item = grupo[key];
+                    const entryId = 'simbologia-' + key.replace(/\s+/g, '-').toLowerCase();
+                    let iconHtml = '';
+                    if (item.gif) {
+                        iconHtml = `<img src="${item.gif}" alt="${key}" style="height: 28px; width: 28px; object-fit: contain; vertical-align: middle; margin-right: 6px;">`;
+                    } else {
+                        let iconPath = ICON_PATHS.signs[key] || ICON_PATHS.planets[key] || ICON_PATHS.aspects[key] || '';
+                        if (iconPath) {
+                            iconHtml = `<img src="${iconPath}" alt="${key}" style="height: 28px; width: 28px; object-fit: contain; vertical-align: middle; margin-right: 6px;">`;
+                        }
+                    }
+                    mainHtml += `<div id="${entryId}" style="margin-bottom: 1rem;">`;
+                    mainHtml += `${iconHtml}<strong>${item.nombre || key}</strong><br>`;
+                    if (item.lema) {
+                        mainHtml += `<small style="font-weight:bold;">${item.lema}</small><br>`;
+                    } else if (item.condicion) {
+                        mainHtml += `<small style="font-weight:bold; color: #555;">Condición: ${item.condicion}</small><br>`;
+                    }
+                    mainHtml += `<span>${item.descripcion}</span></div>`;
+                }
+            }
             modalContent.innerHTML = mainHtml;
 
         } catch (error) {
@@ -703,25 +727,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function showAndScrollToSymbol(key) { await showSymbolModal(); const targetId = 'simbologia-' + key.replace(/\s+/g, '-').toLowerCase(); const targetElement = document.getElementById(targetId); if (targetElement) { targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' }); } }
     async function showAspectsModal(date) { const modal = document.getElementById('modal-aspects'); const modalContent = document.getElementById('modal-aspects-content'); modalContent.innerHTML = `<div class="loader">Cargando...</div>`; modal.style.display = 'flex'; modalBackBtn.style.display = 'flex'; const year = date.getFullYear(); const month = date.getMonth() + 1; const day = date.getDate(); const data = await getMonthlyData(year, month); let html = `<h1>✨Aspectos</h1>`; let specialEventsHtml = ''; if (data && data.astro[day]) { const dayData = data.astro[day]; let eventName = ''; let eventIconPath = ''; if (dayData.Eclipse) { eventName = `Eclipse ${dayData.Eclipse.type} ${dayData.Eclipse.subtype}`; eventIconPath = ICON_PATHS.events[eventName]; } else if (FASES_LUNARES_PRINCIPALES.includes(dayData.Moon_Phase)) { eventName = dayData.Moon_Phase; eventIconPath = ICON_PATHS.events[eventName]; } if (eventName && eventIconPath) { specialEventsHtml = `<div class="special-event-row"><img src="${eventIconPath}" alt="${eventName}"><span>${eventName}</span></div>`; } const eventsContainer = document.createElement('div'); eventsContainer.classList.add('astro-events'); addEventsToCell(eventsContainer, dayData); const regularAspectsHtml = eventsContainer.innerHTML; if (specialEventsHtml || regularAspectsHtml) { html += specialEventsHtml + regularAspectsHtml; } else { html += '<p>No hay aspectos mayores.</p>'; } } else { html += '<p>No hay aspectos mayores.</p>'; } modalContent.innerHTML = html; const closeModal = () => { modal.style.display = 'none'; modalBackBtn.style.display = 'none'; }; modal.querySelector('.close-button').onclick = closeModal; modalBackBtn.onclick = closeModal; modal.onclick = (e) => { if (e.target === modal) closeModal(); }; }
-    function showInstallHelpModal() { const modal = document.getElementById('modal-install'); modal.style.display = 'flex'; modalBackBtn.style.display = 'flex'; const closeModal = () => { modal.style.display = 'none'; modalBackBtn.style.display = 'none'; }; modal.querySelector('.close-button').onclick = closeModal; modalBackBtn.onclick = closeModal; modal.onclick = (e) => { if (e.target === modal) { closeModal(); } }; }
+    function showInstallHelpModal() {
+        const modal = document.getElementById('modal-install');
+        openModal(modal); // ¡Y ya está! Delega todo al gestor central.
+    }
+
     async function showAboutModal() {
         const modal = document.getElementById('modal-about');
         const modalContent = document.getElementById('modal-about-content');
         
+        // Muestra el estado de carga y abre el modal con el gestor central
         modalContent.innerHTML = '<div class="loader">Cargando...</div>';
-        modal.style.display = 'flex';
-        modalBackBtn.style.display = 'flex';
-
-        const closeModal = () => {
-            modal.style.display = 'none';
-            modalBackBtn.style.display = 'none';
-        };
-
-        modal.querySelector('.close-button').onclick = closeModal;
-        modalBackBtn.onclick = closeModal;
-        modal.onclick = (e) => {
-            if (e.target === modal) closeModal();
-        };
+        openModal(modal); // Esto maneja el modal y el botón flotante correctamente
 
         try {
             const res = await fetch('creditos.json');
@@ -739,6 +756,7 @@ document.addEventListener('DOMContentLoaded', () => {
             html += '</ul>';
 
             modalContent.innerHTML = html;
+
         } catch (error) {
             console.error("Error al cargar creditos.json:", error);
             modalContent.innerHTML = `<p>No se pudo cargar la información de créditos en este momento.</p>`;
@@ -774,13 +792,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const timeSelect = document.getElementById('event-time-select');
         const eventTypeInput = document.getElementById('event-type-input');
 
-        // Muestra el icono y nombre del evento seleccionado
         header.innerHTML = `
             <img src="${typeInfo.icon}" alt="${typeInfo.name}">
             <span>${typeInfo.name.substring(2)}</span>
         `;
 
-        // Limpia y rellena el selector de hora
         timeSelect.innerHTML = '';
         const allDayOption = document.createElement('option');
         allDayOption.value = 'Todo el día';
@@ -795,12 +811,10 @@ document.addEventListener('DOMContentLoaded', () => {
             timeSelect.appendChild(option);
         }
 
-        // Limpia el input del nombre y guarda datos necesarios
         eventNameInput.value = '';
         eventDateInput.value = date.toISOString();
         eventTypeInput.value = eventType;
 
-        // Lógica del botón guardar
         saveEventBtn.onclick = () => {
             const eventName = eventNameInput.value.trim();
             if (!eventName) {
@@ -811,7 +825,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 type: eventTypeInput.value,
                 name: eventName,
                 icon: PERSONAL_EVENT_TYPES[eventTypeInput.value].icon,
-                time: timeSelect.value // Guarda la hora seleccionada
+                time: timeSelect.value
             };
             addPersonalEvent(new Date(eventDateInput.value), eventData);
             closeActiveModal();
@@ -827,23 +841,55 @@ document.addEventListener('DOMContentLoaded', () => {
         modalBackBtn.style.display = 'none';
     }
 
-    function showExplanationModal() {
+    async function showExplanationModal() {
         const modal = document.getElementById('modal-explanation');
-        modal.style.display = 'flex';
-        modalBackBtn.style.display = 'flex';
+        const modalContent = modal.querySelector('.modal-content');
+        modalContent.innerHTML = '<div class="loader">Cargando guía...</div><span class="close-button">❌</span>';
+        openModal(modal);
 
-        const closeModal = () => {
-            modal.style.display = 'none';
-            modalBackBtn.style.display = 'none';
-        };
+        try {
+            const res = await fetch('info.json');
+            if (!res.ok) throw new Error('No se pudo cargar la guía.');
+            const data = await res.json();
 
-        modal.querySelector('.close-button').onclick = closeModal;
-        modalBackBtn.onclick = closeModal;
-        modal.onclick = (e) => {
-            if (e.target === modal) {
-                closeModal();
-            }
-        };
+            // Construir el HTML dinámico del acordeón
+            let html = `<h2>${data.tituloPrincipal}</h2>`;
+            html += `<p class="intro">${data.introduccion}</p>`;
+            
+            data.secciones.forEach(seccion => {
+                html += `
+                    <div class="info-accordion-item">
+                        <button class="info-accordion-btn">${seccion.titulo}</button>
+                        <div class="info-accordion-panel">
+                            <p>${seccion.contenido}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Reemplaza el loader con el contenido final y re-añade la 'X'
+            modalContent.innerHTML = html + '<span class="close-button">❌</span>';
+            
+            // ¡MUY IMPORTANTE! Añadir los listeners DESPUÉS de crear los botones
+            modal.querySelectorAll('.info-accordion-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    button.classList.toggle('active');
+                    const panel = button.nextElementSibling;
+                    if (panel.style.maxHeight) {
+                        panel.style.maxHeight = null;
+                    } else {
+                        panel.style.maxHeight = panel.scrollHeight + "px";
+                    }
+                });
+            });
+            // Reconectar la 'X' superior
+            modal.querySelector('.close-button').onclick = closeActiveModal;
+
+        } catch (error) {
+            console.error("Error al cargar info.json:", error);
+            modalContent.innerHTML = `<p>No se pudo cargar la guía en este momento.</p><span class="close-button">❌</span>`;
+            modal.querySelector('.close-button').onclick = closeActiveModal;
+        }
     }
 
     function setDynamicHeight() { const vh = window.innerHeight; const mobileLanding = document.getElementById('mobile-landing-container'); if (mobileLanding) { mobileLanding.style.height = `${vh}px`; } }
@@ -853,27 +899,35 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     async function initializeApp() {
         // 1. Asignar todos los listeners a sus botones.
-        // Esto asegura que estén listos antes de que se muestre nada.
         if(symbolBtn) symbolBtn.addEventListener('click', showSymbolModal);
         if(symbolBtnMobile) symbolBtnMobile.addEventListener('click', showSymbolModal);
         if(installHelpBtn) installHelpBtn.addEventListener('click', showInstallHelpModal);
-        if(landingAboutBtn) landingAboutBtn.addEventListener('click', showAboutModal); // Listener para "Acerca de"
+        if(landingAboutBtn) landingAboutBtn.addEventListener('click', showAboutModal);
+
+        // 2. *** LÓGICA CENTRAL Y DEFINITIVA PARA EL BOTÓN FLOTANTE ***
+        // Se asigna UNA SOLA VEZ y es inteligente.
+        if(backToLandingBtn) {
+            backToLandingBtn.addEventListener('click', () => {
+                if (activeModal) {
+                    // PRIORIDAD 1: Si hay un modal abierto, SIEMPRE lo cierra.
+                    closeActiveModal();
+                } else if (mobileContainer.style.display === 'flex') {
+                    // PRIORIDAD 2: Si no hay modal pero estamos en la vista de detalle, vuelve al calendario.
+                    mobileContainer.style.display = 'none';
+                    backToLandingBtn.style.display = 'none';
+                    mobileLandingContainer.style.display = 'flex';
+                }
+            });
+        }
+
+        // 3. Listener para cerrar el modal de "Añadir Evento" con su propia 'X'
+        if(modalAddEvent) modalAddEvent.querySelector('.close-button').addEventListener('click', closeActiveModal);
         
-        if(backToLandingBtn) backToLandingBtn.addEventListener('click', () => {
-            mobileContainer.style.display = 'none';
-            backToLandingBtn.style.display = 'none';
-            mobileLandingContainer.style.display = 'flex';
-        });
-        
-        // Listeners para el modal de añadir evento
-        if(modalAddEvent) modalAddEvent.querySelector('.close-button').addEventListener('click', closeAddEventModal);
-        
-        // 2. Configurar la altura dinámica para móviles
+        // 4. Configurar la altura dinámica para móviles
         setDynamicHeight(); 
         window.addEventListener('resize', setDynamicHeight);
 
-        // 3. Decidir qué vista (móvil o escritorio) mostrar.
-        // Este bloque ya no está duplicado.
+        // 5. Decidir qué vista (móvil o escritorio) mostrar.
         if (window.innerWidth <= 768 && mobileLandingContainer) {
             await initMobileLandingView();
             initMobileView();

@@ -1,0 +1,34 @@
+{
+  "tituloPrincipal": "IMPORTANTE",
+  "introduccion": "Este calendario no es un horóscopo tradicional. Aquí aprenderás cómo los movimientos planetarios tejen el clima astrológico de cada día. ¡Vamos paso a paso!",
+  "secciones": [
+    {
+      "titulo": "🔭 1. Más que tu signo solar",
+      "contenido": "La astrología va más allá del famoso “¿de qué signo eres?”. Aquí descubrirás los **aspectos astrológicos**, es decir, cómo se relacionan los planetas entre sí (conjunciones, oposiciones, trígonos, etc.) y cómo estos generan distintos climas energéticos cada día."
+    },
+    {
+      "titulo": "☀️ 2. El Zodiaco y los Planetas",
+      "contenido": "Imagina que el Sol recorre un camino en el cielo llamado 'eclíptica', dividido en 12 secciones: los signos del zodiaco. Este calendario te muestra cómo los planetas van transitando por esos signos, “vistiéndose” con sus energías. Por ejemplo, cuando Venus (el amor) está en Leo, el amor se vuelve más expresivo, teatral y generoso."
+    },
+    {
+      "titulo": "🔁 3. Planetas Retrógrados",
+      "contenido": "Cuando un planeta parece moverse hacia atrás en el cielo, decimos que está retrógrado. Esto es una ilusión óptica desde la Tierra, ¡pero con mucho significado! Los retrógrados nos invitan a **revisar, reflexionar y reordenar** los asuntos relacionados con la energía de ese planeta."
+    },
+    {
+      "titulo": "📍 4. Calculado para todo el continente de América",
+      "contenido": "Todos los eventos y horas que ves aquí están calculados para la zona horaria de Santiago de Chile (UTC -4). Si vives en otro lugar, el clima astrológico general es el mismo, pero los eventos pueden ocurrir unas horas antes o después."
+    },
+    {
+      "titulo": "🧬 5. ¿Y cómo me afecta a mí?",
+      "contenido": "**¡Muy importante!** Este calendario muestra la energía general del día, pero no cómo te impacta *directamente a ti*. Para eso necesitas conocer tu **Carta Natal**: el mapa único del cielo cuando naciste. Los tránsitos diarios activan puntos sensibles de tu carta personal. Por eso, dos personas del mismo signo pueden vivir el día de forma muy distinta."
+    },
+    {
+      "titulo": "📊 Esquema de Eventos del Día",
+      "contenido": "<img src='assets/icons/explicacion.png' alt='Esquema visual de eventos del día' class='info-image'>"
+    },
+    {
+      "titulo": "📚 ¿Qué hago ahora?",
+      "contenido": "Usa este calendario como una brújula energética. Si un día está marcado como “Intenso” o “Armónico”, es por la calidad de los aspectos generales. Para un análisis personal, ¡el siguiente paso es explorar tu propia carta natal! 🌌"
+    }
+  ]
+}
