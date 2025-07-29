@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
         alerts: { 'Warning': 'assets/aspects/warning.gif' },
         special_days: {
             'Día Amoroso': 'assets/aspects/amor.gif',
-            'Día Suertudo': 'assets/aspects/trebol.gif',
+            'Día de Suerte': 'assets/aspects/trebol.gif',
             'Día de Mala Suerte': 'assets/aspects/diablo.gif'
         }
     };
@@ -490,7 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (['Conjunction', 'Trine', 'Sextile'].includes(aspectType)) return { title: 'Día Amoroso', iconPath: ICON_PATHS.special_days['Día Amoroso'], colorClass: 'day-love' };
                 }
                 if ((p1 === 'Jupiter' && (p2 === 'Sun' || p2 === 'Venus')) || (p2 === 'Jupiter' && (p1 === 'Sun' || p1 === 'Venus'))) {
-                    if (['Conjunction', 'Trine', 'Sextile'].includes(aspectType)) return { title: 'Día Suertudo', iconPath: ICON_PATHS.special_days['Día Suertudo'], colorClass: 'day-lucky' };
+                    if (['Conjunction', 'Trine', 'Sextile'].includes(aspectType)) return { title: 'Día de Suerte', iconPath: ICON_PATHS.special_days['Día de Suerte'], colorClass: 'day-lucky' };
                 }
             }
         }

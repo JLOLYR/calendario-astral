@@ -193,7 +193,7 @@ body {
     
     /* VISTA DE DETALLE DIARIA (OCULTA HASTA QUE SE LLAME POR JS) */
     #mobile-view-container {
-        /* display: none; -> Ya está por defecto, se activa a 'flex' con JS */
+        display: flex;/* display: none; -> Ya está por defecto, se activa a 'flex' con JS */
         flex-direction: column;
         width: 100%;
         min-height: 100vh;
@@ -203,6 +203,7 @@ body {
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
+        padding-bottom: 100px;
     }
 
     /* --- ESTILOS DE LA VISTA LANDING --- */
@@ -435,7 +436,20 @@ body {
         z-index: 3; 
     }    
     .landing-day-cell.holiday .date-text { color: var(--color-texto-domingo); }
-    .landing-day-cell.selected .date-text { color: rgb(172, 88, 198);font-weight: 650;transform: scale(1.2);  }
+
+    .landing-day-cell.selected {
+        background-color:white; /* Usa el color del tema para el fondo */
+        border-radius: 33%; /* Lo convierte en un círculo perfecto */
+        color: white; /* Hace que todo el texto dentro sea blanco por defecto */
+    }
+
+    /* 2. Estilo para el número dentro de la burbuja */
+    .landing-day-cell.selected .date-text { 
+        color: rgb(91, 80, 211); /* Asegura que el número sea blanco */
+        font-weight: bold; /* Mantenemos el texto en negrita para destacarlo */
+        /* Las propiedades 'transform' y el color morado han sido eliminadas */
+    }
+
     .dots-container {
         position: absolute;
         bottom: 15%;
@@ -657,6 +671,9 @@ body {
         object-fit: contain;
         vertical-align: middle; /* Ayuda a alinear el icono con el texto */
         margin: 0 5px; /* Añade un pequeño espacio a los lados */
+        
+        flex-grow: 1;
+        
     }
 
     /* --- BOTÓN FLOTANTE DE VOLVER --- */
