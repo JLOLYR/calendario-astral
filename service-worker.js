@@ -33,7 +33,7 @@ messaging.onBackgroundMessage((payload) => {
 
 
 // --- 2. LÓGICA DE CACHÉ DE TU PWA ---
-const CACHE_NAME = 'calendario-astral-cache-v11'; // Incrementa la versión
+const CACHE_NAME = 'calendario-astral-cache-v12'; // Incrementa la versión
 
 const URLS_TO_CACHE = [
   './',
