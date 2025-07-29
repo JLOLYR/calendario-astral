@@ -439,7 +439,7 @@ body {
 
     .landing-day-cell.selected {
         background-color:white; /* Usa el color del tema para el fondo */
-        border-radius: 33%; /* Lo convierte en un círculo perfecto */
+        border-radius: 22%; /* Lo convierte en un círculo perfecto */
         color: white; /* Hace que todo el texto dentro sea blanco por defecto */
     }
 
