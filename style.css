@@ -433,20 +433,21 @@ body {
     .date-text {
         position: relative; 
         font-size: 1.1em;
-        z-index: 3; 
+        z-index: 3;
     }    
     .landing-day-cell.holiday .date-text { color: var(--color-texto-domingo); }
 
     .landing-day-cell.selected {
         background-color:white; /* Usa el color del tema para el fondo */
-        border-radius: 22%; /* Lo convierte en un círculo perfecto */
+        border-radius: 33%; /* Lo convierte en un círculo perfecto */
         color: white; /* Hace que todo el texto dentro sea blanco por defecto */
     }
 
     /* 2. Estilo para el número dentro de la burbuja */
     .landing-day-cell.selected .date-text { 
-        color: rgb(91, 80, 211); /* Asegura que el número sea blanco */
+        color: rgb(213, 136, 58); /* Asegura que el número sea blanco */
         font-weight: bold; /* Mantenemos el texto en negrita para destacarlo */
+        -webkit-text-stroke: 0.25px rgb(255, 0, 0);   
         /* Las propiedades 'transform' y el color morado han sido eliminadas */
     }
 
