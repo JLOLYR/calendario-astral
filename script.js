@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const FASES_LUNARES_PRINCIPALES = ['Luna Nueva', 'Cuarto Creciente', 'Luna Llena', 'Cuarto Menguante'];
     const ASPECT_COLORS = { Conjunction: 'dot-conjunction', Opposition: 'dot-opposition', Square: 'dot-square', Trine: 'dot-trine', Sextile: 'dot-sextile' };
 
+
     const ICON_PATHS = {
         planets: { 'Sun': 'assets/planets/Sun.png', 'Moon': 'assets/planets/Moon.png', 'Mercury': 'assets/planets/Mercury.png', 'Venus': 'assets/planets/Venus.png', 'Mars': 'assets/planets/Mars.png', 'Jupiter': 'assets/planets/Jupiter.png', 'Saturn': 'assets/planets/Saturn.png', 'Uranus': 'assets/planets/Uranus.png', 'Neptune': 'assets/planets/Neptune.png', 'Pluto': 'assets/planets/Pluto.png', 'Chiron': 'assets/planets/Chiron.png', 'North Node': 'assets/planets/North_Node.png','South Node': 'assets/planets/South_Node.png', 'Darkmoon': 'assets/planets/Dark_Moon.png', 'Pars Fortuna': 'assets/planets/Pars_Fortuna.png' },
         signs: { 'Aries': 'assets/signs/Aries.png', 'Taurus': 'assets/signs/Taurus.png', 'Gemini': 'assets/signs/Gemini.png', 'Cancer': 'assets/signs/Cancer.png', 'Leo': 'assets/signs/Leo.png', 'Virgo': 'assets/signs/Virgo.png', 'Libra': 'assets/signs/Libra.png', 'Scorpio': 'assets/signs/Scorpio.png', 'Sagittarius': 'assets/signs/Sagittarius.png', 'Capricorn': 'assets/signs/Capricorn.png', 'Aquarius': 'assets/signs/Aquarius.png', 'Pisces': 'assets/signs/Pisces.png' },
@@ -15,10 +16,21 @@ document.addEventListener('DOMContentLoaded', () => {
         events: {'Luna Nueva': 'assets/aspects/luna_nueva.gif','Cuarto Creciente': 'assets/aspects/luna_cuarto.gif','Luna Llena': 'assets/aspects/luna_llena.gif','Cuarto Menguante': 'assets/aspects/luna_cuarto.gif','Eclipse Lunar Total': 'assets/aspects/Eclipse Lunar Total.png','Eclipse Solar Total': 'assets/aspects/Eclipse Solar Total.png','Eclipse Lunar Partial': 'assets/aspects/Eclipse Lunar Parcial.png','Eclipse Solar Partial': 'assets/aspects/Eclipse Solar Parcial.png','Eclipse Lunar Anular': 'assets/aspects/Eclipse Lunar Anular.png','Eclipse Solar Anular': 'assets/aspects/Eclipse Solar Anular.png'},
         alerts: { 'Warning': 'assets/aspects/warning.gif' },
         special_days: {
-            'Día Amoroso': 'assets/aspects/amor.gif',
-            'Día de Suerte': 'assets/aspects/trebol.gif',
-            'Día de Mala Suerte': 'assets/aspects/diablo.gif'
+            'Amor': 'assets/aspects/amor.gif',
+            'Suerte': 'assets/aspects/trebol.gif',
+            'Mala Suerte': 'assets/aspects/diablo.gif'
         }
+    };
+
+    const SYMBOL_TRANSLATIONS = {
+        'Sun': 'Sol', 'Moon': 'Luna', 'Mercury': 'Mercurio', 'Venus': 'Venus', 'Mars': 'Marte', 
+        'Jupiter': 'Júpiter', 'Saturn': 'Saturno', 'Uranus': 'Urano', 'Neptune': 'Neptuno', 
+        'Pluto': 'Plutón', 'Chiron': 'Quirón', 'North Node': 'Nodo Norte', 'South Node': 'Nodo Sur',
+        'Aries': 'Aries', 'Taurus': 'Tauro', 'Gemini': 'Géminis', 'Cancer': 'Cáncer', 'Leo': 'Leo', 
+        'Virgo': 'Virgo', 'Libra': 'Libra', 'Scorpio': 'Escorpio', 'Sagittarius': 'Sagitario', 
+        'Capricorn': 'Capricornio', 'Aquarius': 'Acuario', 'Pisces': 'Piscis',
+        'Conjunction': 'Conjunción', 'Opposition': 'Oposición', 'Trine': 'Trígono', 
+        'Square': 'Cuadratura', 'Sextile': 'Sextil'
     };
 
     const PERSONAL_EVENT_TYPES = {
@@ -75,6 +87,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const actionInterpretBtn = document.getElementById('action-interpret');
     const actionInfoBtn = document.getElementById('action-info');
     const actionAddBtn = document.getElementById('action-add');
+    const modalConfirm = document.getElementById('modal-confirm');
+    const confirmMessageText = document.getElementById('confirm-message-text');
+    const confirmBtnOk = document.getElementById('confirm-btn-ok');
+    const confirmBtnCancel = document.getElementById('confirm-btn-cancel');
+    const eventTimeInput = document.getElementById('event-time-input');
+    const translateSymbol = (name) => SYMBOL_TRANSLATIONS[name] || capitalize(name);
+    const actionTextToggleBtn = document.getElementById('action-text-toggle');
 
     // --- Estado de la aplicación ---
     let selectedYear, selectedMonth;
@@ -125,6 +144,20 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.querySelector('.close-button').onclick = closeActiveModal;
         modal.onclick = (e) => {
             if (e.target === modal) closeActiveModal();
+        };
+    }
+    // NUEVA FUNCIÓN DE CONFIRMACIÓN
+    function showConfirmation(message, onConfirm) {
+        confirmMessageText.textContent = message;
+        modalConfirm.style.display = 'flex';
+
+        confirmBtnOk.onclick = () => {
+            modalConfirm.style.display = 'none';
+            onConfirm(); // Ejecuta la acción solo si se confirma
+        };
+
+        confirmBtnCancel.onclick = () => {
+            modalConfirm.style.display = 'none';
         };
     }
 
@@ -181,17 +214,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const createEventRow = (items, aspectType = null) => {
         const row = document.createElement('div');
         row.classList.add('event-row');
+
+        // El punto de color ahora se añade como un simple span, sin contenedor extra
         if (aspectType && ASPECT_COLORS[aspectType]) {
             const dot = document.createElement('span');
             dot.classList.add('aspect-dot', ASPECT_COLORS[aspectType]);
             row.appendChild(dot);
         }
+
         items.forEach(item => {
+            const container = document.createElement('div');
+            container.className = 'symbol-container';
+
             if (item.type === 'text') {
                 const span = document.createElement('span');
                 span.textContent = item.value;
                 span.classList.add('event-arrow');
-                row.appendChild(span);
+                container.appendChild(span);
             } else {
                 const path = ICON_PATHS[item.category]?.[item.name];
                 if (path) {
@@ -206,9 +245,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (symbolName) showAndScrollToSymbol(symbolName);
                     });
                     img.classList.add(item.isSmall ? 'sign-icon-small' : `${item.category}-icon`);
-                    row.appendChild(img);
+                    container.appendChild(img);
+
+                    const label = document.createElement('span');
+                    label.className = 'symbol-label';
+                    label.textContent = translateSymbol(item.name);
+                    container.appendChild(label);
                 }
             }
+            row.appendChild(container);
         });
         return row;
     };
@@ -273,22 +318,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function deletePersonalEvent(date, eventIndex) {
+        showConfirmation('¿Estás seguro de que quieres eliminar este evento?', () => {
+            // Este código solo se ejecuta si el usuario hace clic en "Aceptar"
+            const allEvents = getPersonalEvents();
+            const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+            
+            if (allEvents[dateKey] && allEvents[dateKey][eventIndex]) {
+                allEvents[dateKey].splice(eventIndex, 1);
 
-        const allEvents = getPersonalEvents();
-        const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-        
-        if (allEvents[dateKey] && allEvents[dateKey][eventIndex]) {
-            // Elimina el evento del array de ese día
-            allEvents[dateKey].splice(eventIndex, 1);
+                if (allEvents[dateKey].length === 0) {
+                    delete allEvents[dateKey];
+                }
 
-            // Si ya no quedan eventos ese día, elimina la entrada del día completo
-            if (allEvents[dateKey].length === 0) {
-                delete allEvents[dateKey];
+                savePersonalEvents(allEvents);
+                renderLandingView(landingDate);
             }
-
-            savePersonalEvents(allEvents);
-            renderLandingView(landingDate); // Refresca la vista para mostrar los cambios
-        }
+        });
     }
 
 
@@ -448,20 +493,38 @@ document.addEventListener('DOMContentLoaded', () => {
             // **CORRECCIÓN #2: MOSTRAR ICONO PERSONAL**
             const dateKey = `${year}-${String(month).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
             const dayPersonalEvents = personalEvents[dateKey];
+            const specialDay = getSpecialDayClassification(dayData);
+            const generalDay = getGeneralDayClassification(dayData);
 
-            // Lógica de prioridad: el evento personal tiene más importancia que el warning.
             if (dayPersonalEvents && dayPersonalEvents.length > 0) {
-                // Si hay un evento personal, mostrar su icono.
+                // 1. MÁXIMA PRIORIDAD: Mostrar el primer Evento Personal.
                 const eventIcon = document.createElement('img');
                 eventIcon.src = dayPersonalEvents[0].icon;
-                eventIcon.className = 'personal-event-icon-grid'; // Usa el estilo de la esquina derecha
+                eventIcon.className = 'personal-event-icon-grid';
                 eventIcon.title = dayPersonalEvents[0].name;
                 dayCell.appendChild(eventIcon);
+                
+            } else if (specialDay && specialDay.iconPath) {
+                // 2. SEGUNDA PRIORIDAD: Mostrar el icono del "Tipo de Día Especial" (Suertudo, Amoroso...).
+                const specialDayIcon = document.createElement('img');
+                specialDayIcon.src = specialDay.iconPath;
+                specialDayIcon.className = 'personal-event-icon-grid';
+                specialDayIcon.title = specialDay.title;
+                dayCell.appendChild(specialDayIcon);
+
+            } else if (generalDay && generalDay.iconPath) {
+                // 3. TERCERA PRIORIDAD: Mostrar el icono del "Tipo de Día General" (Armónico, Tensión...).
+                const generalDayIcon = document.createElement('img');
+                generalDayIcon.src = generalDay.iconPath;
+                generalDayIcon.className = 'personal-event-icon-grid';
+                generalDayIcon.title = generalDay.title;
+                dayCell.appendChild(generalDayIcon);
+
             } else if (countEvents(dayData) >= 3) {
-                // Si NO hay evento personal PERO el día es intenso, mostrar el warning.
+                // 4. MÍNIMA PRIORIDAD: Si no hay nada de lo anterior, mostrar el "Warning".
                 const warningIcon = document.createElement('img');
                 warningIcon.src = ICON_PATHS.alerts.Warning;
-                warningIcon.className = 'intense-day-marker'; // Este ya estaba posicionado a la derecha
+                warningIcon.className = 'intense-day-marker';
                 dayCell.appendChild(warningIcon);
             }
             // **FIN DE CORRECCIÓN #2**
@@ -484,13 +547,13 @@ document.addEventListener('DOMContentLoaded', () => {
             for (const p2 in dayData.Aspects[p1]) {
                 const aspectType = dayData.Aspects[p1][p2].type;
                 if ((p1 === 'Saturn' && p2 === 'Mars') || (p1 === 'Mars' && p2 === 'Saturn')) {
-                    if (['Conjunction', 'Opposition', 'Square'].includes(aspectType)) return { title: 'Día de Mala Suerte', iconPath: ICON_PATHS.special_days['Día de Mala Suerte'], colorClass: 'day-bad-luck' };
+                    if (['Conjunction', 'Opposition', 'Square'].includes(aspectType)) return { title: 'Mala Suerte', iconPath: ICON_PATHS.special_days['Mala Suerte'], colorClass: 'day-bad-luck' };
                 }
                 if ((p1 === 'Sun' && p2 === 'Venus') || (p1 === 'Venus' && p2 === 'Sun')) {
-                    if (['Conjunction', 'Trine', 'Sextile'].includes(aspectType)) return { title: 'Día Amoroso', iconPath: ICON_PATHS.special_days['Día Amoroso'], colorClass: 'day-love' };
+                    if (['Conjunction', 'Trine', 'Sextile'].includes(aspectType)) return { title: 'Amor', iconPath: ICON_PATHS.special_days['Amor'], colorClass: 'day-love' };
                 }
                 if ((p1 === 'Jupiter' && (p2 === 'Sun' || p2 === 'Venus')) || (p2 === 'Jupiter' && (p1 === 'Sun' || p1 === 'Venus'))) {
-                    if (['Conjunction', 'Trine', 'Sextile'].includes(aspectType)) return { title: 'Día de Suerte', iconPath: ICON_PATHS.special_days['Día de Suerte'], colorClass: 'day-lucky' };
+                    if (['Conjunction', 'Trine', 'Sextile'].includes(aspectType)) return { title: 'Suerte', iconPath: ICON_PATHS.special_days['Suerte'], colorClass: 'day-lucky' };
                 }
             }
         }
@@ -506,13 +569,13 @@ document.addEventListener('DOMContentLoaded', () => {
             for (const p1 in dayData.Aspects) { for (const p2 in dayData.Aspects[p1]) { const key = [p1, p2].sort().join('-'); if (processed.has(key)) continue; processed.add(key); const aspectType = dayData.Aspects[p1][p2].type; if (aspectCounts.hasOwnProperty(aspectType)) aspectCounts[aspectType]++; } }
         }
         const slowPlanets = ['Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto', 'North Node', 'South Node'];
-        if (dayData.Aspects?.Sun) { for (const planet in dayData.Aspects.Sun) { if (slowPlanets.includes(planet) && dayData.Aspects.Sun[planet].type === 'Conjunction') return { title: 'Día de Revelación', iconPath: ICON_GIF_PATHS.revelation, colorClass: 'day-revelation' }; } }
-        if (aspectCounts.Square >= 2 && aspectCounts.Opposition >= 1) return { title: 'Día de Tensión', iconPath: ICON_GIF_PATHS.tension, colorClass: 'day-tension' };
-        if (aspectCounts.Square >= 2 || aspectCounts.Opposition >= 2) return { title: 'Día de Fricción', iconPath: ICON_GIF_PATHS.friction, colorClass: 'day-friction' };
-        if (aspectCounts.Trine >= 2 && aspectCounts.Square <= 1) return { title: 'Día Armónico', iconPath: ICON_GIF_PATHS.harmonic, colorClass: 'day-harmonic' };
-        if (aspectCounts.Sextile >= 2 || (aspectCounts.Sextile >= 1 && aspectCounts.Trine >= 1)) return { title: 'Día Creativo', iconPath: ICON_GIF_PATHS.creative, colorClass: 'day-creative' };
+        if (dayData.Aspects?.Sun) { for (const planet in dayData.Aspects.Sun) { if (slowPlanets.includes(planet) && dayData.Aspects.Sun[planet].type === 'Conjunction') return { title: 'Revelación', iconPath: ICON_GIF_PATHS.revelation, colorClass: 'day-revelation' }; } }
+        if (aspectCounts.Square >= 2 && aspectCounts.Opposition >= 1) return { title: 'Tensión', iconPath: ICON_GIF_PATHS.tension, colorClass: 'day-tension' };
+        if (aspectCounts.Square >= 2 || aspectCounts.Opposition >= 2) return { title: 'Fricción', iconPath: ICON_GIF_PATHS.friction, colorClass: 'day-friction' };
+        if (aspectCounts.Trine >= 2 && aspectCounts.Square <= 1) return { title: 'Armonía', iconPath: ICON_GIF_PATHS.harmonic, colorClass: 'day-harmonic' };
+        if (aspectCounts.Sextile >= 2 || (aspectCounts.Sextile >= 1 && aspectCounts.Trine >= 1)) return { title: 'Creatividad', iconPath: ICON_GIF_PATHS.creative, colorClass: 'day-creative' };
         const hasPlanetChange = dayData.Sign_Changes?.some(change => change.planet !== 'Moon');
-        if (hasPlanetChange) return { title: 'Día de Cambio', iconPath: ICON_GIF_PATHS.change, colorClass: 'day-change' };
+        if (hasPlanetChange) return { title: 'Cambio', iconPath: ICON_GIF_PATHS.change, colorClass: 'day-change' };
         return null;
     }
 
@@ -569,11 +632,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         const eventsContainer = document.createElement('div');
-        addEventsToCell(eventsContainer, dayData);
-        if (eventsContainer.hasChildNodes()) {
-            contentWrapper.appendChild(eventsContainer);
-            hasContent = true;
-        }
+        eventsContainer.className = 'astro-events-container';
+                addEventsToCell(eventsContainer, dayData);
+
+                if (eventsContainer.hasChildNodes()) {
+                    contentWrapper.appendChild(eventsContainer); // Simplemente añade el contenedor de eventos
+                    hasContent = true;
+                }
+
         if (hasContent) {
             landingDayDetails.appendChild(contentWrapper);
             const personalEvents = getPersonalEvents();
@@ -820,44 +886,36 @@ document.addEventListener('DOMContentLoaded', () => {
     function openEventDetailsModal(date, eventType) {
         const typeInfo = PERSONAL_EVENT_TYPES[eventType];
         const header = document.getElementById('selected-event-header');
-        const timeSelect = document.getElementById('event-time-select');
-        const eventTypeInput = document.getElementById('event-type-input');
-
+        // No necesitamos eventTypeInput porque ya tenemos la variable 'eventType'
+        
         header.innerHTML = `
             <img src="${typeInfo.icon}" alt="${typeInfo.name}">
             <span>${typeInfo.name.substring(2)}</span>
         `;
 
-        timeSelect.innerHTML = '';
-        const allDayOption = document.createElement('option');
-        allDayOption.value = 'Todo el día';
-        allDayOption.textContent = 'Todo el día';
-        timeSelect.appendChild(allDayOption);
-
-        for (let i = 0; i < 24; i++) {
-            const hour = String(i).padStart(2, '0');
-            const option = document.createElement('option');
-            option.value = `${hour}:00`;
-            option.textContent = `${hour}:00`;
-            timeSelect.appendChild(option);
-        }
-
+        // Configuración inicial de los inputs
         eventNameInput.value = '';
+        eventTimeInput.value = ''; // Limpia el valor de la hora
         eventDateInput.value = date.toISOString();
-        eventTypeInput.value = eventType;
 
+        // Lógica del botón guardar
         saveEventBtn.onclick = () => {
             const eventName = eventNameInput.value.trim();
             if (!eventName) {
                 alert('Por favor, escribe un nombre para el evento.');
                 return;
             }
+
+            // Si el input de la hora está vacío, es "Todo el día"
+            const eventTime = eventTimeInput.value || 'Todo el día';
+
             const eventData = {
-                type: eventTypeInput.value,
+                type: eventType,
                 name: eventName,
-                icon: PERSONAL_EVENT_TYPES[eventTypeInput.value].icon,
-                time: timeSelect.value
+                icon: typeInfo.icon,
+                time: eventTime
             };
+            
             addPersonalEvent(new Date(eventDateInput.value), eventData);
             closeActiveModal();
             renderLandingView(landingDate);
@@ -939,6 +997,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if (actionInfoBtn) actionInfoBtn.onclick = showExplanationModal;
         if (actionAddBtn) actionAddBtn.onclick = () => { if (currentDetailDate) openEventTypeSelectorModal(currentDetailDate); };
 
+        if (actionTextToggleBtn) {
+            actionTextToggleBtn.onclick = () => {
+                // Toggle de la clase en el panel de detalles para mostrar/ocultar el texto
+                landingDayDetails.classList.toggle('show-labels');
+
+                // Lógica para cambiar el icono
+                const isActive = landingDayDetails.classList.contains('show-labels');
+                const iconImg = actionTextToggleBtn.querySelector('img');
+                if (isActive) {
+                    actionTextToggleBtn.classList.add('active'); // Para un posible estilo de fondo activo
+                    iconImg.src = 'assets/icons/text_activo.png';
+                } else {
+                    actionTextToggleBtn.classList.remove('active');
+                    iconImg.src = 'assets/icons/text.png';
+                }
+            };
+        }
         // *** LÓGICA UNIFICADA Y DEFINITIVA PARA EL BOTÓN FLOTANTE ***
         if(backToLandingBtn) {
             backToLandingBtn.addEventListener('click', () => {

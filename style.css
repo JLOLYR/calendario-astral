@@ -676,6 +676,38 @@ body {
         flex-grow: 1;
         
     }
+    /* --- Estilos para el nuevo modal de confirmación --- */
+    .confirm-dialog {
+        max-width: 320px; /* Un tamaño más pequeño, típico de diálogos */
+        padding: 25px;
+        text-align: center;
+    }
+    #confirm-message-text {
+        font-size: 1.1em;
+        margin: 0 0 25px 0;
+    }
+    .confirm-dialog-actions {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+    }
+    .btn-confirm {
+        flex-grow: 1;
+        padding: 12px;
+        font-size: 1em;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    .btn-confirm.primary {
+        background-color: var(--color-boton-fondo);
+        color: var(--color-boton-texto);
+    }
+    .btn-confirm.secondary {
+        background-color: #e0e0e0;
+        color: #333;
+    }
 
     /* --- BOTÓN FLOTANTE DE VOLVER --- */
 #back-to-landing-btn,
@@ -1116,6 +1148,71 @@ body {
     #mobile-landing-container {
         /* Le añadimos un relleno inferior igual a la altura de nuestra nueva barra */
         padding-bottom: 55px; 
+    }
+    /* ===== ESTILOS PARA LA FUNCIÓN DE TEXTO DE SÍMBOLOS ===== */
+    .astro-events-container {
+        display: flex;
+        flex-direction: column;
+        gap: 4px; /* Espacio vertical por defecto entre las filas de eventos */
+    }
+
+    /* Cuando los textos están activos, aumenta el espacio entre las filas */
+    #landing-day-details.show-labels .astro-events-container {
+        gap: 12px; 
+    }
+
+    /* El botón de toggle para mostrar/ocultar texto */
+    #symbol-text-toggle {
+        background-color: transparent;
+        border: 1px solid var(--color-borde-calendario);
+        border-radius: 8px;
+        padding: 8px;
+        cursor: pointer;
+        flex-shrink: 0; /* Evita que el botón se encoja */
+    }
+    #symbol-text-toggle img {
+        width: 24px;
+        height: 24px;
+        display: block;
+    }
+    #symbol-text-toggle.active {
+        background-color: var(--color-boton-fondo);
+        border-color: var(--color-boton-fondo);
+    }
+
+    /* Estructura para cada símbolo y su etiqueta */
+    .event-row {
+        display: flex;
+        align-items: center; /* Alinea los items arriba */
+        gap: 10px;
+        /* Un pequeño espacio entre cada fila */
+    }
+
+    /* Estructura para cada símbolo y su etiqueta */
+    .symbol-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px; /* Reduce el espacio entre el icono y la etiqueta */
+    }
+
+    /* Añade un poco de espacio extra debajo de las filas de eventos cuando los textos están activos */
+    #landing-day-details.show-labels .event-row {
+        margin-bottom: 8px;
+    }
+
+    /* La etiqueta de texto, oculta por defecto */
+    .symbol-label {
+        display: none; 
+        font-size: 0.65em;
+        font-family: 'Inter', sans-serif;
+        color: var(--color-texto-principal);
+        white-space: nowrap;
+    }
+
+    /* Regla Mágica: Muestra la etiqueta SOLO si el contenedor tiene la clase 'show-labels' */
+    #landing-day-details.show-labels .symbol-label {
+        display: block;
     }
 }
 

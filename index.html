@@ -59,10 +59,16 @@
             <img src="assets/icons/info.png" alt="Info">
             <span>info</span>
         </button>
+        </button>
+            <button id="action-text-toggle" class="action-item">
+            <img src="assets/icons/text.png" alt="Texto Símbolos">
+            <span>texto</span>
+        </button>
         <button id="action-add" class="action-item">
             <img src="assets/icons/mas.png" alt="Añadir Evento">
             <span>agregar evento</span>
         </button>
+
     </div>
     
 
@@ -179,8 +185,8 @@
             <span class="close-button">❌</span>
             <div id="selected-event-header"></div>
             
-            <input type="text" id="event-name-input" placeholder="Nombre evento" maxlength="30">
-            <select id="event-time-select"></select>
+            <input type="text" id="event-name-input" placeholder="Nombre evento" maxlength="50">
+            <input type="time" id="event-time-input">
             <input type="hidden" id="event-date-input">
             <input type="hidden" id="event-type-input">
 
@@ -189,6 +195,16 @@
                     <img src="assets/aspects/guardar.png" alt="Guardar">
                     <span>guardar</span>
                 </button>
+            </div>
+        </div>
+    </div>
+    <!-- ===== NUEVO MODAL DE CONFIRMACIÓN GENÉRICO ===== -->
+    <div id="modal-confirm" class="modal">
+        <div class="modal-content confirm-dialog">
+            <p id="confirm-message-text">¿Estás seguro?</p>
+            <div class="confirm-dialog-actions">
+                <button id="confirm-btn-cancel" class="btn-confirm secondary">Cancelar</button>
+                <button id="confirm-btn-ok" class="btn-confirm primary">Aceptar</button>
             </div>
         </div>
     </div>

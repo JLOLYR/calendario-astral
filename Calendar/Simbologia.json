@@ -174,56 +174,56 @@
   },
 
   "Tipos de Días": {
-    "Día Armónico": {
-      "nombre": "Día Armónico",
+    "Armonía": {
+      "nombre": "Armonía",
       "gif": "assets/aspects/armonico.gif",
       "condicion": "≥ 2 Trígonos y ≤ 1 Cuadratura",
       "descripcion": "La energía fluye con facilidad. Es un día excelente para iniciar proyectos, socializar y disfrutar. Los talentos naturales se expresan sin esfuerzo, pero hay que evitar la complacencia."
     },
-    "Día Creativo": {
-      "nombre": "Día Creativo",
+    "Creatividad": {
+      "nombre": "Creatividad",
       "gif": "assets/aspects/creativo.gif",
       "condicion": "≥ 2 Sextiles o (≥ 1 Sextil + ≥ 1 Trígono)",
       "descripcion": "Surgen oportunidades y nuevas ideas. Es un día ideal para la comunicación, el brainstorming y encontrar soluciones ingeniosas. La energía es colaborativa, pero requiere que tomes la iniciativa para aprovecharla."
     },
-    "Día de Fricción": {
-      "nombre": "Día de Fricción",
+    "Fricción": {
+      "nombre": "Fricción",
       "gif": "assets/aspects/friccion.gif",
       "condicion": "≥ 2 Cuadraturas o ≥ 2 Oposiciones",
       "descripcion": "Puede haber roces, desafíos o la necesidad de tomar decisiones. La energía te empuja a actuar y resolver conflictos internos o externos. Es una oportunidad para crecer a través de la superación de obstáculos."
     },
-    "Día de Tensión": {
-      "nombre": "Día de Tensión",
+    "Tensión": {
+      "nombre": "Tensión",
       "gif": "assets/aspects/tension.gif",
       "condicion": "≥ 2 Cuadraturas más ≥ 1 Oposiciones",
       "descripcion": "La presión es alta y los desafíos son significativos. Es un día que exige paciencia, conciencia y un manejo cuidadoso de la energía. Evita las confrontaciones innecesarias y enfócate en lo esencial."
     },
-    "Día de Revelación": {
-      "nombre": "Día de Revelación",
+    "Revelación": {
+      "nombre": "Revelación",
       "gif": "assets/aspects/revelacion.gif",
       "condicion": "Sol en conjunción con un planeta lento",
       "descripcion": "Un tema importante de tu vida se ilumina, trayendo claridad y conciencia. Es un día para la introspección y para entender mejor tu propósito o camino a largo plazo."
     },
-    "Día de Cambio": {
-      "nombre": "Día de Cambio",
+    "Cambio": {
+      "nombre": "Cambio",
       "gif": "assets/aspects/cambio.gif",
       "condicion": "Un planeta (no la Luna) cambia de signo",
       "descripcion": "El tono energético general se modifica. Un área de tu vida comienza un nuevo capítulo. Es un día para adaptarse a nuevas corrientes y estar abierto a diferentes perspectivas."
     },
-    "Día Amoroso": {
-      "nombre": "Día Amoroso",
+    "Amor": {
+      "nombre": "Amor",
       "gif": "assets/aspects/amor.gif",
       "condicion": "Aspecto armónico (conjunción, trígono o sextil) entre Sol y Venus.",
       "descripcion": "La energía del amor, la belleza y el placer está exaltada. Es un día ideal para citas, socializar, disfrutar del arte y cuidar de ti mismo. Las relaciones personales fluyen con facilidad y armonía."
     },
-    "Día Suertudo": {
-      "nombre": "Día Suertudo",
+    "Suerte": {
+      "nombre": "Suerte",
       "gif": "assets/aspects/trebol.gif",
       "condicion": "Aspecto armónico (conjunción, trígono o sextil) entre Júpiter y el Sol o Venus.",
       "descripcion": "La suerte y la expansión están de tu lado. Es un día favorable para tomar riesgos calculados, iniciar nuevos proyectos, aprender y buscar oportunidades de crecimiento. La confianza y el optimismo están en su punto más alto."
     },
-    "Día de Mala Suerte": {
-      "nombre": "Día de Mala Suerte",
+    "Mala Suerte": {
+      "nombre": "Mala Suerte",
       "gif": "assets/aspects/diablo.gif",
       "condicion": "Aspecto tenso (conjunción, cuadratura u oposición) entre Marte y Saturno.",
       "descripcion": "La energía puede sentirse bloqueada o frustrante. Es un día para actuar con extrema cautela, paciencia y disciplina. Evita las confrontaciones, los riesgos innecesarios y las decisiones impulsivas. Enfócate en el trabajo duro y metódico."
