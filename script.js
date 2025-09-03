@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const prevMonthBtn = document.getElementById('prev-month');
     const nextMonthBtn = document.getElementById('next-month');
     const printBtn = document.getElementById('print-btn');
-    const downloadBtn = document.getElementById('download-btn');
+    //const downloadBtn = document.getElementById('download-btn');
     const symbolBtn = document.getElementById('symbol-btn');
     const mobileContainer = document.getElementById('mobile-view-container');
     const mobileDayContent = document.getElementById('mobile-day-content');
@@ -70,8 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const landingMenuBtn = document.getElementById('landing-menu-btn');
     const landingMenuDropdown = document.getElementById('landing-menu-dropdown');
     const landingSymbolBtn = document.getElementById('landing-symbol-btn');
-    const landingInfoBtn = document.getElementById('landing-info-btn');
-    const landingDownloadBtn = document.getElementById('landing-download-btn');
+    //const landingInfoBtn = document.getElementById('landing-info-btn');
+    //const landingDownloadBtn = document.getElementById('landing-download-btn');
     const landingTodayBtn = document.getElementById('landing-today-btn');
     const modalBackBtn = document.getElementById('modal-back-btn');
     const installHelpBtn = document.getElementById('install-help-btn');
@@ -376,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
         selectMonth.addEventListener('change', () => { selectedMonth = parseInt(selectMonth.value); updateCalendar(); });
         selectYear.addEventListener('change', () => { selectedYear = parseInt(selectYear.value); updateCalendar(); });
         printBtn.addEventListener('click', () => window.print());
-        downloadBtn.addEventListener('click', downloadCalendarImage);
+        //downloadBtn.addEventListener('click', downloadCalendarImage);
     }
     function fillControls() { selectMonth.innerHTML = NOMBRES_MESES.map((mes, idx) => `<option value="${idx + 1}">${mes}</option>`).join(''); selectMonth.value = selectedMonth; let yearOptions = ''; for (let y = MIN_YEAR; y <= MAX_YEAR; y++) { yearOptions += `<option value="${y}">${y}</option>`; } selectYear.innerHTML = yearOptions; selectYear.value = selectedYear; }
     function changeMonth(direction) { selectedMonth += direction; if (selectedMonth < 1) { selectedMonth = 12; selectedYear--; } else if (selectedMonth > 12) { selectedMonth = 1; selectedYear++; } if (selectedYear < MIN_YEAR) selectedYear = MIN_YEAR; if (selectedYear > MAX_YEAR) selectedYear = MAX_YEAR; fillControls(); updateCalendar(); }
@@ -400,8 +400,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         landingMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); landingMenuDropdown.style.display = landingMenuDropdown.style.display === 'none' ? 'block' : 'none'; });
         landingSymbolBtn.addEventListener('click', showSymbolModal);
-        landingInfoBtn.addEventListener('click', showInstallHelpModal);
-        landingDownloadBtn.addEventListener('click', downloadCalendarImage);
+        //landingInfoBtn.addEventListener('click', showInstallHelpModal);
+        //landingDownloadBtn.addEventListener('click', downloadCalendarImage);
         landingTodayBtn.addEventListener('click', () => { landingDate = new Date(); renderLandingView(landingDate); });
         document.addEventListener('click', () => { landingMenuDropdown.style.display = 'none'; });
         return renderLandingView(landingDate);
@@ -992,7 +992,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(symbolBtnMobile) symbolBtnMobile.addEventListener('click', showSymbolModal);
         if(installHelpBtn) installHelpBtn.addEventListener('click', showInstallHelpModal);
         if(landingAboutBtn) landingAboutBtn.addEventListener('click', showAboutModal);
-        if(landingInfoBtn) landingInfoBtn.addEventListener('click', showInstallHelpModal);
+        //if(landingInfoBtn) landingInfoBtn.addEventListener('click', showInstallHelpModal);
         if (actionInterpretBtn) actionInterpretBtn.onclick = () => { if (currentDetailDate) navigateToDetailView(currentDetailDate); };
         if (actionInfoBtn) actionInfoBtn.onclick = showExplanationModal;
         if (actionAddBtn) actionAddBtn.onclick = () => { if (currentDetailDate) openEventTypeSelectorModal(currentDetailDate); };

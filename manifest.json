@@ -1,6 +1,6 @@
 {
   "name": "Calendario Astral",
-  "short_name": "Calendario",
+  "short_name": "C. Astral",
   "description": "Tu calendario astral diario con eventos, aspectos e interpretaciones.",
   "scope": "./",
   "start_url": "./index.html",
