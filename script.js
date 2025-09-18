@@ -590,7 +590,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dayData.Aspects?.Sun) { for (const planet in dayData.Aspects.Sun) { if (slowPlanets.includes(planet) && dayData.Aspects.Sun[planet].type === 'Conjunction') return { title: 'Revelación', iconPath: ICON_GIF_PATHS.revelation, colorClass: 'day-revelation' }; } }
         if (aspectCounts.Square >= 2 && aspectCounts.Opposition >= 1) return { title: 'Tensión', iconPath: ICON_GIF_PATHS.tension, colorClass: 'day-tension' };
         if (aspectCounts.Square >= 2 || aspectCounts.Opposition >= 2) return { title: 'Fricción', iconPath: ICON_GIF_PATHS.friction, colorClass: 'day-friction' };
-        if (aspectCounts.Trine >= 2 && aspectCounts.Square <= 1) return { title: 'Armonía', iconPath: ICON_GIF_PATHS.harmonic, colorClass: 'day-harmonic' };
+        if (aspectCounts.Trine >= 2 && aspectCounts.Sextile >= 1) return { title: 'Armonía', iconPath: ICON_GIF_PATHS.harmonic, colorClass: 'day-harmonic' };
         if (aspectCounts.Sextile >= 2 || (aspectCounts.Sextile >= 1 && aspectCounts.Trine >= 1)) return { title: 'Creatividad', iconPath: ICON_GIF_PATHS.creative, colorClass: 'day-creative' };
         const hasPlanetChange = dayData.Sign_Changes?.some(change => change.planet !== 'Moon');
         if (hasPlanetChange) return { title: 'Cambio', iconPath: ICON_GIF_PATHS.change, colorClass: 'day-change' };
