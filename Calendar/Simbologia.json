@@ -177,7 +177,7 @@
     "Armonía": {
       "nombre": "Armonía",
       "gif": "assets/aspects/armonico.gif",
-      "condicion": "≥ 2 Trígonos y ≤ 1 Cuadratura",
+      "condicion": "≥ 2 Trígonos y ≥ 1 Sextil",
       "descripcion": "La energía fluye con facilidad. Es un día excelente para iniciar proyectos, socializar y disfrutar. Los talentos naturales se expresan sin esfuerzo, pero hay que evitar la complacencia."
     },
     "Creatividad": {
