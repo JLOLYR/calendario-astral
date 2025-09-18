@@ -222,8 +222,8 @@
       "condicion": "Aspecto armónico (conjunción, trígono o sextil) entre Júpiter y el Sol o Venus.",
       "descripcion": "La suerte y la expansión están de tu lado. Es un día favorable para tomar riesgos calculados, iniciar nuevos proyectos, aprender y buscar oportunidades de crecimiento. La confianza y el optimismo están en su punto más alto."
     },
-    "Mala Suerte": {
-      "nombre": "Mala Suerte",
+    "Adversidad": {
+      "nombre": "Adversidad",
       "gif": "assets/aspects/diablo.gif",
       "condicion": "Aspecto tenso (conjunción, cuadratura u oposición) entre Marte y Saturno.",
       "descripcion": "La energía puede sentirse bloqueada o frustrante. Es un día para actuar con extrema cautela, paciencia y disciplina. Evita las confrontaciones, los riesgos innecesarios y las decisiones impulsivas. Enfócate en el trabajo duro y metódico."

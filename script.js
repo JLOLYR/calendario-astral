@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
         special_days: {
             'Amor': 'assets/aspects/amor.gif',
             'Suerte': 'assets/aspects/trebol.gif',
-            'Mala Suerte': 'assets/aspects/diablo.gif'
+            'Adversidad': 'assets/aspects/diablo.gif'
         }
     };
 
@@ -565,7 +565,7 @@ document.addEventListener('DOMContentLoaded', () => {
             for (const p2 in dayData.Aspects[p1]) {
                 const aspectType = dayData.Aspects[p1][p2].type;
                 if ((p1 === 'Saturn' && p2 === 'Mars') || (p1 === 'Mars' && p2 === 'Saturn')) {
-                    if (['Conjunction', 'Opposition', 'Square'].includes(aspectType)) return { title: 'Mala Suerte', iconPath: ICON_PATHS.special_days['Mala Suerte'], colorClass: 'day-bad-luck' };
+                    if (['Conjunction', 'Opposition', 'Square'].includes(aspectType)) return { title: 'Adversidad', iconPath: ICON_PATHS.special_days['Adversidad'], colorClass: 'day-bad-luck' };
                 }
                 if ((p1 === 'Sun' && p2 === 'Venus') || (p1 === 'Venus' && p2 === 'Sun')) {
                     if (['Conjunction', 'Trine', 'Sextile'].includes(aspectType)) return { title: 'Amor', iconPath: ICON_PATHS.special_days['Amor'], colorClass: 'day-love' };
