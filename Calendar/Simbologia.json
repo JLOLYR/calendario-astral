@@ -149,27 +149,27 @@
     "Conjunction": {
       "nombre": "Conjunción",
       "simbolo": "☌",
-      "descripcion": "Fusión de energías. Dos o más planetas están en el mismo lugar del zodiaco, uniendo sus fuerzas. Puede ser una poderosa alianza o una sobrecarga de energía. Es un comienzo, una semilla."
+      "descripcion": "(Punto azul) Fusión de energías. Dos o más planetas están en el mismo lugar del zodiaco, uniendo sus fuerzas. Puede ser una poderosa alianza o una sobrecarga de energía. Es un comienzo, una semilla."
     },
     "Opposition": {
       "nombre": "Oposición",
       "simbolo": "☍",
-      "descripcion": "Tensión y confrontación. Dos planetas se miran frente a frente. Es un aspecto de conciencia, donde se nos pide equilibrar dos polaridades opuestas. Es un espejo que nos muestra lo que necesitamos integrar."
+      "descripcion": "(Punto amarillo) Tensión y confrontación. Dos planetas se miran frente a frente. Es un aspecto de conciencia, donde se nos pide equilibrar dos polaridades opuestas. Es un espejo que nos muestra lo que necesitamos integrar."
     },
     "Trine": {
       "nombre": "Trígono",
       "simbolo": "△",
-      "descripcion": "Flujo y armonía. Dos planetas están en signos del mismo elemento (fuego, tierra, aire, agua), creando un flujo de energía fácil y natural. Es un don, un talento innato, pero puede llevar a la pereza si no se usa conscientemente."
+      "descripcion": "(Punto verde) Flujo y armonía. Dos planetas están en signos del mismo elemento (fuego, tierra, aire, agua), creando un flujo de energía fácil y natural. Es un don, un talento innato, pero puede llevar a la pereza si no se usa conscientemente."
     },
     "Square": {
       "nombre": "Cuadratura",
       "simbolo": "□",
-      "descripcion": "Conflicto y acción. Dos planetas están en tensión, creando una fricción que exige acción y resolución. Es un desafío que nos obliga a crecer y a tomar decisiones. Es el motor del cambio."
+      "descripcion": "(Punto rojo) Conflicto y acción. Dos planetas están en tensión, creando una fricción que exige acción y resolución. Es un desafío que nos obliga a crecer y a tomar decisiones. Es el motor del cambio."
     },
     "Sextile": {
       "nombre": "Sextil",
       "simbolo": "⚹",
-      "descripcion": "Oportunidad y cooperación. Dos planetas están en signos compatibles, creando una oportunidad para que sus energías colaboren. Es una puerta abierta que debemos decidir cruzar. Requiere un esfuerzo consciente para aprovechar su potencial."
+      "descripcion": "(Punto celeste) Oportunidad y cooperación. Dos planetas están en signos compatibles, creando una oportunidad para que sus energías colaboren. Es una puerta abierta que debemos decidir cruzar. Requiere un esfuerzo consciente para aprovechar su potencial."
     }
   },
 
