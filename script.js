@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const landingSymbolBtn = document.getElementById('landing-symbol-btn');
     //const landingInfoBtn = document.getElementById('landing-info-btn');
     //const landingDownloadBtn = document.getElementById('landing-download-btn');
-    const landingTodayBtn = document.getElementById('landing-today-btn');
+    //const landingTodayBtn = document.getElementById('landing-today-btn');
     const modalBackBtn = document.getElementById('modal-back-btn');
     const installHelpBtn = document.getElementById('install-help-btn');
     const enableNotificationsBtn = document.getElementById('enable-notifications-btn');
@@ -87,6 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const actionInterpretBtn = document.getElementById('action-interpret');
     const actionInfoBtn = document.getElementById('action-info');
     const actionAddBtn = document.getElementById('action-add');
+    const actionHoyBtn = document.getElementById('action-hoy');
     const modalConfirm = document.getElementById('modal-confirm');
     const confirmMessageText = document.getElementById('confirm-message-text');
     const confirmBtnOk = document.getElementById('confirm-btn-ok');
@@ -294,6 +295,23 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     };
+
+    const isSameDay = (date1, date2) => {
+        if (!date1 || !date2) return false;
+        return date1.getFullYear() === date2.getFullYear() &&
+            date1.getMonth() === date2.getMonth() &&
+            date1.getDate() === date2.getDate();
+    };
+
+    function updateHoyButtonState(selectedDate) {
+        if (!actionHoyBtn) return;
+        const iconImg = actionHoyBtn.querySelector('img');
+        if (isSameDay(selectedDate, new Date())) {
+            iconImg.src = 'assets/icons/hoy_activo.png';
+        } else {
+            iconImg.src = 'assets/icons/hoy.png';
+        }
+    }
     
     // FUNCIONES PARA MANEJAR EVENTOS PERSONALES (localStorage)
     function getPersonalEvents() {
@@ -402,7 +420,6 @@ document.addEventListener('DOMContentLoaded', () => {
         landingSymbolBtn.addEventListener('click', showSymbolModal);
         //landingInfoBtn.addEventListener('click', showInstallHelpModal);
         //landingDownloadBtn.addEventListener('click', downloadCalendarImage);
-        landingTodayBtn.addEventListener('click', () => { landingDate = new Date(); renderLandingView(landingDate); });
         document.addEventListener('click', () => { landingMenuDropdown.style.display = 'none'; });
         return renderLandingView(landingDate);
     }
@@ -539,6 +556,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (todayCellElement) {
             handleLandingDayClick(todayCellElement, today, todayDataPayload);
         }
+        updateHoyButtonState(currentDetailDate);
     }
     
     function getSpecialDayClassification(dayData) {
@@ -589,6 +607,7 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedDayCell = cell;
         landingDayDetails.innerHTML = '';
         currentDetailDate = date;
+        updateHoyButtonState(date);
         let hasContent = false;
         const contentWrapper = document.createElement('div');
 
@@ -996,7 +1015,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (actionInterpretBtn) actionInterpretBtn.onclick = () => { if (currentDetailDate) navigateToDetailView(currentDetailDate); };
         if (actionInfoBtn) actionInfoBtn.onclick = showExplanationModal;
         if (actionAddBtn) actionAddBtn.onclick = () => { if (currentDetailDate) openEventTypeSelectorModal(currentDetailDate); };
-
+        if (actionHoyBtn) actionHoyBtn.onclick = () => {
+            landingDate = new Date();
+            renderLandingView(landingDate);
+        };
         if (actionTextToggleBtn) {
             actionTextToggleBtn.onclick = () => {
                 // Toggle de la clase en el panel de detalles para mostrar/ocultar el texto

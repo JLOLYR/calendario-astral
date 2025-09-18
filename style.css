@@ -1122,8 +1122,8 @@ body {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 4px;
-        padding: 4px;
+        gap: 2px;
+        padding: 4px 2px;
         border-radius: 8px;
         transition: background-color 0.2s;
         flex: 1; /* Asegura que los botones compartan el espacio equitativamente */
