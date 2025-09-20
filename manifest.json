@@ -1,6 +1,6 @@
 {
-  "name": "Diario Astral App 2026",
-  "short_name": "DAstral 2026",
+  "name": "Diario Astral 2026",
+  "short_name": "Diario 2026",
   "description": "Tu calendario astral diario con eventos, aspectos e interpretaciones.",
   "scope": "./",
   "start_url": "./index.html",
