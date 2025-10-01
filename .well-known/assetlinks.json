@@ -1,0 +1,20 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.tuarcana.app",
+      "sha256_cert_fingerprints":
+        ["F0:B6:A8:29:AE:76:22:0E:63:EB:6B:DD:31:73:68:F2:50:CE:F8:E9:35:B0:7B:7E:17:4E:60:64:EE:28:28:F5"]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "io.github.jlolyr.diarioastral",
+      "sha256_cert_fingerprints": 
+        ["B4:73:BD:02:03:B5:9B:05:83:7F:24:FE:C5:BE:4B:13:FC:02:08:38:E3:47:73:FA:97:EF:56:39:03:7A:AC:4C"]
+    }
+  }
+]

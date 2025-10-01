@@ -1269,10 +1269,7 @@ body {
 }
 
 /* Si quieres que el efecto sea sutil para los puntos de aspectos */
-.aspect-dot {
-    /* Ya tienes estas reglas, pero si quisieras añadirles un efecto hover, podrías hacerlo aquí. */
-    /* Por ahora, los puntos no necesitan un efecto de escala, se manejan con el punto */
-}
+
 
 /* ESTILOS PARA EL MODAL "ACERCA DE" */
 #modal-about-content h2 {
