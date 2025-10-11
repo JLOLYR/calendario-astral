@@ -248,10 +248,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     img.classList.add(item.isSmall ? 'sign-icon-small' : `${item.category}-icon`);
                     container.appendChild(img);
 
+                    if (window.getComputedStyle(mobileLandingContainer).display === 'flex') {
                     const label = document.createElement('span');
                     label.className = 'symbol-label';
-                    label.textContent = translateSymbol(item.name);
+                    label.textContent = capitalize(item.name);
                     container.appendChild(label);
+                }
                 }
             }
             row.appendChild(container);
