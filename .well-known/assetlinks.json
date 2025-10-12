@@ -12,9 +12,9 @@
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "io.github.jlolyr.diarioastral",
+      "package_name": "com.diarioastral.app",
       "sha256_cert_fingerprints": 
-        ["B4:73:BD:02:03:B5:9B:05:83:7F:24:FE:C5:BE:4B:13:FC:02:08:38:E3:47:73:FA:97:EF:56:39:03:7A:AC:4C"]
+        ["71:2C:DE:2E:FC:66:32:D8:DA:FE:21:BF:0B:F2:AE:3A:04:7B:77:E5:8D:1C:97:B2:25:DB:D7:1A:E4:8B:6B:08"]
     }
   }
 ]
