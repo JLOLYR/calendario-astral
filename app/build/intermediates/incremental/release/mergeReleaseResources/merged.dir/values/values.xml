@@ -37,7 +37,7 @@
     <color name="button_material_light">#ffd6d7d7</color>
     <color name="call_notification_answer_color">#1d873b</color>
     <color name="call_notification_decline_color">#d93025</color>
-    <color name="colorPrimary">#887A68</color>
+    <color name="colorPrimary">#B3780C</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="dim_foreground_disabled_material_dark">#80bebebe</color>
     <color name="dim_foreground_disabled_material_light">#80323232</color>
@@ -341,13 +341,13 @@
     <string name="fullScopeUrl" translatable="false">https://jlolyr.github.io/calendario-astral/</string>
     <string name="generatorApp" translatable="false">bubblewrap-cli</string>
     <string name="hostName" translatable="false">jlolyr.github.io</string>
-    <string name="launchUrl" translatable="false">https://jlolyr.github.io/calendario-astral/index.html</string>
+    <string name="launchUrl" translatable="false">https://jlolyr.github.io/calendario-astral/</string>
     <string name="launcherName" translatable="false">Diario 2026</string>
     <string name="manage_space_no_data_toast">This app holds no browsing data.</string>
     <string name="manage_space_not_supported_toast">This app\'s data is stored in %1$s.</string>
     <string name="no_provider_toast">Please install Chrome Stable 72 or later.</string>
-    <string name="orientation" translatable="false">portrait</string>
-    <string name="providerAuthority" translatable="false">io.github.jlolyr.diarioastral.fileprovider</string>
+    <string name="orientation" translatable="false">default</string>
+    <string name="providerAuthority" translatable="false">com.diarioastral.app.fileprovider</string>
     <string name="search_menu_title">Search</string>
     <string name="status_bar_notification_info_overflow">999+</string>
     <string name="update_chrome_toast">Please update to Chrome Stable 72 or later.</string>

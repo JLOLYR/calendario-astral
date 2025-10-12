@@ -10,7 +10,7 @@
     <!-- Value from default config. -->
     <color name="backgroundColor">#FDFAF5</color>
     <!-- Value from default config. -->
-    <color name="colorPrimary">#887A68</color>
+    <color name="colorPrimary">#B3780C</color>
     <!-- Value from default config. -->
     <color name="colorPrimaryDark">#000000</color>
     <!-- Value from default config. -->
@@ -34,13 +34,13 @@
     <!-- Value from default config. -->
     <string name="hostName" translatable="false">jlolyr.github.io</string>
     <!-- Value from default config. -->
-    <string name="launchUrl" translatable="false">https://jlolyr.github.io/calendario-astral/index.html</string>
+    <string name="launchUrl" translatable="false">https://jlolyr.github.io/calendario-astral/</string>
     <!-- Value from default config. -->
     <string name="launcherName" translatable="false">Diario 2026</string>
     <!-- Value from default config. -->
-    <string name="orientation" translatable="false">portrait</string>
+    <string name="orientation" translatable="false">default</string>
     <!-- Value from default config. -->
-    <string name="providerAuthority" translatable="false">io.github.jlolyr.diarioastral.fileprovider</string>
+    <string name="providerAuthority" translatable="false">com.diarioastral.app.fileprovider</string>
     <!-- Value from default config. -->
     <string name="webManifestUrl" translatable="false">https://jlolyr.github.io/calendario-astral/manifest.json</string>
 

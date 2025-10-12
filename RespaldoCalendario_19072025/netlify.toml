@@ -1,7 +1,0 @@
-# netlify.toml
-[functions]
-  schedule = "0 9 * * *" # Cron para las 9:00 AM UTC
-  
-[[functions]]
-  name = "daily-notification"
-  schedule = "0 9 * * *"

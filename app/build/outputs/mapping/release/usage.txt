@@ -7668,6 +7668,15 @@ androidx.viewpager.widget.ViewPager$SavedState
 androidx.viewpager.widget.ViewPager$SimpleOnPageChangeListener
 androidx.viewpager.widget.ViewPager$ViewPositionComparator
 androidx.viewpager.widget.ViewPager
+com.diarioastral.app.R$bool
+com.diarioastral.app.R$color
+com.diarioastral.app.R$drawable
+com.diarioastral.app.R$integer
+com.diarioastral.app.R$mipmap
+com.diarioastral.app.R$raw
+com.diarioastral.app.R$string
+com.diarioastral.app.R$xml
+com.diarioastral.app.R
 com.google.androidbrowserhelper.BuildConfig
 com.google.androidbrowserhelper.R$drawable:
     private void <init>()
@@ -10277,15 +10286,9 @@ com.google.j2objc.annotations.WeakOuter
 com.google.thirdparty.publicsuffix.PublicSuffixPatterns
 com.google.thirdparty.publicsuffix.PublicSuffixType
 com.google.thirdparty.publicsuffix.TrieParser
-io.github.jlolyr.diarioastral.R$bool
-io.github.jlolyr.diarioastral.R$color
-io.github.jlolyr.diarioastral.R$drawable
-io.github.jlolyr.diarioastral.R$integer
-io.github.jlolyr.diarioastral.R$mipmap
-io.github.jlolyr.diarioastral.R$raw
-io.github.jlolyr.diarioastral.R$string
-io.github.jlolyr.diarioastral.R$xml
-io.github.jlolyr.diarioastral.R
+io.github.jlolyr.diarioastral.Application
+io.github.jlolyr.diarioastral.DelegationService
+io.github.jlolyr.diarioastral.LauncherActivity
 kotlin.ArrayIntrinsicsKt
 kotlin.BuilderInference
 kotlin.CharCodeJVMKt
