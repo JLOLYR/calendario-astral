@@ -1,4 +1,4 @@
-#Wed Oct 01 19:51:12 CLST 2025
+#Sat Oct 11 12:45:14 CLST 2025
 base.0=E\:\\JLO\\Cosass\\Astrología\\Fabula_Siderum_SA\\Chart_FSCreator\\prueba_vectores\\CalendarioWebAstral\\app\\build\\intermediates\\dex\\release\\minifyReleaseWithR8\\classes.dex
 renamed.0=classes.dex
 path.0=classes.dex
