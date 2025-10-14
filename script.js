@@ -103,6 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedDayCell = null;
     let currentDetailDate = null;
     let activeModal = null;
+    let isExitDialogShowing = false;
     const MIN_YEAR = 2020;
     const MAX_YEAR = 2030;
     const dataCache = {};
@@ -160,6 +161,38 @@ document.addEventListener('DOMContentLoaded', () => {
         confirmBtnCancel.onclick = () => {
             modalConfirm.style.display = 'none';
         };
+    }
+
+    function handleBackButton(event) {
+        // Si hay un modal abierto, el gestor central se encarga. No hacemos nada aquí.
+        if (activeModal) {
+            closeActiveModal();
+            return;
+        }
+
+        // Si estamos en la vista de detalle, la acción es volver al calendario principal.
+        if (mobileContainer.style.display === 'flex') {
+            backToLandingBtn.click(); // Simula un clic en nuestro botón de volver
+            return;
+        }
+        
+        // Si estamos en la vista principal y el diálogo NO se está mostrando
+        if (mobileLandingContainer.style.display === 'flex' && !isExitDialogShowing) {
+            // Prevenimos la acción por defecto (cerrar la app)
+            history.pushState(null, '', '#'); 
+            isExitDialogShowing = true;
+            
+            showConfirmation('¿Estás seguro de que quieres salir?', 
+            () => {
+                // Si el usuario confirma, intenta cerrar la app (esto solo funciona en algunas PWA instaladas)
+                navigator.app ? navigator.app.exitApp() : window.close();
+            }, 
+            () => {
+                // Si el usuario cancela, reseteamos el estado
+                history.back(); // Vuelve al estado normal
+                isExitDialogShowing = false;
+            });
+        }
     }
 
     // =========================================================================
@@ -755,8 +788,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    async function showAndScrollToSymbol(key) { await showSymbolModal(); const targetId = 'simbologia-' + key.replace(/\s+/g, '-').toLowerCase(); const targetElement = document.getElementById(targetId); if (targetElement) { targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' }); } }
+    async function showAndScrollToSymbol(key) {
+        await showSymbolModal(); // Primero abre el modal como siempre
+        
+        const targetId = 'simbologia-' + key.replace(/\s+/g, '-').toLowerCase();
+        const targetElement = document.getElementById(targetId);
 
+        if (targetElement) {
+            // 1. Quita el resaltado de cualquier otro elemento que pudiera tenerlo
+            document.querySelectorAll('.symbol-highlight').forEach(el => {
+                el.classList.remove('symbol-highlight');
+            });
+
+            // 2. Desplázate al elemento
+            targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // 3. Añade la clase para resaltar el elemento
+            targetElement.classList.add('symbol-highlight');
+
+            // 4. (Opcional pero recomendado) Quita el resaltado después de un par de segundos
+            setTimeout(() => {
+                if (targetElement) {
+                    targetElement.classList.remove('symbol-highlight');
+                }
+            }, 7000); // 2000 milisegundos = 2 segundos
+        }
+    }
     async function showAspectsModal(date) {
         const modal = document.getElementById('modal-aspects');
         const modalContent = document.getElementById('modal-aspects-content');
@@ -1052,7 +1109,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
-        
+        window.addEventListener('popstate', handleBackButton);
         setDynamicHeight(); 
         window.addEventListener('resize', setDynamicHeight);
 
