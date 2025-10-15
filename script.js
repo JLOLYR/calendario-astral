@@ -149,50 +149,25 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
     // NUEVA FUNCIÓN DE CONFIRMACIÓN
-    function showConfirmation(message, onConfirm) {
+   function showConfirmation(message, onConfirm, onCancel) {
         confirmMessageText.textContent = message;
         modalConfirm.style.display = 'flex';
 
-        confirmBtnOk.onclick = () => {
+        const closeConfirmDialog = () => {
             modalConfirm.style.display = 'none';
-            onConfirm(); // Ejecuta la acción solo si se confirma
+            confirmBtnOk.onclick = null;
+            confirmBtnCancel.onclick = null;
+        };
+
+        confirmBtnOk.onclick = () => {
+            closeConfirmDialog();
+            if (onConfirm) onConfirm();
         };
 
         confirmBtnCancel.onclick = () => {
-            modalConfirm.style.display = 'none';
+            closeConfirmDialog();
+            if (onCancel) onCancel();
         };
-    }
-
-    function handleBackButton(event) {
-        // Si hay un modal abierto, el gestor central se encarga. No hacemos nada aquí.
-        if (activeModal) {
-            closeActiveModal();
-            return;
-        }
-
-        // Si estamos en la vista de detalle, la acción es volver al calendario principal.
-        if (mobileContainer.style.display === 'flex') {
-            backToLandingBtn.click(); // Simula un clic en nuestro botón de volver
-            return;
-        }
-        
-        // Si estamos en la vista principal y el diálogo NO se está mostrando
-        if (mobileLandingContainer.style.display === 'flex' && !isExitDialogShowing) {
-            // Prevenimos la acción por defecto (cerrar la app)
-            history.pushState(null, '', '#'); 
-            isExitDialogShowing = true;
-            
-            showConfirmation('¿Estás seguro de que quieres salir?', 
-            () => {
-                // Si el usuario confirma, intenta cerrar la app (esto solo funciona en algunas PWA instaladas)
-                navigator.app ? navigator.app.exitApp() : window.close();
-            }, 
-            () => {
-                // Si el usuario cancela, reseteamos el estado
-                history.back(); // Vuelve al estado normal
-                isExitDialogShowing = false;
-            });
-        }
     }
 
     // =========================================================================
@@ -284,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (window.getComputedStyle(mobileLandingContainer).display === 'flex') {
                     const label = document.createElement('span');
                     label.className = 'symbol-label';
-                    label.textContent = capitalize(item.name);
+                    label.textContent = translateSymbol(item.name);
                     container.appendChild(label);
                 }
                 }
@@ -453,8 +428,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         landingMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); landingMenuDropdown.style.display = landingMenuDropdown.style.display === 'none' ? 'block' : 'none'; });
         landingSymbolBtn.addEventListener('click', showSymbolModal);
-        //landingInfoBtn.addEventListener('click', showInstallHelpModal);
-        //landingDownloadBtn.addEventListener('click', downloadCalendarImage);
+        landingAboutBtn.addEventListener('click', showAboutModal);
         document.addEventListener('click', () => { landingMenuDropdown.style.display = 'none'; });
         return renderLandingView(landingDate);
     }
@@ -789,31 +763,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function showAndScrollToSymbol(key) {
-        await showSymbolModal(); // Primero abre el modal como siempre
+        await showSymbolModal();
         
         const targetId = 'simbologia-' + key.replace(/\s+/g, '-').toLowerCase();
         const targetElement = document.getElementById(targetId);
 
         if (targetElement) {
-            // 1. Quita el resaltado de cualquier otro elemento que pudiera tenerlo
             document.querySelectorAll('.symbol-highlight').forEach(el => {
                 el.classList.remove('symbol-highlight');
             });
 
-            // 2. Desplázate al elemento
             targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            
-            // 3. Añade la clase para resaltar el elemento
             targetElement.classList.add('symbol-highlight');
 
-            // 4. (Opcional pero recomendado) Quita el resaltado después de un par de segundos
             setTimeout(() => {
                 if (targetElement) {
                     targetElement.classList.remove('symbol-highlight');
                 }
-            }, 7000); // 2000 milisegundos = 2 segundos
+            }, 7000); // 5 segundos
         }
     }
+
     async function showAspectsModal(date) {
         const modal = document.getElementById('modal-aspects');
         const modalContent = document.getElementById('modal-aspects-content');
@@ -1107,9 +1077,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     backToLandingBtn.style.display = 'none';
                     mobileLandingContainer.style.display = 'flex';
                 }
+                
             });
         }
-        window.addEventListener('popstate', handleBackButton);
+        
         setDynamicHeight(); 
         window.addEventListener('resize', setDynamicHeight);
 
@@ -1120,6 +1091,7 @@ document.addEventListener('DOMContentLoaded', () => {
             initDesktopView();
         }
     }
+    
 
     // 4. Llamar a la función principal para que todo empiece.
     initializeApp();
