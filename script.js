@@ -1065,7 +1065,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             };
         }
-        // *** LÓGICA UNIFICADA Y DEFINITIVA PARA EL BOTÓN FLOTANTE ***
+        
+        // Lógica original del botón flotante
         if(backToLandingBtn) {
             backToLandingBtn.addEventListener('click', () => {
                 if (activeModal) {
@@ -1077,76 +1078,63 @@ document.addEventListener('DOMContentLoaded', () => {
                     backToLandingBtn.style.display = 'none';
                     mobileLandingContainer.style.display = 'flex';
                 }
-            function navigateToState(stateName) {
-                history.pushState({ page: stateName }, '');
-            }
-
-            // Escuchamos el botón "atrás" (del teléfono o del navegador)
-            window.addEventListener('popstate', (event) => {
-                // Si el evento no tiene estado, o si recargó la página, no hacemos nada.
-                if (!event.state || !event.state.page) return;
-
-                // Aquí manejamos los clics "atrás" en el botón flotante o del teléfono.
-                closeAllViews(); // Función para cerrar todo y volver al calendario
-            });
-
-            // El botón flotante simplemente llama a history.back(), que disparará nuestro 'popstate'.
-            if (backToLandingBtn) {
-                backToLandingBtn.addEventListener('click', () => history.back());
-            }
-
-            // Una función de utilidad para "resetear" la vista al estado del calendario principal.
-            function closeAllViews() {
-                if (activeModal) {
-                    closeActiveModal();
-                }
-                if (mobileContainer.style.display === 'flex') {
-                    mobileContainer.style.display = 'none';
-                    backToLandingBtn.style.display = 'none';
-                    mobileLandingContainer.style.display = 'flex';
-                }
-            }
-
-
-            // --- MODIFICACIONES A LAS FUNCIONES QUE ABREN "PÁGINAS" NUEVAS ---
-
-            // Modifica openModal para que guarde el estado en el historial.
-            function openModal(modal) {
-                if (!modal) return;
-                activeModal = modal;
-                modal.style.display = 'flex';
-                backToLandingBtn.style.display = 'flex';
-                
-                navigateToState('modal'); // <<<--- NUEVO: Guardamos que abrimos un modal
-
-                modal.querySelector('.close-button').onclick = () => history.back();
-                modal.onclick = (e) => { if (e.target === modal) history.back(); };
-            }
-
-            // Modifica navigateToDetailView para que guarde el estado.
-            function navigateToDetailView(date) {
-                mobileLandingContainer.style.display = 'none';
-                mobileContainer.style.display = 'flex';
-                backToLandingBtn.style.display = 'flex';
-                mobileDate = date;
-                
-                navigateToState('detailView'); // <<<--- NUEVO: Guardamos que fuimos a la vista de detalle
-                
-                renderMobileView(date);
-            }
             });
         }
         
         setDynamicHeight(); 
         window.addEventListener('resize', setDynamicHeight);
 
+        // Condición original que decide qué vista cargar
         if (window.innerWidth <= 768 && mobileLandingContainer) {
             await initMobileLandingView();
             initMobileView();
+            setupBackButtonLogic(); // <<< --- SE ACTIVA LA LÓGICA DEL BOTÓN ATRÁS SOLO PARA MÓVIL
         } else {
             initDesktopView();
         }
     }
+    function setupBackButtonLogic() {
+            // "Enganchamos" el historial la primera vez que se carga la vista móvil.
+            history.pushState(null, '');
+
+            window.addEventListener('popstate', () => {
+                // Esta lógica SOLO se ejecuta si la vista móvil está activa.
+                if (mobileLandingContainer.style.display !== 'flex' && mobileContainer.style.display !== 'flex') {
+                    return;
+                }
+                
+                if (isExitDialogShowing) { isExitDialogShowing = false; return; }
+
+                if (activeModal) {
+                    // Prioridad 1: Si hay un modal, lo cierra.
+                    closeActiveModal();
+                    history.pushState(null, '');
+                    return;
+                }
+
+                if (mobileContainer.style.display === 'flex') {
+                    // Prioridad 2: Si está en la vista de detalle, vuelve al calendario.
+                    backToLandingBtn.click();
+                    return;
+                }
+
+                // Prioridad 3: Está en el home, preguntar para salir.
+                isExitDialogShowing = true;
+                history.pushState(null, ''); // Re-arma por si cancela
+                
+                showConfirmation(
+                    '¿Estás seguro de que quieres salir?',
+                    () => { // onConfirm
+                        isExitDialogShowing = false;
+                        navigator.app ? navigator.app.exitApp() : window.close();
+                    },
+                    () => { // onCancel
+                        isExitDialogShowing = false;
+                        history.pushState(null, '');
+                    }
+                );
+            });
+        }
     
 
     // 4. Llamar a la función principal para que todo empiece.
