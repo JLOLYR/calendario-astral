@@ -27,18 +27,10 @@
     <!-- ===== VISTA DE ATERRIZAJE MÓVIL ===== -->
     <div id="mobile-landing-container">
         <div class="landing-header">
-            <h2 id="landing-month-year"></h2>
-            <div class="header-actions">
-                <div class="landing-menu-container">
-                    <button id="landing-menu-btn">⋮</button>
-                    <div id="landing-menu-dropdown" style="display: none;">
-                        <!--<button id="enable-notifications-btn" class="menu-button">🔔 Activar Avisos</button>-->
-                        <a href="#" id="landing-symbol-btn">🔮 Simbología</a>
-                        <!--<a href="#" id="landing-info-btn">📲 Instalar</a>-->
-                        <!--<a href="#" id="landing-download-btn">📥 Descargar</a>-->
-                        <a href="#" id="landing-about-btn">🙏 Acerca de...</a>
-                    </div>
-                </div>
+            <!-- CONTENEDOR MODIFICADO PARA CENTRAR TÍTULOS -->
+            <div id="landing-title-container">
+                <h2 id="landing-month-year"></h2>
+                <h3 id="landing-selected-date"></h3>
             </div>
         </div>
         <div class="landing-week-headers">
@@ -50,7 +42,6 @@
         </div>
     </div>
     <!-- ===== NUEVA BARRA DE ACCIONES FIJA ===== -->
-    <!-- Se mantiene oculta por defecto y se muestra con JS -->
     <div id="mobile-action-bar" style="display: none;">
         <button id="action-interpret" class="action-item">
             <img src="assets/icons/verinterpretacion.png" alt="Interpretación">
@@ -60,23 +51,20 @@
             <img src="assets/icons/info.png" alt="Info">
             <span>info</span>
         </button>
-        <!-- Botón de eventos ahora al centro -->
         <button id="action-add" class="action-item">
             <img src="assets/icons/mas.png" alt="Añadir Evento">
-            <span>eventos</span> <!-- Texto cambiado -->
+            <span>eventos</span>
         </button>
         <button id="action-text-toggle" class="action-item">
             <img src="assets/icons/text.png" alt="Texto Símbolos">
             <span>texto</span>
         </button>
-        <!-- Nuevo botón "Hoy" en el extremo derecho -->
         <button id="action-hoy" class="action-item">
             <img src="assets/icons/hoy.png" alt="Hoy">
             <span>hoy</span>
         </button>
     </div>
     
-
     <!-- ===== VISTA DE ESCRITORIO ===== -->
     <div id="calendar-header">
         <h1>Calendario Astral</h1>
@@ -89,7 +77,6 @@
         <div class="action-buttons">
             <button class="btn" id="symbol-btn">Simbología</button>
             <button id="print-btn" class="btn">Imprimir / Guardar PDF</button>
-            <!--<button id="download-btn" class="btn">Descargar Imagen</button>-->
         </div>
     </div>
     <div id="calendar-container"></div>
@@ -164,37 +151,56 @@
             <div id="modal-about-content"></div>
         </div>
     </div>
-
-    <!-- ===== MODAL PARA LA EXPLICACIÓN ===== -->
     <div id="modal-explanation" class="modal">
         <div class="modal-content">
             <span class="close-button">❌</span>
-            <!-- El contenido dinámico se cargará aquí -->
         </div>
     </div>
-
-    <!-- ===== MODAL PARA SELECCIONAR TIPO DE EVENTO (PASO 1) ===== -->
+    <div id="modal-info-hub" class="modal">
+        <div class="modal-content">
+            <span class="close-button">❌</span>
+            <h2>Información</h2>
+            <div id="info-hub-buttons-container" style="display: grid; gap: 15px;">
+                <button id="hub-btn-guide" class="about-button">
+                    <div class="icon-container"><img src="assets/icons/info.png" alt="Guía del Calendario"></div>
+                    <div class="text-container">
+                        <div class="title">Guía del Calendario</div>
+                        <div class="subtitle">Aprende a interpretar los eventos.</div>
+                    </div>
+                </button>
+                <button id="hub-btn-symbol" class="about-button">
+                    <div class="icon-container"><img src="assets/aspects/simbologia.gif" alt="Simbología"></div>
+                    <div class="text-container">
+                        <div class="title">Simbología</div>
+                        <div class="subtitle">Significado de planetas, signos y más.</div>
+                    </div>
+                </button>
+                <button id="hub-btn-about" class="about-button">
+                    <div class="icon-container"><img src="assets/aspects/apoyo.gif" alt="Acerca de..."></div>
+                    <div class="text-container">
+                        <div class="title">Acerca de...</div>
+                        <div class="subtitle">Créditos y agradecimientos.</div>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
     <div id="modal-select-event-type" class="modal">
         <div class="modal-content">
             <span class="close-button">❌</span>
             <h2>Agregar Evento</h2>
             <div id="event-type-grid">
-                <!-- Los 9 iconos se generarán aquí con JavaScript -->
             </div>
         </div>
     </div>
-
-    <!-- ===== MODAL PARA AÑADIR DETALLES DEL EVENTO (PASO 2) ===== -->
     <div id="modal-add-event" class="modal">
         <div class="modal-content">
             <span class="close-button">❌</span>
             <div id="selected-event-header"></div>
-            
             <input type="text" id="event-name-input" placeholder="Nombre evento" maxlength="50">
             <input type="time" id="event-time-input">
             <input type="hidden" id="event-date-input">
             <input type="hidden" id="event-type-input">
-
             <div class="event-modal-actions">
                 <button id="save-event-btn" class="btn-event-modal primary-icon-btn" title="Guardar Evento">
                     <img src="assets/aspects/guardar.png" alt="Guardar">
@@ -203,7 +209,6 @@
             </div>
         </div>
     </div>
-    <!-- ===== NUEVO MODAL DE CONFIRMACIÓN GENÉRICO ===== -->
     <div id="modal-confirm" class="modal">
         <div class="modal-content confirm-dialog">
             <p id="confirm-message-text">¿Estás seguro?</p>
@@ -213,8 +218,6 @@
             </div>
         </div>
     </div>
-    
-    <!-- Botón flotante unificado para volver/cerrar -->
     <button id="back-to-landing-btn" title="Volver al mes"></button>
 
     <!-- ===== SCRIPTS FINALES ===== -->

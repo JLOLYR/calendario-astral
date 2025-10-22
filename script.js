@@ -53,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const prevMonthBtn = document.getElementById('prev-month');
     const nextMonthBtn = document.getElementById('next-month');
     const printBtn = document.getElementById('print-btn');
-    //const downloadBtn = document.getElementById('download-btn');
     const symbolBtn = document.getElementById('symbol-btn');
     const mobileContainer = document.getElementById('mobile-view-container');
     const mobileDayContent = document.getElementById('mobile-day-content');
@@ -67,22 +66,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const landingMonthYear = document.getElementById('landing-month-year');
     const landingCalendarGrid = document.getElementById('landing-calendar-grid');
     const landingDayDetails = document.getElementById('landing-day-details');
-    const landingMenuBtn = document.getElementById('landing-menu-btn');
-    const landingMenuDropdown = document.getElementById('landing-menu-dropdown');
-    const landingSymbolBtn = document.getElementById('landing-symbol-btn');
-    //const landingInfoBtn = document.getElementById('landing-info-btn');
-    //const landingDownloadBtn = document.getElementById('landing-download-btn');
-    //const landingTodayBtn = document.getElementById('landing-today-btn');
-    const modalBackBtn = document.getElementById('modal-back-btn');
+    // const landingMenuBtn = document.getElementById('landing-menu-btn'); // ELEMENTO ELIMINADO
+    // const landingMenuDropdown = document.getElementById('landing-menu-dropdown'); // ELEMENTO ELIMINADO
+    // const landingSymbolBtn = document.getElementById('landing-symbol-btn'); // ELEMENTO ELIMINADO
+    // const landingAboutBtn = document.getElementById('landing-about-btn'); // ELEMENTO ELIMINADO
     const installHelpBtn = document.getElementById('install-help-btn');
-    const enableNotificationsBtn = document.getElementById('enable-notifications-btn');
     const modalAddEvent = document.getElementById('modal-add-event');
-    const eventTypeSelector = document.getElementById('event-type-selector');
     const eventNameInput = document.getElementById('event-name-input');
     const eventDateInput = document.getElementById('event-date-input');
     const saveEventBtn = document.getElementById('save-event-btn');
-    const cancelEventBtn = document.getElementById('cancel-event-btn');
-    const landingAboutBtn = document.getElementById('landing-about-btn');
     const mobileActionBar = document.getElementById('mobile-action-bar');
     const actionInterpretBtn = document.getElementById('action-interpret');
     const actionInfoBtn = document.getElementById('action-info');
@@ -95,6 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const eventTimeInput = document.getElementById('event-time-input');
     const translateSymbol = (name) => SYMBOL_TRANSLATIONS[name] || capitalize(name);
     const actionTextToggleBtn = document.getElementById('action-text-toggle');
+    const landingSelectedDate = document.getElementById('landing-selected-date');
 
     // --- Estado de la aplicación ---
     let selectedYear, selectedMonth;
@@ -112,7 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==             *** GESTOR CENTRAL DE MODALES ***                       ==
     // =========================================================================
 
-    // Función para CERRAR cualquier modal que esté activo
     function closeActiveModal() {
         if (activeModal) {
             activeModal.style.display = 'none';
@@ -135,20 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // Función para ABRIR un modal y configurar su cierre
-    function openModal(modal) {
-        if (!modal) return; // Seguridad para evitar errores
-        activeModal = modal;
-        modal.style.display = 'flex';
-        backToLandingBtn.style.display = 'flex'; // Siempre muestra el botón flotante
-        
-        // Configura la 'X' y el fondo para que usen el cierre centralizado
-        modal.querySelector('.close-button').onclick = closeActiveModal;
-        modal.onclick = (e) => {
-            if (e.target === modal) closeActiveModal();
-        };
-    }
-    // NUEVA FUNCIÓN DE CONFIRMACIÓN
    function showConfirmation(message, onConfirm, onCancel) {
         confirmMessageText.textContent = message;
         modalConfirm.style.display = 'flex';
@@ -197,34 +175,11 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     const isHoliday = (date, festivosDelMes) => festivosDelMes.includes(date.getDate());
-
-    const downloadCalendarImage = () => {
-        let elementToCapture;
-        let fileName;
-        if (window.getComputedStyle(mobileLandingContainer).display === 'flex') {
-            elementToCapture = landingCalendarGrid;
-            const currentMonthName = NOMBRES_MESES[landingDate.getMonth()];
-            const currentYear = landingDate.getFullYear();
-            fileName = `Calendario-Astral-Movil-${currentMonthName}-${currentYear}.png`;
-        } else {
-            elementToCapture = calendarContainer;
-            const currentMonthName = NOMBRES_MESES[selectedMonth - 1];
-            fileName = `Calendario-Astral-${currentMonthName}-${selectedYear}.png`;
-        }
-        const options = { backgroundColor: "#fdfaf5", scale: 2 };
-        html2canvas(elementToCapture, options).then(canvas => {
-            const link = document.createElement('a');
-            link.download = fileName;
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-        });
-    };
     
     const createEventRow = (items, aspectType = null) => {
         const row = document.createElement('div');
         row.classList.add('event-row');
 
-        // El punto de color ahora se añade como un simple span, sin contenedor extra
         if (aspectType && ASPECT_COLORS[aspectType]) {
             const dot = document.createElement('span');
             dot.classList.add('aspect-dot', ASPECT_COLORS[aspectType]);
@@ -347,23 +302,19 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function deletePersonalEvent(date, eventIndex) {
         showConfirmation('¿Estás seguro de que quieres eliminar este evento?', () => {
-            // Este código solo se ejecuta si el usuario hace clic en "Aceptar"
             const allEvents = getPersonalEvents();
             const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
             
             if (allEvents[dateKey] && allEvents[dateKey][eventIndex]) {
                 allEvents[dateKey].splice(eventIndex, 1);
-
                 if (allEvents[dateKey].length === 0) {
                     delete allEvents[dateKey];
                 }
-
                 savePersonalEvents(allEvents);
                 renderLandingView(landingDate);
             }
         });
     }
-
 
     // =========================================================================
     // ==                         LÓGICA DE DATOS                             ==
@@ -404,7 +355,6 @@ document.addEventListener('DOMContentLoaded', () => {
         selectMonth.addEventListener('change', () => { selectedMonth = parseInt(selectMonth.value); updateCalendar(); });
         selectYear.addEventListener('change', () => { selectedYear = parseInt(selectYear.value); updateCalendar(); });
         printBtn.addEventListener('click', () => window.print());
-        //downloadBtn.addEventListener('click', downloadCalendarImage);
     }
     function fillControls() { selectMonth.innerHTML = NOMBRES_MESES.map((mes, idx) => `<option value="${idx + 1}">${mes}</option>`).join(''); selectMonth.value = selectedMonth; let yearOptions = ''; for (let y = MIN_YEAR; y <= MAX_YEAR; y++) { yearOptions += `<option value="${y}">${y}</option>`; } selectYear.innerHTML = yearOptions; selectYear.value = selectedYear; }
     function changeMonth(direction) { selectedMonth += direction; if (selectedMonth < 1) { selectedMonth = 12; selectedYear--; } else if (selectedMonth > 12) { selectedMonth = 1; selectedYear++; } if (selectedYear < MIN_YEAR) selectedYear = MIN_YEAR; if (selectedYear > MAX_YEAR) selectedYear = MAX_YEAR; fillControls(); updateCalendar(); }
@@ -426,17 +376,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 changeLandingMonth(deltaX < 0 ? 1 : -1);
             }
         });
-        landingMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); landingMenuDropdown.style.display = landingMenuDropdown.style.display === 'none' ? 'block' : 'none'; });
-        landingSymbolBtn.addEventListener('click', showSymbolModal);
-        landingAboutBtn.addEventListener('click', showAboutModal);
-        document.addEventListener('click', () => { landingMenuDropdown.style.display = 'none'; });
+        // LISTENERS DEL MENÚ SUPERIOR ELIMINADOS
         return renderLandingView(landingDate);
     }
 
     function changeLandingMonth(direction) { landingDate.setMonth(landingDate.getMonth() + direction); renderLandingView(landingDate); }
     
     async function renderLandingView(date) {
-        const personalEvents = getPersonalEvents(); // **CORRECCIÓN #1**
+        const personalEvents = getPersonalEvents();
         const year = date.getFullYear();
         const month = date.getMonth() + 1;
         const today = new Date();
@@ -446,6 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let todayCellElement = null;
         let todayDataPayload = {};
         landingMonthYear.textContent = `${NOMBRES_MESES[month - 1]} ${year}`;
+        landingSelectedDate.textContent = 'Selecciona un día';
         landingCalendarGrid.innerHTML = '<div class="loader">Cargando...</div>';
         landingDayDetails.innerHTML = '<p class="initial-prompt">Toca un día.</p>';
         if (selectedDayCell) {
@@ -516,44 +464,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 dayCell.classList.add('holiday');
             }
 
-            // **CORRECCIÓN #2: MOSTRAR ICONO PERSONAL**
             const dateKey = `${year}-${String(month).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
             const dayPersonalEvents = personalEvents[dateKey];
             const specialDay = getSpecialDayClassification(dayData);
             const generalDay = getGeneralDayClassification(dayData);
 
             if (dayPersonalEvents && dayPersonalEvents.length > 0) {
-                // 1. MÁXIMA PRIORIDAD: Mostrar el primer Evento Personal.
                 const eventIcon = document.createElement('img');
                 eventIcon.src = dayPersonalEvents[0].icon;
                 eventIcon.className = 'personal-event-icon-grid';
                 eventIcon.title = dayPersonalEvents[0].name;
                 dayCell.appendChild(eventIcon);
-                
             } else if (specialDay && specialDay.iconPath) {
-                // 2. SEGUNDA PRIORIDAD: Mostrar el icono del "Tipo de Día Especial" (Suertudo, Amoroso...).
                 const specialDayIcon = document.createElement('img');
                 specialDayIcon.src = specialDay.iconPath;
                 specialDayIcon.className = 'personal-event-icon-grid';
                 specialDayIcon.title = specialDay.title;
                 dayCell.appendChild(specialDayIcon);
-
             } else if (generalDay && generalDay.iconPath) {
-                // 3. TERCERA PRIORIDAD: Mostrar el icono del "Tipo de Día General" (Armónico, Tensión...).
                 const generalDayIcon = document.createElement('img');
                 generalDayIcon.src = generalDay.iconPath;
                 generalDayIcon.className = 'personal-event-icon-grid';
                 generalDayIcon.title = generalDay.title;
                 dayCell.appendChild(generalDayIcon);
-
             } else if (countEvents(dayData) >= 3) {
-                // 4. MÍNIMA PRIORIDAD: Si no hay nada de lo anterior, mostrar el "Warning".
                 const warningIcon = document.createElement('img');
                 warningIcon.src = ICON_PATHS.alerts.Warning;
                 warningIcon.className = 'intense-day-marker';
                 dayCell.appendChild(warningIcon);
             }
-            // **FIN DE CORRECCIÓN #2**
 
             dayCell.addEventListener('click', () => handleLandingDayClick(dayCell, new Date(year, month - 1, dayNum), dayData));
             landingCalendarGrid.appendChild(dayCell);
@@ -616,6 +555,9 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedDayCell = cell;
         landingDayDetails.innerHTML = '';
         currentDetailDate = date;
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const formattedDate = date.toLocaleDateString('es-ES', dateOptions);
+        landingSelectedDate.textContent = capitalize(formattedDate);
         updateHoyButtonState(date);
         let hasContent = false;
         const contentWrapper = document.createElement('div');
@@ -661,12 +603,12 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const eventsContainer = document.createElement('div');
         eventsContainer.className = 'astro-events-container';
-                addEventsToCell(eventsContainer, dayData);
+        addEventsToCell(eventsContainer, dayData);
 
-                if (eventsContainer.hasChildNodes()) {
-                    contentWrapper.appendChild(eventsContainer); // Simplemente añade el contenedor de eventos
-                    hasContent = true;
-                }
+        if (eventsContainer.hasChildNodes()) {
+            contentWrapper.appendChild(eventsContainer);
+            hasContent = true;
+        }
 
         if (hasContent) {
             landingDayDetails.appendChild(contentWrapper);
@@ -691,12 +633,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 landingDayDetails.appendChild(personalEventsContainer);
             }
-            mobileActionBar.style.display = 'flex'; // Muestra la barra de acciones
+            mobileActionBar.style.display = 'flex';
         } else {
             landingDayDetails.innerHTML = '<p class="initial-prompt">No hay eventos para mostrar.</p>';
-            mobileActionBar.style.display = 'none'; // Oculta la barra si no hay eventos
+            mobileActionBar.style.display = 'none';
         }
-        
     }
 
     function navigateToDetailView(date) { mobileLandingContainer.style.display = 'none'; mobileContainer.style.display = 'flex'; backToLandingBtn.style.display = 'flex'; mobileDate = date; renderMobileView(date); }
@@ -743,17 +684,16 @@ document.addEventListener('DOMContentLoaded', () => {
             contentHtml = `<p>Error al cargar.</p>`;
         }
         modalTextos.innerHTML = contentHtml;
-        openModal(modal); // <-- Llama al gestor
+        openModal(modal);
     }
 
     async function showSymbolModal() {
         const modal = document.getElementById('modal-symbol');
         const modalContent = document.getElementById('modal-symbol-content');
         modalContent.innerHTML = '<div class="loader">Cargando...</div>';
-        openModal(modal); // <-- Llama al gestor
+        openModal(modal);
         try {
             const res = await fetch('Calendar/Simbologia.json');
-            // ... (el resto de la función es igual, solo borramos la lógica de cierre)
             if (!res.ok) throw new Error('Archivo no encontrado'); const data = await res.json(); let mainHtml = `<h1 style="text-align:center;">Simbología</h1>`; for (const seccion in data) { mainHtml += `<h2 style="margin-top: 20px;">✨${capitalize(seccion)}✨</h2>`; const grupo = data[seccion]; for (const key in grupo) { const item = grupo[key]; const entryId = 'simbologia-' + key.replace(/\s+/g, '-').toLowerCase(); let iconHtml = ''; if (item.gif) { iconHtml = `<img src="${item.gif}" alt="${key}" style="height: 28px; width: 28px; object-fit: contain; vertical-align: middle; margin-right: 6px;">`; } else { let iconPath = ICON_PATHS.signs[key] || ICON_PATHS.planets[key] || ICON_PATHS.aspects[key] || ''; if (iconPath) { iconHtml = `<img src="${iconPath}" alt="${key}" style="height: 28px; width: 28px; object-fit: contain; vertical-align: middle; margin-right: 6px;">`; } } mainHtml += `<div id="${entryId}" style="margin-bottom: 1rem;">`; mainHtml += `${iconHtml}<strong>${item.nombre || key}</strong><br>`; if (item.lema) { mainHtml += `<small style="font-weight:bold;">${item.lema}</small><br>`; } else if (item.condicion) { mainHtml += `<small style="font-weight:bold; color: #555;">Condición: ${item.condicion}</small><br>`; } mainHtml += `<span>${item.descripcion}</span></div>`; } }
             modalContent.innerHTML = mainHtml;
         } catch (error) {
@@ -772,25 +712,21 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.symbol-highlight').forEach(el => {
                 el.classList.remove('symbol-highlight');
             });
-
             targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
             targetElement.classList.add('symbol-highlight');
-
             setTimeout(() => {
                 if (targetElement) {
                     targetElement.classList.remove('symbol-highlight');
                 }
-            }, 7000); // 5 segundos
+            }, 7000);
         }
     }
 
     async function showAspectsModal(date) {
         const modal = document.getElementById('modal-aspects');
         const modalContent = document.getElementById('modal-aspects-content');
-        
-        // Muestra el loader y abre el modal con el gestor central
         modalContent.innerHTML = `<div class="loader">Cargando...</div>`;
-        openModal(modal); // ¡Esto se encarga de todo!
+        openModal(modal);
 
         const year = date.getFullYear();
         const month = date.getMonth() + 1;
@@ -828,12 +764,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             html += '<p>No hay aspectos mayores.</p>';
         }
-
         modalContent.innerHTML = html;
     }
 
     function showInstallHelpModal() {
-       const modal = document.getElementById('modal-install'); openModal(modal); // ¡Y ya está! Delega todo al gestor central.
+       const modal = document.getElementById('modal-install'); openModal(modal);
     }
 
     async function showAboutModal() {
@@ -847,7 +782,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!res.ok) throw new Error('No se pudo cargar el archivo de créditos.');
             const data = await res.json();
 
-            // Función interna para construir la vista de botones
             const buildButtonsView = () => {
                 let html = `<h2>${data.tituloModal}</h2><div id="about-buttons-container">`;
                 data.botones.forEach(btnData => {
@@ -866,7 +800,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 html += '</div>';
                 modalContent.innerHTML = html;
 
-                // Añadir los listeners a los botones recién creados
                 modalContent.querySelectorAll('.about-button').forEach(button => {
                     button.addEventListener('click', () => {
                         const type = button.dataset.type;
@@ -880,7 +813,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             };
 
-            // Función interna para construir la vista de contenido (intro o créditos)
             const buildInternalContentView = (contentKey) => {
                 const contentData = data.contenidoInterno[contentKey];
                 let html = `<div class="about-internal-content"><h3>${contentData.titulo}</h3>`;
@@ -895,11 +827,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 html += `<button class="btn back-to-about-btn">← Volver</button></div>`;
                 modalContent.innerHTML = html;
                 
-                // Listener para el botón de volver
                 modalContent.querySelector('.back-to-about-btn').onclick = buildButtonsView;
             };
 
-            // Iniciar construyendo la vista de botones
             buildButtonsView();
 
         } catch (error) {
@@ -908,10 +838,39 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // ===== NUEVA FUNCIÓN PARA EL HUB DE INFORMACIÓN (AGREGADA) =====
+    function showInfoHubModal() {
+        const modal = document.getElementById('modal-info-hub');
+        const guideBtn = document.getElementById('hub-btn-guide');
+        const symbolBtn = document.getElementById('hub-btn-symbol');
+        const aboutBtn = document.getElementById('hub-btn-about');
+
+        // Acción para el botón de la Guía
+        guideBtn.onclick = () => {
+            closeActiveModal();
+            setTimeout(() => showExplanationModal(), 10); // Usamos un timeout para una transición más suave
+        };
+
+        // Acción para el botón de Simbología
+        symbolBtn.onclick = () => {
+            closeActiveModal();
+            setTimeout(() => showSymbolModal(), 10);
+        };
+
+        // Acción para el botón de "Acerca de..."
+        aboutBtn.onclick = () => {
+            closeActiveModal();
+            setTimeout(() => showAboutModal(), 10);
+        };
+
+        openModal(modal); // Abre el nuevo modal-hub
+    }
+
+
     function openEventTypeSelectorModal(date) {
         const modal = document.getElementById('modal-select-event-type');
         const grid = document.getElementById('event-type-grid');
-        grid.innerHTML = ''; // Limpia la grilla
+        grid.innerHTML = '';
 
         for (const typeKey in PERSONAL_EVENT_TYPES) {
             const typeInfo = PERSONAL_EVENT_TYPES[typeKey];
@@ -922,31 +881,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span>${typeInfo.name.substring(2)}</span>
             `;
             optionBtn.onclick = () => {
-                closeActiveModal(); // Cierra este modal de selección
-                openEventDetailsModal(date, typeKey); // Abre el segundo modal con los detalles
+                closeActiveModal();
+                openEventDetailsModal(date, typeKey);
             };
             grid.appendChild(optionBtn);
         }
         openModal(modal);
     }
 
-    // 2. Abre el SEGUNDO modal (para añadir nombre y hora)
     function openEventDetailsModal(date, eventType) {
         const typeInfo = PERSONAL_EVENT_TYPES[eventType];
         const header = document.getElementById('selected-event-header');
-        // No necesitamos eventTypeInput porque ya tenemos la variable 'eventType'
         
         header.innerHTML = `
             <img src="${typeInfo.icon}" alt="${typeInfo.name}">
             <span>${typeInfo.name.substring(2)}</span>
         `;
 
-        // Configuración inicial de los inputs
         eventNameInput.value = '';
-        eventTimeInput.value = ''; // Limpia el valor de la hora
+        eventTimeInput.value = '';
         eventDateInput.value = date.toISOString();
 
-        // Lógica del botón guardar
         saveEventBtn.onclick = () => {
             const eventName = eventNameInput.value.trim();
             if (!eventName) {
@@ -954,7 +909,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Si el input de la hora está vacío, es "Todo el día"
             const eventTime = eventTimeInput.value || 'Todo el día';
 
             const eventData = {
@@ -968,14 +922,7 @@ document.addEventListener('DOMContentLoaded', () => {
             closeActiveModal();
             renderLandingView(landingDate);
         };
-
         openModal(modalAddEvent);
-    }
-
-
-    function closeAddEventModal() {
-        modalAddEvent.style.display = 'none';
-        modalBackBtn.style.display = 'none';
     }
 
     async function showExplanationModal() {
@@ -989,7 +936,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!res.ok) throw new Error('No se pudo cargar la guía.');
             const data = await res.json();
 
-            // Construir el HTML dinámico del acordeón
             let html = `<h2>${data.tituloPrincipal}</h2>`;
             html += `<p class="intro">${data.introduccion}</p>`;
             
@@ -1004,10 +950,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             });
             
-            // Reemplaza el loader con el contenido final y re-añade la 'X'
             modalContent.innerHTML = html + '<span class="close-button">❌</span>';
             
-            // ¡MUY IMPORTANTE! Añadir los listeners DESPUÉS de crear los botones
             modal.querySelectorAll('.info-accordion-btn').forEach(button => {
                 button.addEventListener('click', () => {
                     button.classList.toggle('active');
@@ -1019,7 +963,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
             });
-            // Reconectar la 'X' superior
             modal.querySelector('.close-button').onclick = closeActiveModal;
 
         } catch (error) {
@@ -1035,14 +978,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==                           INICIALIZACIÓN                            ==
     // =========================================================================
     async function initializeApp() {
-        // 1. Asignar todos los listeners a sus botones.
         if(symbolBtn) symbolBtn.addEventListener('click', showSymbolModal);
         if(symbolBtnMobile) symbolBtnMobile.addEventListener('click', showSymbolModal);
         if(installHelpBtn) installHelpBtn.addEventListener('click', showInstallHelpModal);
-        if(landingAboutBtn) landingAboutBtn.addEventListener('click', showAboutModal);
-        //if(landingInfoBtn) landingInfoBtn.addEventListener('click', showInstallHelpModal);
+        
         if (actionInterpretBtn) actionInterpretBtn.onclick = () => { if (currentDetailDate) navigateToDetailView(currentDetailDate); };
-        if (actionInfoBtn) actionInfoBtn.onclick = showExplanationModal;
+        
+        // --- MODIFICACIÓN CLAVE AQUÍ ---
+        if (actionInfoBtn) actionInfoBtn.onclick = showInfoHubModal; // Llama al nuevo hub
+        
         if (actionAddBtn) actionAddBtn.onclick = () => { if (currentDetailDate) openEventTypeSelectorModal(currentDetailDate); };
         if (actionHoyBtn) actionHoyBtn.onclick = () => {
             landingDate = new Date();
@@ -1050,14 +994,11 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         if (actionTextToggleBtn) {
             actionTextToggleBtn.onclick = () => {
-                // Toggle de la clase en el panel de detalles para mostrar/ocultar el texto
                 landingDayDetails.classList.toggle('show-labels');
-
-                // Lógica para cambiar el icono
                 const isActive = landingDayDetails.classList.contains('show-labels');
                 const iconImg = actionTextToggleBtn.querySelector('img');
                 if (isActive) {
-                    actionTextToggleBtn.classList.add('active'); // Para un posible estilo de fondo activo
+                    actionTextToggleBtn.classList.add('active');
                     iconImg.src = 'assets/icons/text_activo.png';
                 } else {
                     actionTextToggleBtn.classList.remove('active');
@@ -1066,14 +1007,11 @@ document.addEventListener('DOMContentLoaded', () => {
             };
         }
         
-        // Lógica original del botón flotante
         if(backToLandingBtn) {
             backToLandingBtn.addEventListener('click', () => {
                 if (activeModal) {
-                    // PRIORIDAD 1: Si hay un modal activo, lo cierra.
                     closeActiveModal();
                 } else if (mobileContainer.style.display === 'flex') {
-                    // PRIORIDAD 2: Si no hay modal pero estamos en la vista de detalle, vuelve al calendario.
                     mobileContainer.style.display = 'none';
                     backToLandingBtn.style.display = 'none';
                     mobileLandingContainer.style.display = 'flex';
@@ -1084,21 +1022,18 @@ document.addEventListener('DOMContentLoaded', () => {
         setDynamicHeight(); 
         window.addEventListener('resize', setDynamicHeight);
 
-        // Condición original que decide qué vista cargar
         if (window.innerWidth <= 768 && mobileLandingContainer) {
             await initMobileLandingView();
             initMobileView();
-            setupBackButtonLogic(); // <<< --- SE ACTIVA LA LÓGICA DEL BOTÓN ATRÁS SOLO PARA MÓVIL
+            setupBackButtonLogic();
         } else {
             initDesktopView();
         }
     }
+    
     function setupBackButtonLogic() {
-            // "Enganchamos" el historial la primera vez que se carga la vista móvil.
             history.pushState(null, '');
-
             window.addEventListener('popstate', () => {
-                // Esta lógica SOLO se ejecuta si la vista móvil está activa.
                 if (mobileLandingContainer.style.display !== 'flex' && mobileContainer.style.display !== 'flex') {
                     return;
                 }
@@ -1106,29 +1041,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (isExitDialogShowing) { isExitDialogShowing = false; return; }
 
                 if (activeModal) {
-                    // Prioridad 1: Si hay un modal, lo cierra.
                     closeActiveModal();
                     history.pushState(null, '');
                     return;
                 }
 
                 if (mobileContainer.style.display === 'flex') {
-                    // Prioridad 2: Si está en la vista de detalle, vuelve al calendario.
                     backToLandingBtn.click();
                     return;
                 }
 
-                // Prioridad 3: Está en el home, preguntar para salir.
                 isExitDialogShowing = true;
-                history.pushState(null, ''); // Re-arma por si cancela
+                history.pushState(null, '');
                 
                 showConfirmation(
                     '¿Estás seguro de que quieres salir?',
-                    () => { // onConfirm
+                    () => {
                         isExitDialogShowing = false;
                         navigator.app ? navigator.app.exitApp() : window.close();
                     },
-                    () => { // onCancel
+                    () => {
                         isExitDialogShowing = false;
                         history.pushState(null, '');
                     }
@@ -1136,7 +1068,5 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     
-
-    // 4. Llamar a la función principal para que todo empiece.
     initializeApp();
 });

@@ -208,31 +208,41 @@ body {
 
     /* --- ESTILOS DE LA VISTA LANDING --- */
     .landing-header {
-        display: flex;         /* Usamos flexbox, que es suficiente con la configuración correcta. */
-        align-items: center;   /* Centra los elementos verticalmente. */
-        gap: 10px;             /* Espacio entre el título y el grupo de botones. */
-        padding: 15px 15px;    /* Espaciado interno. */
-        margin: 0 10px;        /* Margen exterior. */
-        border-bottom: 2px solid var(--color-borde-calendario); /* Línea dorada. */
+        display: flex;
+        justify-content: center; /* Centra el contenido horizontalmente */
+        align-items: center;
+        padding: 10px 15px;      /* Un poco menos de padding vertical */
+        margin: 0 10px;
+        border-bottom: 2px solid var(--color-borde-calendario);
+        text-align: center;      /* Asegura que el texto dentro esté centrado */
+    }
+    #landing-title-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     #landing-month-year {
-        /* Esta es la instrucción clave: le dice al título que ocupe todo el espacio sobrante. */
-        flex-grow: 1;
-
-        /* Estilos de texto. */
         color: var(--color-texto-principal);
-        font-size: 1.7em;
-        font-weight: 400; /* Un peso normal es más legible */
+        font-size: 1.6em; /* Un poco más pequeño para dar espacio */
+        font-weight: 400;
         letter-spacing: 0.5px;
         font-family: 'Linux Libertine', serif;
-        
-        /* Propiedades de seguridad para evitar que el texto se rompa o desborde. */
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        margin: 0; /* Limpiamos márgenes por defecto */
+        padding: 0;
     }
-
+    #landing-selected-date {
+        font-size: 0.95em;
+        font-weight: 500;
+        color: var(--color-texto-principal);
+        opacity: 0.8;
+        margin-top: 4px; /* Pequeño espacio entre los títulos */
+        font-family: 'Inter', sans-serif;
+        height: 1.2em; /* Altura fija para evitar saltos al cargar */
+    }
     .header-actions {
         display: flex;         /* El grupo de botones también usa flex. */
         align-items: center;
@@ -445,9 +455,9 @@ body {
 
     /* 2. Estilo para el número dentro de la burbuja */
     .landing-day-cell.selected .date-text { 
-        color: rgb(213, 136, 58); /* Asegura que el número sea blanco */
+        color: rgb(22, 0, 192); /* Asegura que el número sea blanco */
         font-weight: bold; /* Mantenemos el texto en negrita para destacarlo */
-        -webkit-text-stroke: 0.25px rgb(255, 0, 0);   
+        -webkit-text-stroke: 0.5px rgb(64, 0, 255);   
         /* Las propiedades 'transform' y el color morado han sido eliminadas */
     }
 
