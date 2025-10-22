@@ -1032,41 +1032,48 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function setupBackButtonLogic() {
+        // "Enganchamos" el historial la primera vez que se carga la vista móvil.
+        history.pushState(null, '');
+
+        // Esta función se ejecuta CADA VEZ que se presiona el botón "atrás" del celular
+        window.addEventListener('popstate', () => {
+            // Ignora la lógica si la app no está en una vista móvil
+            if (mobileLandingContainer.style.display !== 'flex' && mobileContainer.style.display !== 'flex') {
+                return;
+            }
+            
+            if (isExitDialogShowing) { isExitDialogShowing = false; return; }
+
+            // =========================================================================
+            // ==     ESTA ES LA PARTE QUE CIERRA "SIMBOLOGÍA" Y OTRAS VENTANAS     ==
+            // =========================================================================
+            // Prioridad 1: Si hay un modal activo (Simbología, Eventos, Info, etc.), lo cierra.
+            if (activeModal) {
+                closeActiveModal(); // Cierra la ventana
+                history.pushState(null, ''); // Vuelve a "enganchar" el historial para el próximo "atrás"
+                return; // Detiene la ejecución aquí
+            }
+
+            // =========================================================================
+            // ==      ESTA ES LA PARTE QUE TE DEVUELVE DESDE "INTERPRETACIÓN"      ==
+            // =========================================================================
+            // Prioridad 2: Si estás en la vista de detalle (Interpretación), vuelve al home.
+            if (mobileContainer.style.display === 'flex') {
+                backToLandingBtn.click(); // Simula un clic en el botón flotante para volver
+                return; // Detiene la ejecución aquí
+            }
+
+            // Prioridad 3: Si ya estás en el home, preguntar para salir de la app.
+            isExitDialogShowing = true;
             history.pushState(null, '');
-            window.addEventListener('popstate', () => {
-                if (mobileLandingContainer.style.display !== 'flex' && mobileContainer.style.display !== 'flex') {
-                    return;
-                }
-                
-                if (isExitDialogShowing) { isExitDialogShowing = false; return; }
-
-                if (activeModal) {
-                    closeActiveModal();
-                    history.pushState(null, '');
-                    return;
-                }
-
-                if (mobileContainer.style.display === 'flex') {
-                    backToLandingBtn.click();
-                    return;
-                }
-
-                isExitDialogShowing = true;
-                history.pushState(null, '');
-                
-                showConfirmation(
-                    '¿Estás seguro de que quieres salir?',
-                    () => {
-                        isExitDialogShowing = false;
-                        navigator.app ? navigator.app.exitApp() : window.close();
-                    },
-                    () => {
-                        isExitDialogShowing = false;
-                        history.pushState(null, '');
-                    }
-                );
-            });
-        }
+            
+            showConfirmation(
+                '¿Estás seguro de que quieres salir?',
+                () => { isExitDialogShowing = false; navigator.app ? navigator.app.exitApp() : window.close(); },
+                () => { isExitDialogShowing = false; history.pushState(null, ''); }
+            );
+        });
+    }
     
     initializeApp();
 });
