@@ -10,6 +10,8 @@
   "navigationColorDark": "#000000",
   "navigationDividerColor": "#000000",
   "navigationDividerColorDark": "#000000",
+  "displayMode": "edge-to-edge",
+  "statusBarColor": "rgba(0, 0, 0, 0.00)",
   "backgroundColor": "#FDFAF5",
   "enableNotifications": true,
   "startUrl": "/calendario-astral/",
@@ -18,11 +20,6 @@
   "signingKey": {
     "path": "E:\\JLO\\Cosass\\Astrología\\Fabula_Siderum_SA\\Chart_FSCreator\\prueba_vectores\\CalendarioWebAstral\\android.keystore",
     "alias": "android"
-  },
-  "features": {
-    "edgeToEdge": {
-      "enabled": true
-    }
   },
   "appVersionName": "1.0.8",
   "appVersionCode": 8,
