@@ -1,0 +1,15 @@
+// Archivo: lib/models/personal_event.dart
+
+class PersonalEvent {
+  final String id;        // Un ID único para poder borrarlo después
+  final String eventType; // ej: 'cumpleanos', 'viaje'
+  final String name;      // El nombre que introduce el usuario
+  final String time;      // 'Todo el día' o la hora seleccionada
+  
+  PersonalEvent({
+    required this.id,
+    required this.eventType,
+    required this.name,
+    required this.time,
+  });
+}

@@ -718,7 +718,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (targetElement) {
                     targetElement.classList.remove('symbol-highlight');
                 }
-            }, 7000);
+            }, 15000);
         }
     }
 
@@ -1068,12 +1068,8 @@ document.addEventListener('DOMContentLoaded', () => {
             history.pushState(null, '');
             
             showConfirmation(
-                '¿Estás seguro de que quieres salir?',
-                () => { isExitDialogShowing = false; navigator.app ? navigator.app.exitApp() : window.close(); },
-                () => { isExitDialogShowing = false; history.pushState(null, ''); }
             );
         });
     }
-    
     initializeApp();
 });
