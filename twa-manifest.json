@@ -21,8 +21,8 @@
     "path": "E:\\JLO\\Cosass\\Astrología\\Fabula_Siderum_SA\\Chart_FSCreator\\prueba_vectores\\CalendarioWebAstral\\android.keystore",
     "alias": "android"
   },
-  "appVersionName": "1.1.0",
-  "appVersionCode": 10,
+  "appVersionName": "1.1.1",
+  "appVersionCode": 11,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://jlolyr.github.io/calendario-astral/manifest.json",
@@ -42,5 +42,5 @@
   "protocolHandlers": [],
   "fileHandlers": [],
   "launchHandlerClientMode": "",
-  "appVersion": "1.1.0"
+  "appVersion": "1.1.1"
 }
