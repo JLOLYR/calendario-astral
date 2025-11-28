@@ -1042,7 +1042,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
-            if (isExitDialogShowing) { isExitDialogShowing = false; return; }
+            
 
             // =========================================================================
             // ==     ESTA ES LA PARTE QUE CIERRA "SIMBOLOGÍA" Y OTRAS VENTANAS     ==
@@ -1063,12 +1063,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return; // Detiene la ejecución aquí
             }
 
-            // Prioridad 3: Si ya estás en el home, preguntar para salir de la app.
-            isExitDialogShowing = true;
-            history.pushState(null, '');
-            
-            showConfirmation(
-            );
+
         });
     }
     initializeApp();
